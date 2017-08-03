@@ -1,0 +1,12 @@
+node_modules
+logs
+public
+.tmp
+test
+npm-debug.log
+config/
+
+vue/node_modules
+vue/static
+
+outputProjects

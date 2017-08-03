@@ -1,0 +1,49 @@
+.wd-sidebar
+    &.w-left
+        .wd-sidebar-main
+            background #f2f5f6
+            padding 0 20px 20px
+            .catalog-wrapper
+                padding-top 30px
+                .wd-infinity-menu
+                    padding-top 10px
+            .wd-infinity-menu
+                padding-top 40px
+                .wd-infinity-menu
+                    padding-top 0
+    &.w-right
+        .wd-sidebar-main
+            background inherit
+            padding-top 0
+            width auto !important
+            fixed 84px 0 auto 1365px
+            .chapters-wrapper
+                padding-top 30px
+
+
+
+@media screen and (max-width: 1615px)
+    .wd-sidebar
+
+        &.w-right
+            .wd-sidebar-main
+                width 240px !important
+                fixed 84px 0 auto auto !important
+
+@media screen and (max-width: 1024px)
+    .wd-sidebar
+
+        &.w-right
+            .wd-sidebar-main
+                display none
+
+@media screen and (max-width: 600px)
+    .wd-sidebar
+        &.w-left
+            .wd-sidebar-main
+                .catalog-wrapper
+                    padding-top 0
+                    .sidebar-home
+                        margin-bottom 20px
+                .wd-infinity-menu
+                    padding-top 20px

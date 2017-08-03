@@ -1,0 +1,94 @@
+@require '../common/style/variable'
+
+.markdown-body
+    font-size 16px
+    line-height 1.68em
+    color $colorBlack
+    font-family $roboto
+
+    h1, h2, h3
+        line-height 40px
+        border none
+
+    h4, h5, h6
+        line-height 20px
+        margin 10px 0
+
+    h1, h2, h3, h4, h5, h6
+        font-weight 500
+
+    h1
+        margin 40px 0 40px
+
+    h2
+        margin 35px 0 20px
+        font-size 1.625em
+    h3
+        margin 20px 0
+        font-size 1.3125em
+    h4
+        font-size 1.125em
+
+    li
+        p
+            margin 0
+
+    blockquote
+        color #666
+
+        code
+            background #e3e9ea
+
+    code, kbd
+        color inherit
+
+    code
+        font-family $consolas
+        padding-top 0
+        padding-bottom 0
+        background-color #f0f5f6
+        border none
+        display inline
+        padding 2px
+        font-size .875em
+        font-weight 500 !important
+
+    .code-index
+        float left
+        width 34px
+        text-align right
+        user-select none
+        // font-size 1em
+        font-family $consolas
+
+        div
+            height 20px
+            line-height 20px
+            color $colorGrey
+            overflow hidden
+
+    pre
+        border-radius 0
+        color $colorWhite
+        padding 12px 5px
+        background $colorBlack
+        position relative
+        overflow-x auto
+        overflow-y hidden
+        border-radius 2px
+        font-family $consolas
+
+        code
+            color $colorWhite
+            padding 0
+            display block
+            background-color transparent
+            margin-left 48px
+            line-height 20px
+            border-radius 0
+            font-family $consolas
+
+            .hljs-built_in
+                color #66d9ef !important
+            .hljs-attr
+                color #a7e22e !important

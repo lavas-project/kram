@@ -2,14 +2,42 @@
   "name": "kram",
   "version": "0.0.1",
   "description": "基于 marked、highlight.js 的文档编译系统",
-  "author": "clarkt (clarktanglei@163.com)",
-  "private": false,
-  "scripts": {},
-  "dependencies": {},
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lavas-project/kram.git"
+  "author": {
+    "name": "tanglei",
+    "email": "clarktanglei@163.com"
+  },
+  "scripts": {
+    "dev": "sh dev.sh",
+    "build": "sh build.sh",
+    "lint": "node ./node_modules/fecs/bin/fecs --rule --type 'vue,js,css'"
+  },
+  "dependencies": {
+    "akb": "^2.0.2-beta-1",
+    "cluster": "^0.7.7",
+    "download-git-repo": "^1.0.0",
+    "fs-extra": "^3.0.1",
+    "glob": "^7.1.2",
+    "highlight.js": "^9.11.0",
+    "html-minifier": "^3.5.0",
+    "marked": "^0.3.6",
+    "mime": "^1.3.6",
+    "shelljs": "^0.7.7",
+    "stylus": "^0.54.5"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-plugin-transform-async-to-generator": "^6.8.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-stage-2": "^6.22.0",
+    "babel-register": "^6.23.0",
+    "babel-polyfill": "*",
+    "fecs": "^1.4.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-2"
+    ]
   },
   "license": "MIT",
   "browserslist": [
