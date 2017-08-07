@@ -1,52 +1,16 @@
-/**
- * @file updateDoc.js
- * @author chenqiushi(chenqiushi@badiu.com)
- */
 
-'use strict';
+import {locals} from './share/locals';
+import {register} from './puller/register';
+import pullers from './puller';
 
-import download from 'download-git-repo';
-import fs from 'fs-extra';
-import {config} from '../config';
-import {STATIC} from './component/static';
+pullers.forEach(puller => register(puller.name, puller));
 
-const repoList = config.reopList;
-
-export default (type = 'cron', repos) => {
-    repos = repos || repoList.filter(
-        ({github, cron}) => github && (type !== 'cron' || cron)
-    );
-
-    return repos.map(async repo => {
-        await downloadRepo(repo, {logger: STATIC.logger});
-
-        if (await fs.exists(repo.gitDest)) {
-            await fs.move(repo.gitDest, repo.dest, {overwrite: true});
-        }
-
-        return repo;
-    });
-};
-
-function downloadRepo(repo, {logger = console} = {}) {
-    return new Promise(resolve => {
-        logger.info(`start to download repo:${repo.name}`);
-
-        download(
-            repo.github,
-            repo.gitDest,
-            {clone: false},
-            err => {
-                if (err) {
-                    logger.error(`download repo failed:${repo.name}`);
-                }
-                else {
-                    logger.info(`download repo success:${repo.name}`);
-                }
-
-                resolve();
-            }
-        );
-    });
+export function pull({from, use, dest, options}) {
+    return locals.pullers.get(use)(from, dest, options);
 }
 
+export function pulls() {
+    return Object.keys(locals.repos)
+        .map(key => Object.assign({name: key}, locals.repos[key]))
+        .map(repo => pull(repo));
+}
