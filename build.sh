@@ -19,7 +19,6 @@ npm run build
 
 echo "======================== zip ========================"
 cd ..
-zip lavas-web.zip -r ./* -x "logs/*" -x "outputProjects/*" -x "client/*" -x "dev.sh" -x "install.sh"
-mv lavas-web.zip output/
+zip output.zip -r ./* -x "logs/*" -x "outputProjects/*" -x "client/*" -x "dev.sh" -x "install.sh"
 
 echo "======================== build complete ========================"

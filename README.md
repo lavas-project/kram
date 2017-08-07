@@ -154,6 +154,32 @@ repos: {
 }
 ```
 
+我们可以通过设置 `default` 字段去指定缺省条件下返回的内容。示例配置如下所示：
+
+```javascript
+repos: {
+    'lavas': {
+        'default': {
+            catalog: 'vue'
+        }
+    }
+}
+```
+
+那么在获取 lavas 缺省条件的文档目录时，返回的则是 catalogKey === 'vue' 的文档目录。您也可以根据实际的项目需要自行增减 default 配置项。只需要在服务端 api 请求接口里做相应的数据调用即可，详情请阅读 [ajax 请求](#ajax请求) 小结。
+
+对于放在 github 上且频繁更新的文档，可以设置定时任务去定时获取更新文档，只需要设置 `cron = true` 即可。
+
+```javascript
+repos: {
+    lavas: {
+        cron: true
+    }
+}
+```
+
+服务端集成了 node-cron 来实现定时任务功能，目前默认配置为 5 分钟执行一次，相应的更改请阅读服务端的 [定时任务](#定时任务) 小结。
+
 #### 编译流程
 
 通过调用暴露的 `init`、`pull`、`build` 方法去实现文档的编译并存储于 store 中。
@@ -237,7 +263,18 @@ let catalogInfo = await parser.get(
 
 #### 定时任务
 
-akb 集成了 `node-cron`，可通过配置 `config/cron.js` 实现文档的定时更新，目前默认的配置为每 5 分钟去执行一次 `app/cron/updateDoc.js`，
+akb 集成了 `node-cron`，可通过配置 `config/cron.js` 实现文档的定时更新，目前默认的配置为每 5 分钟去执行一次 `app/cron/updateDoc.js`。
+
+```javascript
+// app/cron/updateDoc.js
+{
+    crons: {
+        // 默认配置为 5 分钟
+        updateDoc: '0 */5 * * * *'
+    }
+}
+```
+
 在 `updateDoc.js` 中调用文档编译模块的 `pull` 和 `build` 方法去实现文档的定时更新编译。
 
 #### 路由
@@ -249,7 +286,9 @@ akb 的路由配置文件为 `config/router.js`，路由主要做四件事情：
 3. 返回文档图片
 4. 匹配不到的资源返回 404
 
-#### ajax 请求
+目前服务端会读取 `parser/config.js` 的 `routerName` 自动生成文档 html 和对应文档静态资源（如：图片）的路由。
+
+#### ajax请求
 
 前端通过 `/api/doc/getCatalog`、 `/api/doc/getDoc` 这两个 action 分别请求文章的目录和文章信息，
 对应的文件在 `app/controllers/doc` 下面，这两个 action 调用了文档编译系统的 get 方法进行文档信息读取。
@@ -258,3 +297,23 @@ akb 的路由配置文件为 `config/router.js`，路由主要做四件事情：
 ### 客户端
 
 客户端采用 `vue` 作为前端框架，通过 `vue-cli` 生成基本的项目结构，因此调试和编译的方式与其他 vue 的项目一致。客户端以组件为粒度提供了文档目录，章节目录，文档容器，回到顶部，面包屑导航等等组件，并写了首页、文档页、demo 页等等页面来举例前端路由的组织方法和组件的使用方法。
+
+目前默认采用前端渲染的模式，如果需要改造为 ssr，可以参考 [vue 的服务器端渲染指南](https://ssr.vuejs.org/zh/)进行改造。
+
+目前 vue-router 默认开启了 history 模式，如果需要关闭的话，请记得同时修改服务端的 router 配置项。
+
+#### 前端组件
+
+我们默认提供了一系列前端组件来帮助你开速构建页面，前端组件放在 `client/src/widgets` 文件夹内。
+
+- Backup.vue 回到顶部按钮，页面向下滚动超出一屏时显示，点击后页面滚动至顶部
+- Breadcrumbs.vue 面包屑导航
+- HashScroller.js 滚动至对应 #hash 的方法
+- InfinityChapters.vue 文档章节目录组件
+- InfinityMenu.vue 总的文档目录组件
+- lightbox.vue 点击查看大图组件
+- Markdown.vue 盛放服务端渲染好的文档 html 的容器
+- PageTurn.vue 查看相邻文档（上一篇、下一篇）的组件
+- ProgressBar.vue 进度条组件
+- Ripple.js 让文档区域指定元素点击具有波纹效果的组件
+- Toast.vue toast 组件

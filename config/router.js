@@ -28,7 +28,7 @@ let config = {
 };
 
 let docRoutes = docConfig.repoList.map(repo => repo.routeName);
-
+// 生成文档图片的路由
 docRoutes
     .reduce(
         (res, routeName) => {
@@ -46,7 +46,7 @@ docRoutes
         },
         config.routes
     );
-
+// 生成各文档页面 html 的路由
 ['/']
     .concat(docRoutes.map(routeName => `/${routeName}/:key*`))
     .reduce(
@@ -59,7 +59,7 @@ docRoutes
         },
         config.routes
     );
-
+// 生成放在 /public 下的静态资源的路由
 config.routes['/(.+)'] = {
     type: 'static',
     target: '/{0}',
