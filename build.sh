@@ -6,9 +6,6 @@ rm -rf output
 mkdir output
 
 echo "======================== npm install ========================"
-npm install -g npm
-echo 'npm version>>>'
-npm -v
 npm install
 cd client
 npm install
