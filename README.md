@@ -81,6 +81,8 @@ sh install.sh
 
 上线时，只需将 output.zip 上传至上线机器，解压后在项目根目录执行 `sh run.sh` 即可。
 
+**注意**，打包使用到了 `zip` 指令，在 windows 下执行会报错。因此请在 linux 或 mac 机器上打包，或者自行修改 build.sh 文件。
+
 ## 模块说明
 
 ### 文档解析
