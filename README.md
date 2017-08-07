@@ -83,6 +83,8 @@ sh install.sh
 
 **注意**，打包使用到了 `zip` 指令，在 windows 下执行会报错。因此请在 linux 或 mac 机器上打包，或者自行修改 build.sh 文件。
 
+同时目前服务端使用 async/await 等 ES7 语法，要求 node.js 版本为 8.0 以上，如果生产环境 node.js 版本低于 8.0，请修改 index.js，在生产环境中引入 `babel`。
+
 ## 模块说明
 
 ### 文档解析
