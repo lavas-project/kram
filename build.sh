@@ -6,13 +6,12 @@ rm -rf output
 mkdir output
 
 echo "======================== npm install ========================"
-npm config set registry "http://registry.npm.baidu.com"
-npm install -g npm --registry=http://registry.npm.baidu.com
+npm install -g npm
 echo 'npm version>>>'
 npm -v
-npm install --registry=http://registry.npm.baidu.com
+npm install
 cd client
-npm install --registry=http://registry.npm.baidu.com
+npm install
 
 echo "======================== build VUE ========================"
 npm run build
