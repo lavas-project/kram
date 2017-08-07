@@ -10,9 +10,9 @@ import fs from 'fs-extra';
 import {config} from '../config';
 import {STATIC} from './component/static';
 
-const repoList = config.reopList;
-
 export default (type = 'cron', repos) => {
+    const repoList = config.repoList;
+
     repos = repos || repoList.filter(
         ({github, cron}) => github && (type !== 'cron' || cron)
     );

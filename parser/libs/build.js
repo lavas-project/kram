@@ -13,9 +13,9 @@ import {ensureArray} from './utils/basic';
 import {config} from '../config';
 import {STATIC} from './component/static';
 
-const {repoList, host, store} = config;
-
 export default function (repos = repoList) {
+    const {repoList, host, store} = config;
+
     return ensureArray(repos)
         .map(async repo => {
             let {key, value} = await build(repo, {host, logger: STATIC.logger});

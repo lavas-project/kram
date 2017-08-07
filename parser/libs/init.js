@@ -13,9 +13,8 @@ import build from './build';
 import pull from './pull';
 import {config} from '../config';
 
-const {tmpDir, gitDir, repoList} = config;
-
 export default async () => {
+    const {tmpDir, gitDir, repoList} = config;
     // 确保临时文件目录存在
     await ensureDir(tmpDir, gitDir);
 
