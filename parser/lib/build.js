@@ -6,12 +6,12 @@
 'use strict';
 
 import {locals} from './share/locals';
-import {getPrototype} from './utils/basic';
+import {getPrototype, toArray} from './utils/basic';
 
 export function build(list) {
     switch (getPrototype(list)) {
         case 'Object':
-            return await buildRepo(list);
+            return buildRepo(list);
         case 'Undefined':
             list = toList(locals.repos);
         default:
@@ -23,8 +23,8 @@ export function build(list) {
 async function buildRepo(repo) {
     repo = await repo;
 
-    if (!await fs.exists(repo.dest)) {
-        throw new Error(1, '文档不存在');
+    if (!await fs.exists(repo.pull.dest)) {
+        throw new Error('文档不存在');
     }
 
     // await buildDocs();

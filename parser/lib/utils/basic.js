@@ -153,3 +153,7 @@ export function chunk(arr, size) {
 
     return output;
 }
+
+export function toArray(obj) {
+    return Object.keys(obj).map(key => obj[key]);
+}

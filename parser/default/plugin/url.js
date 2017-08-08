@@ -5,7 +5,7 @@
 
 export default class URLPlugin {
     constructor() {
-
+        this.name = 'URLPlugin';
     }
 
     apply(on, kram) {

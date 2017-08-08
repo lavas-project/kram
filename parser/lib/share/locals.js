@@ -1,5 +1,6 @@
 
 // import {store} from '../../default/store';
+import defaultConf from '../../default';
 
 export const locals = {
     // store: store,
@@ -7,6 +8,7 @@ export const locals = {
     repos: {},
     pullers: new Map(),
     hooks: {},
-    // plugins: new Map(),
-    config: {}
+    plugins: [],
+    config: {},
+    default: defaultConf
 };

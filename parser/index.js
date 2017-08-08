@@ -3,7 +3,7 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-import defaultConf from './default';
+// import defaultConf from './default';
 import {configure} from './lib/configure';
 import {locals} from './lib/share/locals';
 
@@ -15,7 +15,6 @@ export {configure as configure};
 export {locals as locals};
 
 export function init(options) {
-    let conf = Object.assign({}, defaultConf, options);
-    locals.default = conf;
+    let conf = Object.assign({}, locals.default, options);
     configure(conf);
 }

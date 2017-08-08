@@ -4,7 +4,11 @@
  */
 
 export default class Style {
-    constructor({priority}) {
+    constructor({
+        priority,
+        name = 'Style'
+    } = {}) {
+        this.name = name;
         this.priority = priority;
     }
 

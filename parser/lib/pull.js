@@ -10,7 +10,7 @@ import {
 export function pull(list) {
     switch (getPrototype(list)) {
         case 'Object':
-            return await pullRepo(list);
+            return pullRepo(list);
         case 'Undefined':
             list = toList(locals.repos);
         default:
@@ -20,10 +20,16 @@ export function pull(list) {
 }
 
 async function pullRepo(repo) {
+    locals.logger.info(`pull start: ${repo.name}`);
+
     await plugin(BEFORE_PULL, repo);
-    let {from, use, dest, options} = repo;
+
+    let {from, use, dest, options} = repo.pull;
     await locals.pullers.get(use)(from, dest, options);
+
     await plugin(AFTER_PULL, repo);
+
+    locals.logger.info(`pull finish: ${repo.name}`);
     return repo;
 }
 
