@@ -12,13 +12,18 @@ export some(resolves) {
 
     return new Promise((resolve, reject) => {
         resolves.forEach(
-            r => r.then(info => resolve(info))
+            r => r.then(info => {
+                    resolve(info);
+                    return info;
+                })
                 .catch(err => {
                     counter++;
 
                     if (counter === max) {
                         reject();
                     }
+
+                    return Promise.reject(err);
                 })
         );
     });
@@ -42,6 +47,8 @@ export done(resolves) {
                     if (counter === max) {
                         resolve();
                     }
+
+                    return info;
                 })
                 .catch(err => {
                     counter++;
@@ -49,6 +56,8 @@ export done(resolves) {
                     if (counter === max) {
                         resolve();
                     }
+
+                    return Promise.reject(err);
                 })
         );
     })
