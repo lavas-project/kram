@@ -40,23 +40,21 @@ export done(resolves) {
     let max = resolves.length;
 
     return new Promise(resolve => {
+        let fn = () => {
+            counter++;
+
+            if (counter === max) {
+                resolve();
+            }
+        };
+
         resolves.forEach(
             r => r.then(info => {
-                    counter++;
-
-                    if (counter === max) {
-                        resolve();
-                    }
-
+                    fn();
                     return info;
                 })
                 .catch(err => {
-                    counter++;
-
-                    if (counter === max) {
-                        resolve();
-                    }
-
+                    fn();
                     return Promise.reject(err);
                 })
         );
