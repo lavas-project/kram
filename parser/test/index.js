@@ -18,24 +18,32 @@ if (process.env.NODE_ENV !== 'production') {
 
 var fs = require('fs-extra');
 var path = require('path');
-var parser = require('../index');
-var parse = parser.parse;
-var configure = parser.configure;
+var kram = require('../index');
+
+kram.init();
+
+// console.log(kram.locals)
+// console.log(kram)
+// var parser = require('../index');
+// var parse = parser.parse;
+// var configure = parser.configure;
 
 var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
+kram.parse(md).then(html => {
+    console.log(html)
+})
+// configure({
+//     marked: {
+//         options: {
+//             renderer: {
+//                 heading(text, level, raw) {
+//                     return `
+//                         <h${level}>${text}</h${level}>
+//                     `;
+//                 }
+//             }
+//         }
+//     }
+// });
 
-configure({
-    marked: {
-        options: {
-            renderer: {
-                heading(text, level, raw) {
-                    return `
-                        <h${level}>${text}</h${level}>
-                    `;
-                }
-            }
-        }
-    }
-});
-
-console.log(parse(md, {path: 'lavas'}));
+// console.log(parse(md, {path: 'lavas'}));

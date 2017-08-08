@@ -1,5 +1,5 @@
 
-import {get} from '../utils/basic';
+import {get} from '../../lib/utils/basic';
 import download from 'download-git-repo';
 
 export async function downloadFromGithub(from, to, {tmp}) {

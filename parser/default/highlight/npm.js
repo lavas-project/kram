@@ -1,13 +1,9 @@
 /**
- * @file highlight.js 代码高亮相关
+ * @file npm 高亮
  * @author tanglei (tanglei02@baidu.com)
  */
 
-import hljs from 'highlight.js';
-import {encodeTag} from '../utils/html';
-
-// 注册 npm yarn git 的高亮
-hljs.registerLanguage('npm', hljs => {
+export default function npm(hljs) {
     return {
         aliases: ['yarn', 'git'],
         /* eslint-disable */
@@ -22,7 +18,7 @@ hljs.registerLanguage('npm', hljs => {
 
             built_in: ''
                 + 'npm yarn git '
-                + // Shell built-ins
+                // Shell built-ins
                 // http://www.gnu.org/software/bash/manual/html_node/Shell-Builtin-Commands.html
                 + 'break cd continue eval exec exit export getopts hash pwd readonly return shift test times '
                 + 'trap umask unset '
@@ -52,64 +48,4 @@ hljs.registerLanguage('npm', hljs => {
             }
         ]
     };
-});
-
-// 注册 vue 的高亮
-hljs.registerLanguage('vue', hljs => {
-    return {
-        /* eslint-disable */
-        case_insensitive: true,
-        /* eslint-enable */
-        subLanguage: 'xml'
-    };
-});
-
-// 默认将 tab 转为 4 空格
-const defaultConf = {
-    tabReplace: '    '
-};
-
-hljs.configure(defaultConf);
-
-/**
- * 高亮代码块
- *
- * @param {string} code 代码
- * @param {string} language 代码语言
- * @param {Object=} options 选项
- * @param {Object} options.logger logger
- * @return {string} 高亮好的代码块
- */
-export function highlight(code, language, {logger = console} = {}) {
-    if (hljs.getLanguage(language)) {
-        try {
-            return hljs.highlight(language, code).value;
-        }
-        catch (e) {
-            // auto 的染色都是有问题的 还不如不染了
-            logger.error(`Error in highlight lang=${language}:`);
-        }
-    }
-
-    return encodeTag(code);
-}
-
-/**
- * 注册新语言
- *
- * @param {Object} options options
- * @param {string} options.name 名称
- * @param {Function} options.fn 解析方法
- */
-export function hljsRegister({name, fn}) {
-    hljs.registerLanguage(name, fn);
-}
-
-/**
- * highlight.js 配置
- *
- * @param {Object} options 配置参数
- */
-export function hljsConfigure(options) {
-    hljs.configure(Object.assign({}, defaultConf, options));
 }

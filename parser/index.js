@@ -2,19 +2,20 @@
  * @file index.js
  * @author tanglei (tanglei02@baidu.com)
  */
-import {markdown} from './libs/compiler/markdown';
-import {STATIC} from './libs/component/static';
-import {merge} from './libs/utils/basic';
 
-export {config} from './config';
-export {default as init} from './libs/init';
-export {default as pull} from './libs/pull';
-export {default as build} from './libs/build';
-export {default as get} from './libs/get';
+import defaultConf from './default';
+import {configure} from './lib/configure';
+import {locals} from './lib/share/locals';
 
-export function configure({logger, marked, highlight}) {
-    merge(STATIC, {logger});
-    markdown.config({logger, marked, highlight});
+export {pull, pulls} from './lib/pull';
+export {build, builds} from './lib/build';
+export {parse} from './lib/component/marked';
+
+export {configure as configure};
+export {locals as locals};
+
+export function init(options) {
+    let conf = Object.assign({}, defaultConf, options);
+    locals.default = conf;
+    configure(conf);
 }
-
-export const parse = markdown.parse.bind(markdown);

@@ -62,11 +62,27 @@ export function plainify(str) {
     return encodeTag(str);
 }
 
-export function createIndexHTML(code, className) {
+export function lineNumber(code, className) {
     let html = code
         .split('\n')
         .map((c, i) => `<div>${i + 1}</div>`)
         .join('');
 
     return `<div class="${className}">${html}</div>`;
+}
+
+/**
+ * 统计字符串的缩进空格数量
+ *
+ * @param {string} str string
+ * @return {number} 缩进空格数
+ */
+export function countIndent(str) {
+    let max = str.length;
+    for (let i = 0; i < max; i++) {
+        if (str[i] !== ' ') {
+            return i;
+        }
+    }
+    return max;
 }

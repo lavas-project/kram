@@ -133,22 +133,6 @@ export function contain(a, b) {
 }
 
 /**
- * 统计字符串的前缀空格数量
- *
- * @param {string} str string
- * @return {number} 前缀空格数
- */
-export function countPrefixSpace(str) {
-    let max = str.length;
-    for (let i = 0; i < max; i++) {
-        if (str[i] !== ' ') {
-            return i;
-        }
-    }
-    return max;
-}
-
-/**
  * 空方法
  */
 export function noop() {}
