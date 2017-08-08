@@ -6,8 +6,21 @@
 'use strict';
 
 import {locals} from './share/locals';
+import {getPrototype} from './utils/basic';
 
-export async function build(repo) {
+export function build(list) {
+    switch (getPrototype(list)) {
+        case 'Object':
+            return await buildRepo(list);
+        case 'Undefined':
+            list = toList(locals.repos);
+        default:
+            return list.map(async repo => await buildRepo(repo));
+
+    }
+}
+
+async function buildRepo(repo) {
     repo = await repo;
 
     if (!await fs.exists(repo.dest)) {
@@ -17,10 +30,6 @@ export async function build(repo) {
     // await buildDocs();
     // await buildCatalogs();
     return repo;
-}
-
-export function builds(list) {
-    return (list || toList(locals.repos)).map(async repo => await build(repo));
 }
 
 function toList(repos) {

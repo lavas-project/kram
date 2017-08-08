@@ -7,8 +7,8 @@ import defaultConf from './default';
 import {configure} from './lib/configure';
 import {locals} from './lib/share/locals';
 
-export {pull, pulls} from './lib/pull';
-export {build, builds} from './lib/build';
+export {pull} from './lib/pull';
+export {build} from './lib/build';
 export {parse} from './lib/component/marked';
 
 export {configure as configure};

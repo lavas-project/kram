@@ -42,7 +42,11 @@ export async function plugin(stage, info, options) {
     }
 
     for (let i = 0; i < plugins.length; i++) {
-        info = await plugins[i].fn(info, options);
+        let tmp = await plugins[i].fn(info, options);
+
+        if (tmp != null) {
+            info = tmp;
+        }
     }
 
     return info;
