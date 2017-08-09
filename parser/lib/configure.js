@@ -6,10 +6,10 @@
 import {locals} from './share/locals';
 import {merge} from './utils/basic';
 
-import {configure as highlight} from './component/highlight';
-import {configure as marked} from './component/marked';
-import {configure as plugins} from './component/plugin';
-import {configure as pullers} from './component/puller';
+import {configure as highlight} from './module/renderer/highlight';
+import {configure as marked} from './module/renderer/marked';
+import {configure as plugins} from './module/plugin';
+import {configure as pullers} from './module/puller';
 
 const components = {
     highlight,

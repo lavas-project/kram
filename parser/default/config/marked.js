@@ -3,7 +3,7 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 import marked from 'marked';
-import {highlight} from '../../lib/component/highlight';
+import {highlight} from '../../lib/module/renderer/highlight';
 
 export const defaultRenderer = new marked.Renderer();
 

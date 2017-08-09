@@ -3,7 +3,7 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-import {locals} from '../share/locals';
+import {locals} from '../../share/locals';
 import path from 'path';
 import fs from 'fs-extra';
 

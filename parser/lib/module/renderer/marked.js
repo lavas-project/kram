@@ -4,20 +4,20 @@
  */
 
 import marked from 'marked';
-import {locals} from '../share/locals';
-import {get, merge, isObject} from '../utils/basic';
+import {locals} from '../../share/locals';
+import {get, merge, isObject} from '../../utils/basic';
 import {
     BEFORE_RENDER,
     AFTER_RENDER,
     plugin
-} from './plugin';
+} from '../plugin';
 
 export function configure(options) {
     if (!isObject(options)) {
         return;
     }
 
-    let renderer = get(options, 'renderer');
+    let renderer = options.renderer;
     let defaultOpts = locals.default.marked;
 
     if (!renderer) {

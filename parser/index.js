@@ -9,7 +9,7 @@ import {locals} from './lib/share/locals';
 
 export {pull} from './lib/pull';
 export {build} from './lib/build';
-export {parse} from './lib/component/marked';
+export {parse} from './lib/module/renderer/marked';
 
 export {configure as configure};
 export {locals as locals};

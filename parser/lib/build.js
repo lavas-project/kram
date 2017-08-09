@@ -10,7 +10,7 @@ import {locals} from './share/locals';
 import {
     set as setStruct,
     get as getStruct
-} from './component/struct';
+} from './module/builder/struct';
 import {getPrototype, toArray, set, startWith} from './utils/basic';
 import {removePrefix, join, removeExt} from './utils/path';
 import {
@@ -19,8 +19,8 @@ import {
     FINISH_BUILD_DOCS,
     FINISH_RENDER,
     plugin
-} from './component/plugin';
-import {parse} from './component/marked';
+} from './module/plugin';
+import {parse} from './module/renderer/marked';
 
 export async function build(list) {
     list = await list;
@@ -43,8 +43,8 @@ async function buildRepo(repo) {
     }
 
     await setStruct(repo);
-    await buildDocs(repo);
-    // await buildCatalogs(repo);
+    let docMap = await buildDocs(repo);
+    let catalogMap = await buildCatalogs(repo);
     return repo;
 }
 
@@ -87,7 +87,7 @@ async function buildDocs(repo) {
     return map;
 }
 
-function articleKey(repoName, mdPath, dest) {
+function docKey(repoName, mdPath, dest) {
     let key = removePrefix(mdPath, dest);
     key = join(repoName, key);
     return removeExt(key, '.md');

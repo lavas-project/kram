@@ -6,7 +6,7 @@ import {
     BEFORE_PULL,
     AFTER_PULL,
     plugin
-} from './component/plugin';
+} from './module/plugin';
 
 export async function pull(list) {
     switch (getPrototype(list)) {
