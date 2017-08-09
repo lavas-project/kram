@@ -10,5 +10,6 @@ export const locals = {
     hooks: {},
     plugins: [],
     config: {},
+    structs: {},
     default: defaultConf
 };

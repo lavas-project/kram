@@ -5,7 +5,12 @@
 
 'use strict';
 
+import fs from 'fs-extra';
 import {locals} from './share/locals';
+import {
+    set as setStruct,
+    get as getStruct
+} from './component/struct';
 import {getPrototype, toArray} from './utils/basic';
 
 export function build(list) {
@@ -27,6 +32,9 @@ async function buildRepo(repo) {
         throw new Error('文档不存在');
     }
 
+    await setStruct(repo);
+
+// console.log(locals.structs);
     // await buildDocs();
     // await buildCatalogs();
     return repo;
@@ -34,4 +42,8 @@ async function buildRepo(repo) {
 
 function toList(repos) {
     return Object.keys(repos).map(key => Object.assign({name: key}, repos[key]));
+}
+
+async function buildDocs(repo) {
+
 }

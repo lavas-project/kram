@@ -1,7 +1,7 @@
-import {downloadFromGithub} from '../puller/downloadFromGithub';
+import {downloadGitRepo} from '../puller/downloadGitRepo';
 import {local} from '../puller/local';
 
 export default {
-    downloadFromGithub,
+    downloadGitRepo,
     local
 };

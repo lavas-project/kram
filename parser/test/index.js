@@ -33,7 +33,7 @@ kram.init({
     repos: {
         lavas: {
             pull: {
-                use: 'downloadFromGithub',
+                use: 'downloadGitRepo',
                 from: 'github:lavas-project/lavas-tutorial',
                 dest: dest,
                 options: {tmp}
@@ -42,7 +42,7 @@ kram.init({
     }
 });
 
-kram.pull();
+kram.build(kram.pull());
 // console.log(kram.locals)
 // console.log(kram)
 // var parser = require('../index');
