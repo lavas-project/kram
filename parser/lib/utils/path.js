@@ -41,3 +41,19 @@ export function removeExt(str, ext) {
 
     return str;
 }
+
+
+export function removePrefix(str, prefix) {
+    let len = prefix.length;
+    if (str.slice(0, len) === prefix) {
+        str = str.slice(len);
+
+        if (str[0] === '/') {
+            str = str.slice(1);
+        }
+
+        return str;
+    }
+
+    return str
+}

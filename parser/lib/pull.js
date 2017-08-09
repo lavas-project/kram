@@ -2,18 +2,20 @@
 import {locals} from './share/locals';
 import {getPrototype} from './utils/basic';
 import {
+    BEFORE_PULL_REPOS,
     BEFORE_PULL,
     AFTER_PULL,
     plugin
 } from './component/plugin';
 
-export function pull(list) {
+export async function pull(list) {
     switch (getPrototype(list)) {
         case 'Object':
             return pullRepo(list);
         case 'Undefined':
             list = toList(locals.repos);
         default:
+            list = await plugin(BEFORE_PULL_REPOS, list, locals.repos);
             return list.map(async repo => await pullRepo(repo));
 
     }

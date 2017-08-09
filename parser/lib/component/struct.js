@@ -4,29 +4,37 @@
  */
 
 import {locals} from '../share/locals';
-import {join} from '../utils/path';
+import path from 'path';
 import fs from 'fs-extra';
 
 export function get(repo, options) {
+    let struct = locals.structs[repo.name];
+
     if (!options) {
-        return locals.structs[repo.name];
+        return struct;
     }
 
     let {type, regex} = options;
-    let struct = locals.structs[repo.name][type];
+    struct = struct[type];
+
+    if (!regex) {
+        return struct;
+    }
+
     return struct.filter(dir => regex.test(dir));
 }
 
 export async function set(repo) {
-    let struct = await build(repo.pull.dest);
+    let struct = await construct(repo.pull.dest);
     locals.structs[repo.name] = struct;
+    return locals.structs[repo.name];
 }
 
-export async function build(curr) {
+export async function construct(curr) {
     let dirs = await fs.readdir(curr);
     let infos = await Promise.all(
         dirs.map(async dir => {
-            let child = join(curr, dir);
+            let child = path.resolve(curr, dir);
             let stat = await fs.stat(child);
             return {
                 type: stat.isDirectory() ? 'folder' : 'file',
@@ -47,7 +55,7 @@ export async function build(curr) {
     );
 
     let childMap = await Promise.all(
-        map.folder.map(async folder => await build(folder))
+        map.folder.map(async folder => await construct(folder))
     );
 
     return childMap.reduce((res, child) => {

@@ -32,8 +32,13 @@ export function configure(options) {
 }
 
 export async function parse(md, options) {
-    md = await plugin(BEFORE_RENDER, md, options);
-    let html = marked(md);
-    html = await plugin(AFTER_RENDER, html, options);
-    return html;
+    try {
+        md = await plugin(BEFORE_RENDER, md, options);
+        let html = marked(md);
+        html = await plugin(AFTER_RENDER, html, options);
+        return html;
+    }
+    catch (e) {
+        locals.logger.info(e);
+    }
 }
