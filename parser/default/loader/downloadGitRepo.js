@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import {get} from '../../lib/utils/basic';
+import {get} from '../../lib/utils';
 import download from 'download-git-repo';
 
 export async function downloadGitRepo(from, to, {tmp}) {

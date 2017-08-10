@@ -5,8 +5,7 @@
 
 import hljs from 'highlight.js';
 import {locals} from '../../share/locals';
-import {isObject} from '../../utils/basic';
-import {encodeTag} from '../../utils/html';
+import {isObject, encodeTag} from '../../utils';
 
 /**
  * highlight.js 配置

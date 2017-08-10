@@ -5,7 +5,7 @@
 
 import marked from 'marked';
 import {locals} from '../../share/locals';
-import {get, merge, isObject} from '../../utils/basic';
+import {get, merge, isObject} from '../../utils';
 import {
     BEFORE_RENDER,
     AFTER_RENDER,

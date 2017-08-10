@@ -5,11 +5,11 @@
 
 import * as kram from '../../index';
 import {locals} from '../share/locals';
-import {isValidArray, noop} from '../utils/basic';
+import {isValidArray, noop} from '../utils';
 
-export const BEFORE_PULL_REPOS = 'beforePullRepos';
-export const BEFORE_PULL = 'beforePull';
-export const AFTER_PULL = 'afterPull';
+export const BEFORE_LOAD_REPOS = 'beforeLoadRepos';
+export const BEFORE_LOAD = 'beforeLoad';
+export const AFTER_LOAD = 'afterLoad';
 export const BEFORE_BUILD_REPOS = 'beforeBuildRepos';
 export const BEFORE_RENDER = 'beforeRender';
 export const AFTER_RENDER = 'afterRender';
@@ -18,9 +18,9 @@ export const BEFORE_BUILD_DOCS = 'beforeBuildDocs';
 export const FINISH_BUILD_DOCS = 'finishBuildDocs';
 
 export const HOOKS = [
-    BEFORE_PULL_REPOS,
-    BEFORE_PULL,
-    AFTER_PULL,
+    BEFORE_LOAD_REPOS,
+    BEFORE_LOAD,
+    AFTER_LOAD,
     BEFORE_BUILD_REPOS,
     BEFORE_RENDER,
     AFTER_RENDER,

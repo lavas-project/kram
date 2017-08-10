@@ -7,7 +7,7 @@
 import {configure} from './lib/configure';
 import {locals} from './lib/share/locals';
 
-export {pull} from './lib/pull';
+export {load} from './lib/load';
 export {build} from './lib/build';
 export {parse} from './lib/module/renderer/marked';
 

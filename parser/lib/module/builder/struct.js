@@ -7,24 +7,7 @@ import {locals} from '../../share/locals';
 import path from 'path';
 import fs from 'fs-extra';
 
-export function get(repo, options) {
-    let struct = locals.structs[repo.name];
-
-    if (!options) {
-        return struct;
-    }
-
-    let {type, regex} = options;
-    struct = struct[type];
-
-    if (!regex) {
-        return struct;
-    }
-
-    return struct.filter(dir => regex.test(dir));
-}
-
-export async function set(repo) {
+export async function init(repo) {
     let struct = await construct(repo.pull.dest);
     locals.structs[repo.name] = struct;
     return locals.structs[repo.name];
@@ -48,10 +31,7 @@ export async function construct(curr) {
             res[info.type].push(info.path);
             return res;
         },
-        {
-            folder: [],
-            file: []
-        }
+        {folder: [], file: []}
     );
 
     let childMap = await Promise.all(
@@ -65,3 +45,19 @@ export async function construct(curr) {
     }, map);
 }
 
+export function get(repo, options) {
+    let struct = locals.structs[repo.name];
+
+    if (!options) {
+        return struct;
+    }
+
+    let {type, regex} = options;
+    struct = struct[type];
+
+    if (!regex) {
+        return struct;
+    }
+
+    return struct.filter(dir => regex.test(dir));
+}

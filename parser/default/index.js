@@ -7,7 +7,7 @@ import {store} from './store';
 import highlight from './config/highlight';
 import marked from './config/marked';
 import plugins from './config/plugin';
-import pullers from './config/puller';
+import loaders from './config/loader';
 
 let logger = console;
 
@@ -17,5 +17,5 @@ export default {
     highlight,
     marked,
     plugins,
-    pullers
+    loaders
 };

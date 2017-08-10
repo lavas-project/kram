@@ -4,18 +4,18 @@
  */
 
 import {locals} from './share/locals';
-import {merge} from './utils/basic';
+import {merge} from './utils';
 
 import {configure as highlight} from './module/renderer/highlight';
 import {configure as marked} from './module/renderer/marked';
 import {configure as plugins} from './module/plugin';
-import {configure as pullers} from './module/puller';
+import {configure as loaders} from './module/loader';
 
 const components = {
     highlight,
     marked,
     plugins,
-    pullers
+    loaders
 };
 
 export function configure(options) {

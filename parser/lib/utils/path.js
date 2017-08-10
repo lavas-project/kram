@@ -57,3 +57,7 @@ export function removePrefix(str, prefix) {
 
     return str
 }
+
+export function level(dir) {
+    return dir.split('/').length;
+}

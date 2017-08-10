@@ -3,7 +3,7 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-import {get} from '../lib/utils/basic';
+import {get} from '../lib/utils';
 import cluster from 'cluster';
 
 export const SYNC_MEMORY_STORE = 'response_sync_memory_store';

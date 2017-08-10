@@ -6,10 +6,11 @@ export const locals = {
     // store: store,
     // logger: console,
     repos: {},
-    pullers: new Map(),
+    loaders: new Map(),
     hooks: {},
     plugins: [],
     config: {},
     structs: {},
+    meta: {},
     default: defaultConf
 };
