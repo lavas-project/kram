@@ -27,14 +27,16 @@ export async function build(list) {
 async function buildRepo(repo) {
     repo = await repo;
 
-    if (!await fs.exists(repo.pull.dest)) {
+    if (!await fs.exists(repo.loader.dest)) {
         throw new Error('文档不存在');
     }
 
     await builder.init(repo);
-    let docInfos = await builder.doc(repo);
-    await builder.catalog(repo, docInfos);
+    locals.logger.info('builder init finish: ' + repo.name);
 
+    let docInfos = await builder.doc(repo);
+    // await builder.catalog(repo, docInfos);
+console.log('hahaha')
     return repo;
 }
 

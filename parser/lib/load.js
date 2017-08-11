@@ -5,7 +5,7 @@ import {
     BEFORE_LOAD_REPOS,
     plugin
 } from './module/plugin';
-import {load} from './module/loader';
+import {load as loadRepo} from './module/loader';
 
 export async function load(list) {
     switch (getPrototype(list)) {
@@ -14,16 +14,16 @@ export async function load(list) {
         case 'Undefined':
             list = toList(locals.repos);
         default:
-            list = await plugin(BEFORE_PULL_REPOS, list, locals.repos);
+            list = await plugin(BEFORE_LOAD_REPOS, list, locals.repos);
             return list.map(async repo => await loadRepo(repo));
 
     }
 }
 
-async function loadRepo(repo) {
-    await load(repo);
-    return repo;
-}
+// async function loadRepo(repo) {
+//     await load(repo);
+//     return repo;
+// }
 
 function toList(repos) {
     return Object.keys(repos).map(name => Object.assign({name}, repos[name]));

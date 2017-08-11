@@ -8,7 +8,7 @@ import path from 'path';
 import fs from 'fs-extra';
 
 export async function init(repo) {
-    let struct = await construct(repo.pull.dest);
+    let struct = await construct(repo.loader.dest);
     locals.structs[repo.name] = struct;
     return locals.structs[repo.name];
 }

@@ -8,7 +8,8 @@ import {
     removePrefix,
     isValidArray,
     isObject,
-    level
+    level,
+    set
 } from '../../utils';
 
 import {get as getPaths} from './struct';
@@ -18,8 +19,8 @@ const INVALID = 'key_is_invalid';
 export async function init(repo) {
     let metaPaths = getPaths(repo, {type: 'file', regex: /meta\.json$/});
 
-    let infos = Promise.all(
-        infos.map(async path => {
+    let infos = await Promise.all(
+        metaPaths.map(async path => {
             let meta = await fs.readFile(path, 'utf-8');
 
             try {
@@ -102,30 +103,31 @@ function fullKey(key, metaPath, repo, parentKey) {
     let files = getPaths(repo, {type: 'file'});
 
     let maybeFolder = path.resolve(dest, key);
-    let maybeDoc = maybeFolder + '.md';
 
-    if (contain(maybeFolder, folders) || contain(maybeDoc, docs)) {
+    if (isValid(maybeFolder, folders, files)) {
         return join(name, key);
     }
 
     maybeFolder = path.resolve(metaPath, key);
-    maybeDoc = maybeFolder + '.md';
 
-    if (contain(maybeFolder, folders) || contain(maybeDoc, docs)) {
+    if (isValid(maybeFolder, folders, files)) {
         key = removePrefix(maybeFolder, dest);
         return join(name, key);
     }
 
     key = join(parentKey, key);
     maybeFolder = path.resolve(metaPath, key);
-    maybeDoc = maybeFolder + '.md';
 
-    if (contain(maybeFolder, folders) || contain(maybeDoc, docs)) {
+    if (isValid(maybeFolder, folders, files)) {
         key = removePrefix(maybeFolder, dest);
         return join(name, key);
     }
 
     return INVALID;
+}
+
+function isValid(maybeFolder, folders, files) {
+    return contain(maybeFolder, folders) || contain(maybeFolder + '.md', files);
 }
 
 export function getIgnore(metaPaths, repo) {
@@ -152,5 +154,3 @@ export function getName(metaPaths, repo) {
         {}
     );
 }
-
-// export ignore()

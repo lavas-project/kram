@@ -121,6 +121,14 @@ export function isObject(obj) {
     return getPrototype(obj) === 'Object';
 }
 
+// export function isValidObject(obj) {
+
+// }
+
+export function isEmptyObject(obj) {
+    return Object.keys(obj).length === 0;
+}
+
 /**
  * 判断是否包含某些值
  *

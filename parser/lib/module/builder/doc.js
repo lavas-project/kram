@@ -33,5 +33,6 @@ export async function build(repo) {
         })
     );
 
-    return await plugin(FINISH_BUILD_DOCS, infos, repo);
+    infos = await plugin(FINISH_BUILD_DOCS, infos, repo);
+    return infos;
 }

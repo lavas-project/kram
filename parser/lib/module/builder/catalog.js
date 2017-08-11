@@ -15,6 +15,8 @@ export async function build(repo, docInfos) {
     let folderPaths = getDocFolderPaths(repo, docPaths);
     let metaPaths = getDocMetaPaths(repo, folderPaths);
 
+    // if (!)
+
     // 这里加钩子
     let ignore = getIgnore(metaPaths, repo);
     docInfos = docInfos.filter(info => ignore.every(key => key !== info.key));

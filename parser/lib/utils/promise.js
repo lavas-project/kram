@@ -6,7 +6,7 @@
  * @param {Array.<Promise>} resolves promise 对象数组
  * @return {Promise} 结果
  */
-export some(resolves) {
+export function some(resolves) {
     let counter = 0;
     let max = resolves.length;
 
@@ -35,7 +35,7 @@ export some(resolves) {
  * @param {Array.<Promise>} resolves promise 对象数组
  * @return {Promise} 结果
  */
-export done(resolves) {
+export function done(resolves) {
     let counter = 0;
     let max = resolves.length;
 

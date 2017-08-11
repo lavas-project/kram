@@ -10,7 +10,8 @@ import {
     join,
     startWith,
     level,
-    get
+    get,
+    isEmptyObject
 } from '../../utils';
 
 export function docKey(repoName, mdPath, dest) {
@@ -22,8 +23,8 @@ export function docKey(repoName, mdPath, dest) {
 export function getDocInfos(repo) {
     let mdPaths = getPaths(repo, {type: 'file', regex: /\.md$/});
 
-    return infos = mdPaths.map(path => {
-        let key = docKey(repo.name, path, repo.pull.dest);
+    return mdPaths.map(path => {
+        let key = docKey(repo.name, path, repo.loader.dest);
         return {path, key};
     });
 }
@@ -42,33 +43,46 @@ export function getDocMetaPaths(repo, folderPaths) {
     );
 }
 
-// export function toTree(keyList) {
-//     return keyList.map(key => {
-//         let list = key.split('/');
-//         return {key, list};
-//     })
-//     .reduce((res, info) => {
-//         let list = info.list;
-//         return res.reduce(())
-//         for (let i = 0; i < info.length; i++) {
-//             if ()
-//             if (get(res, ...info.slice(0, i + 1))) {
-//                 continue;
-//             }
+export function toTree(keyList) {
+    let obj = keyList.map(key => {
+        let list = key.split('/');
+        return list;
+    })
+    .reduce((res, info) => mergeToObj(res, info), {});
 
-//             get(res, ...info.slice(0, i))
-//         }
-//     }, [])
-// }
+    return objToTree(obj);
+}
 
-// function append(tree, list) {
-//     let lastOne = list[list.length - 1];
-//     return tree.reduce((res, node) => {
+function mergeToObj(obj, list) {
+    return list.reduce(
+        (obj, item, i) => {
+            if (get(obj, ...list.slice(0, i + 1))) {
+                return obj;
+            }
 
-//         if (node.name === lastOne)
-//     })
-// }
+            let parentNode = i === 0 ? obj : get(obj, ...list.slice(0, i));
+            parentNode[item] = {};
+            return obj;
+        },
+        obj
+    );
+}
 
-// function getProp(obj, list) {
-//     for (let i = 0; i < list.length)
-// }
+function objToTree(obj, parentKey = '') {
+    return Object.keys(obj)
+        .reduce((res, key) => {
+            let curr = [parentKey, key].filter(k => k !== '').join('/');
+
+            let item = {
+                name: key,
+                key: curr
+            };
+
+            if (!isEmptyObject(obj[key])) {
+                item.children = objToTree(obj[key], curr);
+            }
+
+            res.push(item);
+            return res;
+        }, []);
+}

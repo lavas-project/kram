@@ -5,7 +5,7 @@ import {
     BEFORE_LOAD,
     AFTER_LOAD,
     plugin
-} from './module/plugin';
+} from './plugin';
 
 export function configure(loaders) {
     Object.keys(loaders).forEach(key => locals.loaders.set(key, loaders[key]));
@@ -22,4 +22,6 @@ export async function load(repo) {
     await plugin(AFTER_LOAD, repo);
 
     locals.logger.info(`load finish: ${repo.name}`);
+
+    return repo;
 }
