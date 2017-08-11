@@ -13,7 +13,8 @@ export const AFTER_LOAD = 'afterLoad';
 export const BEFORE_BUILD_REPOS = 'beforeBuildRepos';
 export const BEFORE_RENDER = 'beforeRender';
 export const AFTER_RENDER = 'afterRender';
-export const FINISH_RENDER = 'renderFinish';
+export const BEFORE_DOC_STORE = 'beforeDocStore';
+export const AFTER_DOC_STORE = 'afterDocStore';
 export const BEFORE_BUILD_DOCS = 'beforeBuildDocs';
 export const FINISH_BUILD_DOCS = 'finishBuildDocs';
 
@@ -24,7 +25,8 @@ export const HOOKS = [
     BEFORE_BUILD_REPOS,
     BEFORE_RENDER,
     AFTER_RENDER,
-    FINISH_RENDER,
+    BEFORE_DOC_STORE,
+    AFTER_DOC_STORE,
     BEFORE_BUILD_DOCS,
     FINISH_BUILD_DOCS
 ]

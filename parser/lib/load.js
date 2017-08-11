@@ -20,11 +20,6 @@ export async function load(list) {
     }
 }
 
-// async function loadRepo(repo) {
-//     await load(repo);
-//     return repo;
-// }
-
 function toList(repos) {
     return Object.keys(repos).map(name => Object.assign({name}, repos[name]));
 }
