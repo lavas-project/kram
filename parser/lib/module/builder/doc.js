@@ -39,5 +39,5 @@ export async function build(repo) {
     );
 
     await plugin(FINISH_BUILD_DOCS, {keys, repo});
-    return infos;
+    return keys;
 }

@@ -35,9 +35,7 @@ async function buildRepo(repo) {
     locals.logger.info('builder init finish: ' + repo.name);
 
     let docKeys = await builder.doc(repo);
-    // await builder.catalog(repo, docInfos);
-// console.log('hahaha')
-    // console.log(locals.store.map);
+    await builder.catalog(repo, docKeys);
     return repo;
 }
 
