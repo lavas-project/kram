@@ -18,7 +18,9 @@ const INVALID = 'key_is_invalid';
 
 export async function init(repo) {
     let metaPaths = getPaths(repo, {type: 'file', regex: /meta\.json$/});
-
+console.log(metaPaths)
+console.log('')
+console.log('')
     let infos = await Promise.all(
         metaPaths.map(async path => {
             let meta = await fs.readFile(path, 'utf-8');
@@ -28,7 +30,7 @@ export async function init(repo) {
                 meta = complete(meta, path, repo);
             }
             catch (e) {
-                locals.logger.error()
+                locals.logger.error(e)
                 return null;
             }
 
