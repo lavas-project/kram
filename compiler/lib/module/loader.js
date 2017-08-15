@@ -9,7 +9,6 @@ import {
 
 export default function (app) {
     app.config.loader = {};
-    let LOADERS = {};
 
     function loader(name, repo) {
         app.logger.info(`load start: ${repo.name}`);

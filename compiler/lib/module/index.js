@@ -5,12 +5,12 @@
 
 import loader from './loader';
 import plugin from './plugin';
-import renderer from './renderer';
+import parser from './parser';
 import highlight from './renderer/highlight';
 
 export default {
     loader,
     plugin,
-    renderer,
+    parser,
     highlight
 };
