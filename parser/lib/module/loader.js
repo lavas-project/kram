@@ -1,27 +1,51 @@
 
-import {locals} from '../share/locals';
+// import {locals} from '../share/locals';
 
 import {
     BEFORE_LOAD,
-    AFTER_LOAD,
-    plugin
+    AFTER_LOAD
 } from './plugin';
 
-export function configure(loaders) {
-    Object.keys(loaders).forEach(key => locals.loaders.set(key, loaders[key]));
-}
 
-export async function load(repo) {
-    locals.logger.info(`load start: ${repo.name}`);
+export default function (app) {
+    app.config.loader = {};
+    let LOADERS = {};
 
-    await plugin(BEFORE_LOAD, repo);
+    function loader(name, repo) {
+        app.logger.info(`load start: ${repo.name}`);
 
-    let {from, use, dest, options} = repo.loader;
-    await locals.loaders.get(use)(from, dest, options);
+        await plugin(BEFORE_LOAD, repo);
 
-    await plugin(AFTER_LOAD, repo);
+        let result = await this.get(name)(repo, app);
 
-    locals.logger.info(`load finish: ${repo.name}`);
+        if (!result) {
+            // @TODO: 生成{add: [xxxxxxxxx]}
+        }
 
-    return repo;
-}
+        result = await plugin(AFTER_LOAD, result, repo);
+
+        app.logger.info(`load finish: ${repo.name}`);
+
+        return result;
+    }
+
+    loader.config = function (loaders) {
+        Object.keys(loaders).forEach(key => this.register(key, loaders[key]));
+    };
+
+    loader.register = function (name, fn) {
+        if (app.config.loader[name]) {
+            return;
+        }
+
+        app.config.loader[name] = fn;
+    };
+
+    loader.get = function (name) {
+        return app.config.loader[name];
+    }
+
+    return loader;
+};
+
+

@@ -3,8 +3,8 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-import * as kram from '../../index';
-import {locals} from '../share/locals';
+// import * as kram from '../../index';
+// import {locals} from '../share/locals';
 import {isValidArray, noop} from '../utils';
 
 export const BEFORE_LOAD_REPOS = 'beforeLoadRepos';
@@ -18,7 +18,7 @@ export const AFTER_DOC_STORE = 'afterDocStore';
 export const BEFORE_BUILD_DOCS = 'beforeBuildDocs';
 export const FINISH_BUILD_DOCS = 'finishBuildDocs';
 
-export const HOOKS = [
+export const STAGES = [
     BEFORE_LOAD_REPOS,
     BEFORE_LOAD,
     AFTER_LOAD,
@@ -32,55 +32,69 @@ export const HOOKS = [
 ]
 .reduce((set, val) => set.add(val), new Set());
 
-export function configure(plugins) {
-    if (!isValidArray(plugins)) {
-        return;
-    }
+export default function (app) {
+    app.config.plugin = {};
+    let HOOKS = {};
 
-    let valid = plugins.filter(
-        plugin => locals.plugins.every(exist => exist.name !== plugin.name)
-    );
+    async function plugin(stage, ...args) {
+        let isDeliver = args.length > 1;
+        let result = isDeliver ? () => args[0] : noop;
 
-    valid.forEach(plugin => plugin.apply(on.bind(plugin), kram));
-    locals.plugins.push(...valid);
-}
+        let hooks = HOOKS[stage];
 
-function on(stage, fn, priority = 999) {
-    if (!HOOKS.has(stage)) {
-        return;
-    }
+        if (!isValidArray(hooks)) {
+            return result();
+        }
 
-    locals.hooks[stage] = locals.hooks[stage] || [];
-    locals.hooks[stage].push({priority, fn, name: this.name});
-    locals.hooks[stage].sort((a, b) => a.priority - b.priority);
-}
+        for (let i = 0; i < hooks.length; i++) {
+            let val;
 
-export async function plugin(stage, ...args) {
-    let isDeliver = args.length > 1;
-    let result = isDeliver ? () => args[0] : noop;
+            try {
+                val = await hooks[i].fn(...args);
+            }
+            catch (e) {
+                app.logger.error('Plugin: ${hooks[i].name} ERROR in stage: ${stage}');
+                app.logger.error(e);
+                continue;
+            }
 
-    let hooks = locals.hooks[stage];
+            if (isDeliver && val != null) {
+                args[0] = val;
+            }
+        }
 
-    if (!isValidArray(hooks)) {
         return result();
     }
 
-    for (let i = 0; i < hooks.length; i++) {
-        let val;
+    plugin.config = function (plugins) {
+        Object.keys(plugins).forEach(name => this.register(name, plugins[name]));
+    };
 
-        try {
-            val = await hooks[i].fn(...args);
-        }
-        catch (e) {
-            locals.logger.error('Plugin: ${hooks[i].name} ERROR in stage: ${stage}');
-            locals.logger.error(e);
-            continue;
+    plugin.register = function (name, plugin) {
+        if (app.config.plugin.list[name]) {
+            return;
         }
 
-        if (isDeliver && val != null) {
-            args[0] = val;
-        }
-    }
+        plugin.apply(
+            (stage, fn, priority = 999) => {
+                    if (!STAGES.has(stage)) {
+                        return;
+                    }
 
-    return result();
-}
+                    HOOKS[stage] = HOOKS[stage] || [];
+                    HOOKS[stage].push({priority, fn, name});
+                    HOOKS[stage].sort((a, b) => a.priority - b.priority);
+                }
+            },
+            app
+        );
+
+        app.config.plugin.list[name] = plugin;
+    };
+
+    // plugin.unregister = function (name) {
+
+    // };
+
+    return plugin;
+};

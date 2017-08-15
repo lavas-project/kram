@@ -4,42 +4,61 @@
  */
 
 import hljs from 'highlight.js';
-import {locals} from '../../share/locals';
 import {isObject, encodeTag} from '../../utils';
 
-/**
- * highlight.js 配置
- *
- * @param {Object} options 配置参数
- */
-export function configure({register, config} = {}) {
-    if (isObject(register)) {
-        Object.keys(register).forEach(key => hljs.registerLanguage(key, register[key]));
-    }
+export default function (app) {
+    app.config.highlight = {
+        options: {},
+        languages: {}
+    };
 
-    if (isObject(config)) {
-        hljs.configure(Object.assign({}, locals.default.highlight.config, config));
-    }
-}
-
-
-/**
- * 高亮代码块
- *
- * @param {string} code 代码
- * @param {string} language 代码语言
- * @return {string} 高亮好的代码块
- */
-export function highlight(code, language) {
-    if (hljs.getLanguage(language)) {
-        try {
-            return hljs.highlight(language, code).value;
+    function highlight(code, language) {
+        if (hljs.getLanguage(language)) {
+            try {
+                return hljs.highlight(language, code).value;
+            }
+            catch (e) {
+                // auto 的染色都是有问题的 还不如不染了
+                app.logger.error(`Error in highlight lang=${language}:`);
+            }
         }
-        catch (e) {
-            // auto 的染色都是有问题的 还不如不染了
-            locals.logger.error(`Error in highlight lang=${language}:`);
-        }
+
+        return encodeTag(code);
     }
 
-    return encodeTag(code);
+    highlight.config = function (conf = {}) {
+        if (conf.options || conf.languages) {
+            this.setOptions(conf.options);
+            this.register(conf.languages);
+        }
+        else {
+            this.setOptions(conf);
+        }
+    };
+
+    highlight.setOptions = function (opts) {
+        if (!opts) {
+            return;
+        }
+        this.config.highlight.options = Object.assign({}, app.config.default.highlight.options, opts);
+        hljs.configure(this.config.highlight.options);
+    };
+
+    highlight.register = function (...args) {
+        if (args.length === 1 && isObject(args[0])) {
+            let obj = args[0];
+            return Object.keys(obj).forEach(key => this.register(key, obj[key]));
+        }
+
+        let [name, fn] = args;
+
+        if (this.config.highlight.languages[name]) {
+            return;
+        }
+
+        this.config.highlight.languages[name] = fn;
+        hljs.registerLanguage(name, fn);
+    };
+
+    return highlight;
 }
