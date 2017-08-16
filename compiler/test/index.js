@@ -19,10 +19,19 @@ if (process.env.NODE_ENV !== 'production') {
 var Compiler = require('../index').Compiler;
 
 // console.log(Compiler)
-var app = new Compiler();
+var app = new Compiler({
+    baseDir: path.resolve(__dirname, '../../doc'),
+    repo: [
+        {
+            name: 'lavas',
+            loader: 'downloadGitRepo',
+            from: 'github:lavas-project/lavas-tutorial'
+        }
+    ]
+});
 
-console.log(app)
-// var fs = require('fs-extra');
+// console.log(app)
+var fs = require('fs-extra');
 // var path = require('path');
 // var kram = require('../index');
 

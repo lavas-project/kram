@@ -5,7 +5,7 @@
 
 import fs from 'fs-extra';
 
-export async function local(from, to, options) {
+export async function local({from, name}, app) {
     if (!await fs.exists(from)) {
         throw new Error('文档不存在');
     }
