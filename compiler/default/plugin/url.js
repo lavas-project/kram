@@ -8,7 +8,7 @@ export default class URLPlugin {
         this.name = 'URLPlugin';
     }
 
-    apply(on, kram) {
+    apply(on, app) {
         on('beforeRender', function (md, options) {
             console.log('in url plugin - before renderer')
             return md.replace(

@@ -18,39 +18,71 @@
 //     let conf = Object.assign({}, locals.default, options);
 //     configure(conf);
 // }
+import defaultData from './default';
+import modules from './lib/module';
+import {merge} from './lib/utils';
 
-export default class Parser {
-    constructor() {
 
-    }
+let moduleKeys = Object.keys(modules);
+let ignoreKeys = moduleKeys.concat('logger', 'default');
 
-    load() {
+export class Compiler {
+    constructor(options = {}) {
+        this.config = {};
 
-    }
+        moduleKeys.forEach(key => {
+            this[key] = modules[key](this);
+        });
 
-    build(list) {
-        list await list;
-        switch (getPrototype(list)) {
-            case 'Object':
-                return buildRepo(list);
-            case 'Undefined':
-                list = toList(locals.repos);
-            default:
-                return list.map(async repo => await buildRepo(repo));
+        this.default = defaultData(this);
+
+        if (typeof options === 'function') {
+            options = options(this);
         }
+
+        this.logger = options.logger || this.default.config.logger;
+
+        let normalOptions = merge({}, options, {ignore: ignoreKeys});
+        let defaultNormalOptions = merge({}, this.default.config, {ignore: ignoreKeys});
+        Object.assign(this.config, defaultNormalOptions, normalOptions);
+
+        moduleKeys
+            .filter(key => typeof this[key].init === 'function')
+            .forEach(key => this[key].init(options[key]));
     }
 
-    parse() {
+    async load(repos = this.config.repo) {
+        let results = Promise.all(
+            Object.keys(repos).map(async key => await this.loader(repos[key], this));
+        );
+    }
+
+    async build({update, delete}) {
+
+    }
+    // build(list) {
+    //     list await list;
+    //     switch (getPrototype(list)) {
+    //         case 'Object':
+    //             return buildRepo(list);
+    //         case 'Undefined':
+    //             list = toList(locals.repos);
+    //         default:
+    //             return list.map(async repo => await buildRepo(repo));
+    //     }
+    // }
+
+    // parse() {
+
+    // }
+
+    async exec() {
 
     }
 
-    do() {
+    // get() {
 
-    }
-
-    get() {
-
-    }
+    // }
 }
 
 function toList(repos) {

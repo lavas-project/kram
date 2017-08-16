@@ -11,8 +11,8 @@ export const BEFORE_LOAD_REPOS = 'beforeLoadRepos';
 export const BEFORE_LOAD = 'beforeLoad';
 export const AFTER_LOAD = 'afterLoad';
 export const BEFORE_BUILD_REPOS = 'beforeBuildRepos';
-export const BEFORE_RENDER = 'beforeRender';
-export const AFTER_RENDER = 'afterRender';
+export const BEFORE_PARSE = 'beforeRender';
+export const AFTER_PARSE = 'afterRender';
 export const BEFORE_DOC_STORE = 'beforeDocStore';
 export const AFTER_DOC_STORE = 'afterDocStore';
 export const BEFORE_BUILD_DOCS = 'beforeBuildDocs';
@@ -23,8 +23,8 @@ export const STAGES = [
     BEFORE_LOAD,
     AFTER_LOAD,
     BEFORE_BUILD_REPOS,
-    BEFORE_RENDER,
-    AFTER_RENDER,
+    BEFORE_PARSE,
+    AFTER_PARSE,
     BEFORE_DOC_STORE,
     AFTER_DOC_STORE,
     BEFORE_BUILD_DOCS,
@@ -33,27 +33,33 @@ export const STAGES = [
 .reduce((set, val) => set.add(val), new Set());
 
 export default function (app) {
-    app.config.plugin = {};
-    let HOOKS = {};
+    app.config.plugin = {
+        list: {},
+        hooks: {}
+    };
+
+    let {list, hooks} = app.config.plugin;
+
+    // let HOOKS = app.config.plugin.hooks;
 
     async function plugin(stage, ...args) {
         let isDeliver = args.length > 1;
         let result = isDeliver ? () => args[0] : noop;
 
-        let hooks = HOOKS[stage];
+        let hook = hooks[stage];
 
-        if (!isValidArray(hooks)) {
+        if (!isValidArray(hook)) {
             return result();
         }
 
-        for (let i = 0; i < hooks.length; i++) {
+        for (let i = 0; i < hook.length; i++) {
             let val;
 
             try {
-                val = await hooks[i].fn(...args);
+                val = await hook[i].fn(...args);
             }
             catch (e) {
-                app.logger.error('Plugin: ${hooks[i].name} ERROR in stage: ${stage}');
+                app.logger.error(`Plugin: ${hook[i].name} ERROR in stage: ${stage}`);
                 app.logger.error(e);
                 continue;
             }
@@ -66,7 +72,7 @@ export default function (app) {
         return result();
     }
 
-    plugin.config = function (plugins) {
+    plugin.init = function (plugins = app.default.config.plugin) {
         Object.keys(plugins).forEach(name => this.register(name, plugins[name]));
     };
 
@@ -77,19 +83,18 @@ export default function (app) {
 
         plugin.apply(
             (stage, fn, priority = 999) => {
-                    if (!STAGES.has(stage)) {
-                        return;
-                    }
-
-                    HOOKS[stage] = HOOKS[stage] || [];
-                    HOOKS[stage].push({priority, fn, name});
-                    HOOKS[stage].sort((a, b) => a.priority - b.priority);
+                if (!STAGES.has(stage)) {
+                    return;
                 }
+
+                hooks[stage] = hooks[stage] || [];
+                hooks[stage].push({priority, fn, name});
+                hooks[stage].sort((a, b) => a.priority - b.priority);
             },
             app
         );
 
-        app.config.plugin.list[name] = plugin;
+        list[name] = plugin;
     };
 
     // plugin.unregister = function (name) {

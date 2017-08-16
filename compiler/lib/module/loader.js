@@ -10,7 +10,7 @@ import {
 export default function (app) {
     app.config.loader = {};
 
-    function loader(name, repo) {
+    async function loader(name, repo) {
         app.logger.info(`load start: ${repo.name}`);
 
         await plugin(BEFORE_LOAD, repo);
@@ -28,7 +28,7 @@ export default function (app) {
         return result;
     }
 
-    loader.config = function (loaders) {
+    loader.init = function (loaders = app.default.config.loader) {
         Object.keys(loaders).forEach(key => this.register(key, loaders[key]));
     };
 

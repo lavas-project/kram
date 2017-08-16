@@ -3,19 +3,40 @@
  * @author tangei (tanglei02@baidu.com)
  */
 
-import {store} from './store';
+import store from './config/store';
 import highlight from './config/highlight';
-import marked from './config/marked';
-import plugins from './config/plugin';
-import loaders from './config/loader';
+import parser from './config/parser';
+import plugin from './config/plugin';
+import loader from './config/loader';
 
 let logger = console;
 
-export default {
+const config = {
     store,
     logger,
     highlight,
-    marked,
-    plugins,
-    loaders
+    parser,
+    plugin,
+    loader
 };
+
+const module = {};
+
+export default function (app) {
+    let defaultConfig = Object.keys(config)
+        .reduce((res, key) => {
+            if (typeof config[key] === 'function') {
+                res[key] = config[key](app);
+            }
+            else {
+                res[key] = config[key];
+            }
+
+            return res;
+        }, {});
+
+    return {
+        config: defaultConfig,
+        module: module
+    };
+}

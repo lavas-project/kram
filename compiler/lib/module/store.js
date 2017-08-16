@@ -9,7 +9,7 @@ export default function (app) {
         instance: null
     };
 
-    return {
+    const store = {
         async set(type, key, value) {
             let {instance, options} = app.config.store;
             let name = generateKey(type, key, options);
@@ -28,23 +28,33 @@ export default function (app) {
             return await instance.delete(name);
         },
 
-        config() {
-
+        init({
+            options = app.default.config.store.options,
+            instance = app.default.config.store.instance
+        } = {}) {
+            this.register(instance);
+            this.setOptions(options);
         },
 
         register(instance) {
-            app.config.store.instance = instance;
+            if (instance) {
+                app.config.store.instance = instance;
+            }
         },
 
         setOptions(opts) {
-            app.config.store.options = Object.assign(
-                {},
-                app.default.config.store.options,
-                app.config.store.options,
-                opts
-            );
+            if (opts) {
+                app.config.store.options = Object.assign(
+                    {},
+                    app.default.config.store.options,
+                    app.config.store.options,
+                    opts
+                );
+            }
         }
-    }
+    };
+
+    return store;
 };
 
 function generateKey(type, key, {prefix, delimiter}) {

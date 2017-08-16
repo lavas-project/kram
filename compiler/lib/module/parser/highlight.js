@@ -26,22 +26,26 @@ export default function (app) {
         return encodeTag(code);
     }
 
-    highlight.config = function (conf = {}) {
-        if (conf.options || conf.languages) {
-            this.setOptions(conf.options);
-            this.register(conf.languages);
-        }
-        else {
-            this.setOptions(conf);
-        }
+    highlight.init = function (
+        {
+            options = app.default.config.highlight.options,
+            languages = app.default.config.highlight.languages
+        } = {}
+    ) {
+        this.setOptions(options);
+        this.register(languages);
     };
 
     highlight.setOptions = function (opts) {
         if (!opts) {
             return;
         }
-        this.config.highlight.options = Object.assign({}, app.config.default.highlight.options, opts);
-        hljs.configure(this.config.highlight.options);
+        app.config.highlight.options = Object.assign(
+            {},
+            app.config.highlight.options,
+            opts
+        );
+        hljs.configure(app.config.highlight.options);
     };
 
     highlight.register = function (...args) {
@@ -52,11 +56,11 @@ export default function (app) {
 
         let [name, fn] = args;
 
-        if (this.config.highlight.languages[name]) {
+        if (app.config.highlight.languages[name]) {
             return;
         }
 
-        this.config.highlight.languages[name] = fn;
+        app.config.highlight.languages[name] = fn;
         hljs.registerLanguage(name, fn);
     };
 

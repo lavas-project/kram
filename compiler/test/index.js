@@ -16,30 +16,36 @@ if (process.env.NODE_ENV !== 'production') {
     require('babel-polyfill');
 }
 
-var fs = require('fs-extra');
-var path = require('path');
-var kram = require('../index');
+var Compiler = require('../index').Compiler;
 
-var dest = path.resolve(__dirname, '../../doc/dest/lavas');
-var tmp = path.resolve(__dirname, '../../doc/git/lavas');
+// console.log(Compiler)
+var app = new Compiler();
 
-fs.ensureDirSync(dest);
-fs.ensureDirSync(tmp);
+console.log(app)
+// var fs = require('fs-extra');
+// var path = require('path');
+// var kram = require('../index');
 
-fs.removeSync(dest);
-fs.removeSync(tmp);
+// var dest = path.resolve(__dirname, '../../doc/dest/lavas');
+// var tmp = path.resolve(__dirname, '../../doc/git/lavas');
 
-kram.init({
-    repos: {
-        lavas: {
-            loader: {
-                use: 'downloadGitRepo',
-                from: 'github:lavas-project/lavas-tutorial',
-                dest: dest,
-                options: {tmp}
-            }
-        }
-    }
-});
+// fs.ensureDirSync(dest);
+// fs.ensureDirSync(tmp);
 
-kram.build(kram.load());
+// fs.removeSync(dest);
+// fs.removeSync(tmp);
+
+// kram.init({
+//     repos: {
+//         lavas: {
+//             loader: {
+//                 use: 'downloadGitRepo',
+//                 from: 'github:lavas-project/lavas-tutorial',
+//                 dest: dest,
+//                 options: {tmp}
+//             }
+//         }
+//     }
+// });
+
+// kram.build(kram.load());

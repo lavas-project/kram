@@ -7,10 +7,10 @@ import npm from '../highlight/npm';
 import vue from '../highlight/vue';
 
 export default {
-    config: {
+    options: {
         tabReplace: '    '
     },
-    register: {
+    languages: {
         npm,
         vue
     }
