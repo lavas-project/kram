@@ -21,7 +21,7 @@ var Compiler = require('../index').Compiler;
 // console.log(Compiler)
 var app = new Compiler({
     baseDir: path.resolve(__dirname, '../../doc'),
-    repo: [
+    source: [
         {
             name: 'lavas',
             loader: 'downloadGitRepo',

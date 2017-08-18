@@ -55,17 +55,17 @@ export class Compiler {
         return await this.loader(name, repo);
     }
 
-    async loadAll() {
-        let repos = this.config.repo;
+    // async loadAll() {
+    //     let repos = this.config.repo;
 
-        let results = await Promise.all(
-            repos.map(async (key, repo) => await this.loader(key, repo))
-        );
+    //     let results = await Promise.all(
+    //         repos.map(async (key, repo) => await this.loader(key, repo))
+    //     );
 
-        return results.reduce((res, result) => {
-            res
-        }, {update: [], delete: []})
-    }
+    //     return results.reduce((res, result) => {
+    //         res
+    //     }, {update: [], delete: []})
+    // }
 
     async build({update, delete}) {
 

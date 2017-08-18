@@ -6,39 +6,39 @@
 export default function (app) {
     app.config.store = {
         options: {},
-        instance: null
+        storage: null
     };
 
     const store = {
         async set(type, key, value) {
-            let {instance, options} = app.config.store;
+            let {storage, options} = app.config.store;
             let name = generateKey(type, key, options);
-            return await instance.set(name, value);
+            return await storage.set(name, value);
         },
 
         async get(type, key) {
-            let {instance, options} = app.config.store;
+            let {storage, options} = app.config.store;
             let name = generateKey(type, key, options);
-            return await instance.get(name);
+            return await storage.get(name);
         },
 
         async delete(type, key) {
-            let {instance, options} = app.config.store;
+            let {storage, options} = app.config.store;
             let name = generateKey(type, key, options);
-            return await instance.delete(name);
+            return await storage.delete(name);
         },
 
         init({
             options = app.default.config.store.options,
-            instance = app.default.config.store.instance
+            storage = app.default.config.store.storage
         } = {}) {
-            this.register(instance);
+            this.register(storage);
             this.setOptions(options);
         },
 
-        register(instance) {
-            if (instance) {
-                app.config.store.instance = instance;
+        register(storage) {
+            if (storage) {
+                app.config.store.storage = storage;
             }
         },
 

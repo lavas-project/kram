@@ -7,8 +7,9 @@ import {store} from '../store';
 
 export default {
     options: {
+        storage: store,
         prefix: 'KRAM',
-        delimiter: '__'
+        delimiter: '$$'
     },
-    instance: store
+    storage: store
 };
