@@ -5,7 +5,7 @@
 
 // import * as kram from '../../index';
 // import {locals} from '../share/locals';
-import {isValidArray, noop} from '../utils';
+import {isValidArray, noop, each} from '../utils';
 
 export const BEFORE_LOAD_REPOS = 'beforeLoadRepos';
 export const BEFORE_LOAD = 'beforeLoad';
@@ -96,7 +96,8 @@ export default function (app, addModule) {
         config: config,
         module: plugin,
         init(plugins = plugin.default) {
-            Object.keys(plugins).forEach(name => plugin.register(name, plugins[name]));
+            each(plugins, plugin.register);
+            // Object.keys(plugins).forEach(name => plugin.register(name, plugins[name]));
         }
     });
 };

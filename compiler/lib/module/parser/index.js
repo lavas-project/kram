@@ -29,7 +29,7 @@ export default function (app, addModule) {
             return app.default.config.parser;
         },
         setOptions(options) {
-            merge(config, options, {ignore: ['renderer']});
+            merge(config, options, {ignore: 'renderer'});
 
             if (options.renderer) {
                 this.setRenderer(options.renderer);
@@ -75,7 +75,7 @@ export default function (app, addModule) {
 }
 
 function getMarkedOptions(options, oldRenderer) {
-    let result = merge({}, options, {ignore: ['renderer']});
+    let result = merge({}, options, {ignore: 'renderer'});
 
     switch (getPrototype(options.renderer)) {
         case 'Object':

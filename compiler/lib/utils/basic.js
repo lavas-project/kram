@@ -3,23 +3,34 @@
  * @author  tanglei (tanglei02@baidu.com)
  */
 
-/**
- * 拼合两个 object，并返回第一个 object
- *
- * @param {Object} a 待拼合对象
- * @param {Object} b 待拼合对象
- * @param {Object|undefined} options 参数
- * @param {string} options.type 拼合类型 overwrite/append，默认为 b 覆盖 a 已有的属性
- * @param {Array} options.ignore 忽略 b 的某些属性名
- * @return {Object} 拼合好的 a 对象
- */
-export function merge(a, b, {type = 'overwrite', ignore = []} = {}) {
+// *
+//  * 拼合两个 object，并返回第一个 object
+//  *
+//  * @param {Object} a 待拼合对象
+//  * @param {Object} b 待拼合对象
+//  * @param {Object|undefined} options 参数
+//  * @param {string} options.type 拼合类型 overwrite/append，默认为 b 覆盖 a 已有的属性
+//  * @param {Array} options.ignore 忽略 b 的某些属性名
+//  * @return {Object} 拼合好的 a 对象
+
+// export function merge(a, b, {type = 'overwrite', ignore = []} = {}) {
+
+export function merge(...args) {
+    if (Array.isArray(args[0]) && args.length < 3) {
+        let opts = mergeOptions(args[1]);
+        return args[0].slice(1).reduce((a, b) => merge(a, b, opts), args[0][0]);
+    }
+
+    let [a, b, opts] = args;
+
     if (!b || typeof b !== 'object') {
         return a;
     }
 
-    let keys = Object.keys(b);
+    let {ignore, type} = mergeOptions(opts);
     ignore = ensureArray(ignore);
+
+    let keys = Object.keys(b);
 
     if (isValidArray(ignore)) {
         keys = keys.filter(key => !contain(ignore, key));
@@ -30,6 +41,11 @@ export function merge(a, b, {type = 'overwrite', ignore = []} = {}) {
     }
 
     return keys.reduce((res, key) => set(res, key, b[key]), a);
+}
+
+function mergeOptions(options) {
+    let {type = 'overwrite', ignore = []} = options || {};
+    return {type, ignore};
 }
 
 /**
@@ -121,6 +137,10 @@ export function isObject(obj) {
     return getPrototype(obj) === 'Object';
 }
 
+export function isFunction(obj) {
+    return typeof obj === 'function';
+}
+
 // export function isValidObject(obj) {
 
 // }
@@ -164,4 +184,13 @@ export function chunk(arr, size) {
 
 export function toArray(obj) {
     return Object.keys(obj).map(key => obj[key]);
+}
+
+export function each(list, fn) {
+    if (Array.isArray(list)) {
+        list.forEach((item, i) => fn(item, i));
+    }
+    else {
+        Object.keys(list).forEach(name => fn(name, list[name]));
+    }
 }

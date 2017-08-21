@@ -4,7 +4,7 @@
  */
 
 import hljs from 'highlight.js';
-import {isObject, encodeTag} from '../../utils';
+import {isObject, each, encodeTag} from '../../utils';
 
 export default function (app, addModule) {
     const config = {
@@ -28,8 +28,9 @@ export default function (app, addModule) {
         },
         addLanguage(...args) {
             if (args.length === 1 && isObject(args[0])) {
-                let obj = args[0];
-                return Object.keys(obj).forEach(name => this.addLanguage(name, obj[name]));
+                // let obj = args[0];
+                return each(args[0], this.addLanguage.bind(this));
+                // return Object.keys(obj).forEach(name => this.addLanguage(name, obj[name]));
             }
 
             let [name, fn] = args;

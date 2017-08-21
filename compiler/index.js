@@ -20,7 +20,7 @@
 // }
 import defaultData from './default';
 import modules from './lib/module';
-import {merge, set} from './lib/utils';
+import {merge, set, isFunction} from './lib/utils';
 
 
 let moduleNames = Object.keys(modules);
@@ -42,12 +42,12 @@ export class Compiler {
         moduleNames.forEach(key => modules[key](this, addModule));
 
         this.default = defaultData(this);
-        options = typeof options === 'function' ? options(this) : options;
+        options = isFunction(options) ? options(this) : options;
 
-        let extendOptions = merge({}, options, {ignore: moduleNames});
-        let defaultExtendOptions = merge({}, this.default.config, {ignore: moduleNames});
-        Object.assign(this.config, defaultExtendOptions, extendOptions);
-        // merge(this.config, merge({}, ))
+        // let extendOptions = merge({}, options, {ignore: moduleNames});
+        // let defaultExtendOptions = merge({}, this.default.config, {ignore: moduleNames});
+        // Object.assign(this.config, defaultExtendOptions, extendOptions);
+        merge([this.config, this.default.config, options], {ignore: moduleNames});
 
         inits.forEach(({fn, props}) => fn(props));
     }

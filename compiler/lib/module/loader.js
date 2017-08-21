@@ -6,6 +6,8 @@ import {
     AFTER_LOAD
 } from './plugin';
 
+import {each} from '../utils';
+
 
 export default function (app, addModule) {
     const config = {};
@@ -50,7 +52,8 @@ export default function (app, addModule) {
         config: config,
         module: loader,
         init(loaders = loader.default) {
-            Object.keys(loaders).forEach(name => loader.addLoader(name, loaders[name]));
+            each(loaders, loader.addLoader);
+            // Object.keys(loaders).forEach(name => loader.addLoader(name, loaders[name]));
         }
     });
 };
