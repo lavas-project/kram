@@ -35,7 +35,7 @@ export class Compiler {
         const addModule = (name, {config, module, init, mount}) => {
             config && set(this.config, name, config);
             module && set(this.module, name, module);
-            init && inits.push({name, init});
+            init && inits.push({props: options(name), fn: init});
             mount && Object.defineProperty(this, module.name || name, mount);
         };
 
@@ -47,8 +47,9 @@ export class Compiler {
         let extendOptions = merge({}, options, {ignore: moduleNames});
         let defaultExtendOptions = merge({}, this.default.config, {ignore: moduleNames});
         Object.assign(this.config, defaultExtendOptions, extendOptions);
+        // merge(this.config, merge({}, ))
 
-        inits.forEach(({name, init}) => init(options[name]));
+        inits.forEach(({fn, props}) => fn(props));
     }
 
     async exec() {

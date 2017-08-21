@@ -40,7 +40,7 @@ export default function (app, addModule) {
 
     const plugin = {
         get config() {
-            return config;
+            return config.list;
         },
         get default() {
             return app.default.config.plugin;
