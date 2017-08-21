@@ -42,10 +42,7 @@ export class Compiler {
         moduleNames.forEach(key => modules[key](this, addModule));
 
         this.default = defaultData(this);
-
-        if (typeof options === 'function') {
-            options = options(this);
-        }
+        options = typeof options === 'function' ? options(this) : options;
 
         let extendOptions = merge({}, options, {ignore: moduleNames});
         let defaultExtendOptions = merge({}, this.default.config, {ignore: moduleNames});
