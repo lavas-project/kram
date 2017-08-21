@@ -10,7 +10,7 @@ import {
 export default function (app, addModule) {
     const config = {};
 
-    const module = {
+    const loader = {
         get config() {
             return config;
         },
@@ -32,7 +32,7 @@ export default function (app, addModule) {
 
             await app.module.plugin.exec(BEFORE_LOAD, repo);
 
-            let result = await module.getLoader(name)(repo, app);
+            let result = await loader.getLoader(name)(repo, app);
 
             if (!result) {
                 // @TODO: 生成{add: [xxxxxxxxx]}
@@ -48,9 +48,9 @@ export default function (app, addModule) {
 
     addModule('loader', {
         config: config,
-        module: module,
-        init(loaders = module.default) {
-            Object.keys(loaders).forEach(name => module.addLoader(name, loaders[name]));
+        module: loader,
+        init(loaders = loader.default) {
+            Object.keys(loaders).forEach(name => loader.addLoader(name, loaders[name]));
         }
     });
 };

@@ -85,7 +85,6 @@ export default function (app, addModule) {
                 catch (e) {
                     app.logger.error(`Plugin: ${hook[i].name} occur ERROR in stage: ${stage}`);
                     app.logger.error(e);
-                    continue;
                 }
             }
 
