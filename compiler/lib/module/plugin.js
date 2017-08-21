@@ -32,74 +32,72 @@ export const STAGES = [
 ]
 .reduce((set, val) => set.add(val), new Set());
 
-export default function (app) {
-    app.config.plugin = {
+export default function (app, addModule) {
+    const config = {
         list: {},
         hooks: {}
     };
 
-    let {list, hooks} = app.config.plugin;
+    const plugin = {
+        get config() {
+            return config;
+        },
+        get default() {
+            return app.default.config.plugin;
+        },
+        register(name, plugin) {
+            if (config.list[name]) {
+                return;
+            }
 
-    // let HOOKS = app.config.plugin.hooks;
+            plugin.apply(
+                (stage, fn, priority = 999) => {
+                    if (!STAGES.has(stage)) {
+                        return;
+                    }
 
-    async function plugin(stage, ...args) {
-        let isDeliver = args.length > 1;
-        let result = isDeliver ? () => args[0] : noop;
+                    config.hooks[stage] = config.hooks[stage] || [];
+                    config.hooks[stage].push({priority, fn, name});
+                    config.hooks[stage].sort((a, b) => a.priority - b.priority);
+                },
+                app
+            );
 
-        let hook = hooks[stage];
+            config.list[name] = plugin;
+        },
+        async exec(stage, ...args) {
+            let deliverable = args.length > 1;
+            let result = deliverable ? () => args[0] : noop;
 
-        if (!isValidArray(hook)) {
+            let hook = config.hooks[stage];
+
+            if (!isValidArray(hook)) {
+                return result();
+            }
+
+            for (let i = 0; i < hook.length; i++) {
+                try {
+                    let val = await hook[i].fn(...args);
+                    if (deliverable && val != null) {
+                        args[0] = val;
+                    }
+                }
+                catch (e) {
+                    app.logger.error(`Plugin: ${hook[i].name} occur ERROR in stage: ${stage}`);
+                    app.logger.error(e);
+                    continue;
+                }
+            }
+
             return result();
         }
-
-        for (let i = 0; i < hook.length; i++) {
-            let val;
-
-            try {
-                val = await hook[i].fn(...args);
-            }
-            catch (e) {
-                app.logger.error(`Plugin: ${hook[i].name} ERROR in stage: ${stage}`);
-                app.logger.error(e);
-                continue;
-            }
-
-            if (isDeliver && val != null) {
-                args[0] = val;
-            }
-        }
-
-        return result();
-    }
-
-    plugin.init = function (plugins = app.default.config.plugin) {
-        Object.keys(plugins).forEach(name => this.register(name, plugins[name]));
     };
 
-    plugin.register = function (name, plugin) {
-        if (app.config.plugin.list[name]) {
-            return;
+    addModule('plugin', {
+        config: config,
+        module: plugin,
+        init(plugins = plugin.default) {
+            Object.keys(plugins).forEach(name => plugin.register(name, plugins[name]));
         }
-
-        plugin.apply(
-            (stage, fn, priority = 999) => {
-                if (!STAGES.has(stage)) {
-                    return;
-                }
-
-                hooks[stage] = hooks[stage] || [];
-                hooks[stage].push({priority, fn, name});
-                hooks[stage].sort((a, b) => a.priority - b.priority);
-            },
-            app
-        );
-
-        list[name] = plugin;
-    };
-
-    // plugin.unregister = function (name) {
-
-    // };
-
-    return plugin;
+    });
 };

@@ -7,44 +7,52 @@ import {
 } from './plugin';
 
 
-export default function (app) {
-    app.config.loader = {};
+export default function (app, addModule) {
+    const config = {};
 
-    async function loader(name, repo) {
-        app.logger.info(`load start: ${repo.name}`);
+    const module = {
+        get config() {
+            return config;
+        },
+        get default() {
+            return app.default.config.loader;
+        },
+        addLoader(name, fn) {
+            if (config[name]) {
+                return;
+            }
 
-        await plugin(BEFORE_LOAD, repo);
+            config[name] = fn;
+        },
+        getLoader(name) {
+            return config[name];
+        },
+        async exec(name, repo) {
+            app.logger.info(`load start: ${repo.name}`);
 
-        let result = await this.get(name)(repo, app);
+            await app.module.plugin.exec(BEFORE_LOAD, repo);
 
-        if (!result) {
-            // @TODO: 生成{add: [xxxxxxxxx]}
+            let result = await module.getLoader(name)(repo, app);
+
+            if (!result) {
+                // @TODO: 生成{add: [xxxxxxxxx]}
+            }
+
+            result = await app.module.plugin.exec(AFTER_LOAD, result, repo);
+
+            app.logger.info(`load finish: ${repo.name}`);
+
+            return result;
         }
-
-        result = await plugin(AFTER_LOAD, result, repo);
-
-        app.logger.info(`load finish: ${repo.name}`);
-
-        return result;
-    }
-
-    loader.init = function (loaders = app.default.config.loader) {
-        Object.keys(loaders).forEach(key => this.register(key, loaders[key]));
     };
 
-    loader.register = function (name, fn) {
-        if (app.config.loader[name]) {
-            return;
+    addModule('loader', {
+        config: config,
+        module: module,
+        init(loaders = module.default) {
+            Object.keys(loaders).forEach(name => module.addLoader(name, loaders[name]));
         }
-
-        app.config.loader[name] = fn;
-    };
-
-    loader.get = function (name) {
-        return app.config.loader[name];
-    }
-
-    return loader;
+    });
 };
 
 

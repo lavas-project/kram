@@ -4,7 +4,6 @@
  */
 
 import marked from 'marked';
-// import {locals} from '../../share/locals';
 import {
     set,
     get,
@@ -18,59 +17,65 @@ import {
 } from '../plugin';
 
 
-export default function (app) {
-    app.config.parser = {};
+export default function (app, addModule) {
+    const config = {};
+    let markedOptions = {};
 
-    let markedOpts;
+    const parser = {
+        get config() {
+            return config;
+        },
+        get default() {
+            return app.default.config.parser;
+        },
+        setOptions(options) {
+            merge(config, options, {ignore: ['renderer']});
 
-    let conf = app.config.parser;
-    let defaultConf;
+            if (options.renderer) {
+                this.setRenderer(options.renderer);
+            }
+            else {
+                markedOptions = getMarkedOptions(config, markedOptions.renderer);
+            }
+        },
+        setRenderer(renderer) {
+            if (isObject(renderer)) {
+                renderer = Object.assign({}, this.default.renderer, renderer);
+            }
 
-    async function parser(md, options) {
-        try {
-            md = await app.plugin(BEFORE_PARSE, md, options);
-            let html = marked(md, conf);
-            html = await app.plugin(AFTER_PARSE, html, options);
-            return html;
-        }
-        catch (e) {
-            app.logger.info(e);
+            merge(config, {renderer});
+            markedOptions = getMarkedOptions(config, markedOptions.renderer);
+        },
+        async exec(md, options) {
+            try {
+                md = await app.module.plugin.exec(BEFORE_PARSE, md, options);
+                let html = marked(md, markedOptions);
+                html = await app.module.plugin.exec(AFTER_PARSE, html, options);
+                return html;
+            }
+            catch (e) {
+                app.logger.info(e);
+            }
         }
     };
 
-    parser.init = function (options) {
-        defaultConf = app.default.config.parser;
-        this.setOptions(Object.assign({}, defaultConf, options));
-    };
-
-    parser.setOptions = function (options) {
-        Object.assign(conf, options);
-
-        if (options.renderer) {
-            this.setRenderer(options.renderer);
+    addModule('parser', {
+        config: config,
+        module: parser,
+        init(options) {
+            parser.setOptions(Object.assign({}, parser.default, options));
+        },
+        mount: {
+            name: 'parse',
+            get() {
+                return parser.exec;
+            }
         }
-        else {
-            markedOpts = getMarkedOptions(options, markedOpts.renderer);
-        }
-    };
-
-    parser.setRenderer = function (renderer) {
-        if (isObject(renderer)) {
-            conf.renderer = Object.assign({}, defaultConf.renderer, renderer);
-        }
-
-        Object.assign(conf, {renderer});
-        markedOpts = getMarkedOptions(conf);
-    };
-
-    return parser;
+    });
 }
 
 function getMarkedOptions(options, oldRenderer) {
-    let result = Object
-        .keys(options)
-        .filter(key => key !== 'renderer')
-        .reduce((res, key) => set(res, key, options[key]), {});
+    let result = merge({}, options, {ignore: ['renderer']});
 
     switch (getPrototype(options.renderer)) {
         case 'Object':

@@ -16,6 +16,7 @@ if (process.env.NODE_ENV !== 'production') {
     require('babel-polyfill');
 }
 
+var path = require('path');
 var Compiler = require('../index').Compiler;
 
 // console.log(Compiler)
@@ -30,8 +31,8 @@ var app = new Compiler({
     ]
 });
 
-// console.log(app)
-var fs = require('fs-extra');
+// console.log(app.store)
+// var fs = require('fs-extra');
 // var path = require('path');
 // var kram = require('../index');
 

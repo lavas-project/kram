@@ -6,63 +6,68 @@
 import hljs from 'highlight.js';
 import {isObject, encodeTag} from '../../utils';
 
-export default function (app) {
-    app.config.highlight = {
+export default function (app, addModule) {
+    const config = {
         options: {},
         languages: {}
     };
 
-    function highlight(code, language) {
-        if (hljs.getLanguage(language)) {
-            try {
-                return hljs.highlight(language, code).value;
+    const hl = {
+        get config() {
+            return config;
+        },
+        get default() {
+            return app.default.config.highlight;
+        },
+        setOptions(opts) {
+            if (!opts) {
+                return this;
             }
-            catch (e) {
-                // auto 的染色都是有问题的 还不如不染了
-                app.logger.error(`Error in highlight lang=${language}:`);
+            config.options = Object.assign({}, config.options, opts);
+            hljs.configure(config.options);
+        },
+        addLanguage(...args) {
+            if (args.length === 1 && isObject(args[0])) {
+                let obj = args[0];
+                return Object.keys(obj).forEach(name => this.addLanguage(name, obj[name]));
+            }
+
+            let [name, fn] = args;
+
+            if (app.config.highlight.languages[name]) {
+                return;
+            }
+
+            config.languages[name] = fn;
+            hljs.registerLanguage(name, fn);
+        },
+        exec(code, language) {
+            if (hljs.getLanguage(language)) {
+                try {
+                    return hljs.highlight(language, code).value;
+                }
+                catch (e) {
+                    // auto 的染色都是有问题的 还不如不染了
+                    app.logger.error(`Error in highlight lang=${language}:`);
+                }
+            }
+
+            return encodeTag(code);
+        }
+    };
+
+    addModule('highlight', {
+        config: config,
+        module: hl,
+        init({options = hl.default.options, languages = hl.default.languages} = {}) {
+            hl.setOptions(options);
+            hl.addLanguage(languages);
+        },
+        mount: {
+            name: 'highlight',
+            get() {
+                return hl.exec;
             }
         }
-
-        return encodeTag(code);
-    }
-
-    highlight.init = function (
-        {
-            options = app.default.config.highlight.options,
-            languages = app.default.config.highlight.languages
-        } = {}
-    ) {
-        this.setOptions(options);
-        this.register(languages);
-    };
-
-    highlight.setOptions = function (opts) {
-        if (!opts) {
-            return;
-        }
-        app.config.highlight.options = Object.assign(
-            {},
-            app.config.highlight.options,
-            opts
-        );
-        hljs.configure(app.config.highlight.options);
-    };
-
-    highlight.register = function (...args) {
-        if (args.length === 1 && isObject(args[0])) {
-            let obj = args[0];
-            return Object.keys(obj).forEach(key => this.register(key, obj[key]));
-        }
-
-        let [name, fn] = args;
-
-        if (app.config.highlight.languages[name]) {
-            return;
-        }
-
-        app.config.highlight.languages[name] = fn;
-        hljs.registerLanguage(name, fn);
-    };
-
-    return highlight;
+    });
 }
