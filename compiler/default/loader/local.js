@@ -5,7 +5,7 @@
 
 import fs from 'fs-extra';
 
-export async function local({from, name}, app) {
+export async function local({from, to}) {
     if (!await fs.exists(from)) {
         throw new Error('文档不存在');
     }
@@ -18,4 +18,6 @@ export async function local({from, name}, app) {
 
     await fs.ensureDir(to);
     await fs.copy(from, to);
+
+    return to;
 };

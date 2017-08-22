@@ -31,16 +31,16 @@ var app = new Compiler({
     ]
 });
 
-var fs = require('fs-extra');
-var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
+// var fs = require('fs-extra');
+// var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
 
-app.parse(md, {})
-    .then((html) => {
-        console.log(html);
-    })
-    .catch(err => {
-        console.log(err)
-    })
+// app.parse(md, {})
+//     .then((html) => {
+//         console.log(html);
+//     })
+//     .catch(err => {
+//         console.log(err)
+//     })
 // console.log(app.parse)
 // console.log(app.parse(md, {}))
 // var path = require('path');

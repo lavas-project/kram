@@ -7,10 +7,13 @@ import {
 } from './plugin';
 
 import {each} from '../utils';
+import path from 'path';
+import glob from 'glob';
 
 
 export default function (app, addModule) {
     const config = {};
+    const md5map = {};
 
     const loader = {
         get config() {
@@ -34,11 +37,14 @@ export default function (app, addModule) {
 
             await app.module.plugin.exec(BEFORE_LOAD, repo);
 
-            let result = await loader.getLoader(name)(repo, app);
+            result = await loader.getLoader(name)(repo, app);
+            // let dispDir = path.resolve(app.config.baseDir, '_store', name);
 
-            if (!result) {
-                // @TODO: 生成{add: [xxxxxxxxx]}
-            }
+
+            // await fs.ensureDir(dispDir);
+            // if (!result) {
+            //     // @TODO: 生成{add: [xxxxxxxxx]}
+            // }
 
             result = await app.module.plugin.exec(AFTER_LOAD, result, repo);
 
@@ -53,9 +59,24 @@ export default function (app, addModule) {
         module: loader,
         init(loaders = loader.default) {
             each(loaders, loader.addLoader);
-            // Object.keys(loaders).forEach(name => loader.addLoader(name, loaders[name]));
         }
     });
 };
 
+function getDirs(baseDir, ext = '') {
+    return new Promise((resolve, reject) => {
+        glob(path.resolve(baseDir, '**/*' + ext), (err, dirs) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(dirs);
+            }
+        });
+    });
+}
+
+function diff() {
+
+}
 

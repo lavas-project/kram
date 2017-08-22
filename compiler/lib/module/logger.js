@@ -23,12 +23,13 @@ export default function (app, addModule) {
         module: log,
         init(logger = log.default) {
             log.logger = logger;
-        },
-        mount: {
-            name: 'logger',
-            get() {
-                return config;
-            }
         }
+        // ,
+        // mount: {
+        //     name: 'logger',
+        //     get() {
+        //         return config;
+        //     }
+        // }
     });
 }

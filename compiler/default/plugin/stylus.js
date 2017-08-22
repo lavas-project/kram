@@ -7,7 +7,6 @@ import stylusEngine from 'stylus';
 
 export default class Stylus {
     constructor({priority} = {}) {
-        this.name = name;
         this.priority = priority;
     }
 

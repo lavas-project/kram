@@ -15,7 +15,7 @@ export default function (app) {
         sanitize: false,
         smartLists: true,
         smartypants: false,
-        highlight: app.highlight,
+        highlight: app.module.highlight.exec,
         renderer: BUILDIN_RENDERER_METHODS
     };
 }

@@ -5,7 +5,6 @@
 
 export default class Style {
     constructor({priority} = {}) {
-        this.name = name;
         this.priority = priority;
     }
 

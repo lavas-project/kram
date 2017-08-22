@@ -32,21 +32,16 @@ export class Compiler {
 
         let inits = [];
 
-        const addModule = (name, {config, module, init, mount}) => {
+        const addModule = (name, {config, module, init}) => {
             config && set(this.config, name, config);
             module && set(this.module, name, module);
             init && inits.push({props: options[name], fn: init});
-            mount && Object.defineProperty(this, mount.name || name, mount);
         };
 
         moduleNames.forEach(key => modules[key](this, addModule));
 
         this.default = defaultData(this);
         options = isFunction(options) ? options(this) : options;
-
-        // let extendOptions = merge({}, options, {ignore: moduleNames});
-        // let defaultExtendOptions = merge({}, this.default.config, {ignore: moduleNames});
-        // Object.assign(this.config, defaultExtendOptions, extendOptions);
         merge([this.config, this.default.config, options], {ignore: moduleNames});
 
         inits.forEach(({fn, props}) => fn(props));
@@ -54,6 +49,14 @@ export class Compiler {
 
     async exec() {
 
+    }
+
+    get parse() {
+        return this.module.parser.exec;
+    }
+
+    get logger() {
+        return this.module.logger.logger;
     }
 }
 

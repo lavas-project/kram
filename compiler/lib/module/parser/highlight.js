@@ -63,12 +63,13 @@ export default function (app, addModule) {
         init({options = hl.default.options, languages = hl.default.languages} = {}) {
             hl.setOptions(options);
             hl.addLanguage(languages);
-        },
-        mount: {
-            name: 'highlight',
-            get() {
-                return hl.exec;
-            }
         }
+        // ,
+        // mount: {
+        //     name: 'highlight',
+        //     get() {
+        //         return hl.exec;
+        //     }
+        // }
     });
 }

@@ -64,13 +64,14 @@ export default function (app, addModule) {
         module: parser,
         init(options) {
             parser.setOptions(Object.assign({}, parser.default, options));
-        },
-        mount: {
-            name: 'parse',
-            get() {
-                return parser.exec;
-            }
         }
+        // ,
+        // mount: {
+        //     name: 'parse',
+        //     get() {
+        //         return parser.exec;
+        //     }
+        // }
     });
 }
 
