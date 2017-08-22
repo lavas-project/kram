@@ -6,14 +6,14 @@ import {
     AFTER_LOAD
 } from './plugin';
 
-import {each} from '../utils';
+import {each, getPrototype, isEmptyObject} from '../utils';
 import path from 'path';
-import glob from 'glob';
+// import glob from 'glob';
+// import crypto from 'crypto';
 
 
 export default function (app, addModule) {
     const config = {};
-    const md5map = {};
 
     const loader = {
         get config() {
@@ -32,25 +32,30 @@ export default function (app, addModule) {
         getLoader(name) {
             return config[name];
         },
-        async exec(name, repo) {
-            app.logger.info(`load start: ${repo.name}`);
+        async load(name, source) {
+            app.logger.info(`load start: ${source.name}`);
 
-            await app.module.plugin.exec(BEFORE_LOAD, repo);
+            await app.module.plugin.exec(BEFORE_LOAD, source);
 
-            result = await loader.getLoader(name)(repo, app);
-            // let dispDir = path.resolve(app.config.baseDir, '_store', name);
+            let info = await loader.getLoader(name)(source, app);
 
+            info = await app.module.plugin.exec(AFTER_LOAD, info, source);
 
-            // await fs.ensureDir(dispDir);
-            // if (!result) {
-            //     // @TODO: 生成{add: [xxxxxxxxx]}
-            // }
+            app.logger.info(`load finish: ${source.name}`);
 
-            result = await app.module.plugin.exec(AFTER_LOAD, result, repo);
+            return {source, info};
+        },
 
-            app.logger.info(`load finish: ${repo.name}`);
+        async loadAll() {
+            let infos = await Promise.all(
+                app.config.sources.map(
+                    async source => await loader.load(source.loader, source)
+                )
+            );
 
-            return result;
+            return infos.filter(
+                ({info}) => info !== false && !(info && isEmptyObject(info))
+            );
         }
     };
 
@@ -62,21 +67,3 @@ export default function (app, addModule) {
         }
     });
 };
-
-function getDirs(baseDir, ext = '') {
-    return new Promise((resolve, reject) => {
-        glob(path.resolve(baseDir, '**/*' + ext), (err, dirs) => {
-            if (err) {
-                reject(err);
-            }
-            else {
-                resolve(dirs);
-            }
-        });
-    });
-}
-
-function diff() {
-
-}
-

@@ -61,16 +61,6 @@ export default function (app, addModule) {
         init({options = store.default.options, storage = store.default.storage} = {}) {
             store.setStorage(storage);
             store.setOptions(options);
-        },
-        mount: {
-            name: 'store',
-            get() {
-                return {
-                    set: store.set,
-                    get: store.get,
-                    delete: store.delete
-                };
-            }
         }
     });
 };

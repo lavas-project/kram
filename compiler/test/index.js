@@ -22,11 +22,12 @@ var Compiler = require('../index').Compiler;
 // console.log(Compiler)
 var app = new Compiler({
     baseDir: path.resolve(__dirname, '../../doc'),
-    source: [
+    sources: [
         {
             name: 'lavas',
             loader: 'downloadGitRepo',
-            from: 'github:lavas-project/lavas-tutorial'
+            from: 'github:lavas-project/lavas-tutorial',
+            to: ''
         }
     ]
 });

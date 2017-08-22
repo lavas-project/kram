@@ -12,7 +12,7 @@ export default function (app, addModule) {
         languages: {}
     };
 
-    const hl = {
+    const highlighter = {
         get config() {
             return config;
         },
@@ -28,9 +28,7 @@ export default function (app, addModule) {
         },
         addLanguage(...args) {
             if (args.length === 1 && isObject(args[0])) {
-                // let obj = args[0];
                 return each(args[0], this.addLanguage.bind(this));
-                // return Object.keys(obj).forEach(name => this.addLanguage(name, obj[name]));
             }
 
             let [name, fn] = args;
@@ -42,7 +40,7 @@ export default function (app, addModule) {
             config.languages[name] = fn;
             hljs.registerLanguage(name, fn);
         },
-        exec(code, language) {
+        highlight(code, language) {
             if (hljs.getLanguage(language)) {
                 try {
                     return hljs.highlight(language, code).value;
@@ -57,19 +55,12 @@ export default function (app, addModule) {
         }
     };
 
-    addModule('highlight', {
+    addModule('highlighter', {
         config: config,
-        module: hl,
-        init({options = hl.default.options, languages = hl.default.languages} = {}) {
-            hl.setOptions(options);
-            hl.addLanguage(languages);
+        module: highlighter,
+        init({options = highlighter.default.options, languages = highlighter.default.languages} = {}) {
+            highlighter.setOptions(options);
+            highlighter.addLanguage(languages);
         }
-        // ,
-        // mount: {
-        //     name: 'highlight',
-        //     get() {
-        //         return hl.exec;
-        //     }
-        // }
     });
 }

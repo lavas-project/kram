@@ -3,21 +3,6 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-// import defaultConf from './default';
-// import {configure} from './lib/configure';
-// import {locals} from './lib/share/locals';
-
-// export {load} from './lib/load';
-// export {build} from './lib/build';
-// export {parse} from './lib/module/renderer/marked';
-
-// export {configure as configure};
-// export {locals as locals};
-
-// export function init(options) {
-//     let conf = Object.assign({}, locals.default, options);
-//     configure(conf);
-// }
 import defaultData from './default';
 import modules from './lib/module';
 import {merge, set, isFunction} from './lib/utils';
@@ -52,11 +37,21 @@ export class Compiler {
     }
 
     get parse() {
-        return this.module.parser.exec;
+        return this.module.parser.parse;
     }
 
     get logger() {
         return this.module.logger.logger;
+    }
+
+    get store() {
+        let store = this.module.store;
+
+        return {
+            set: store.set,
+            get: store.get,
+            delete: store.delete
+        };
     }
 }
 

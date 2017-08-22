@@ -24,12 +24,5 @@ export default function (app, addModule) {
         init(logger = log.default) {
             log.logger = logger;
         }
-        // ,
-        // mount: {
-        //     name: 'logger',
-        //     get() {
-        //         return config;
-        //     }
-        // }
     });
 }

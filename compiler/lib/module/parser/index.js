@@ -46,7 +46,7 @@ export default function (app, addModule) {
             merge(config, {renderer});
             markedOptions = getMarkedOptions(config, markedOptions.renderer);
         },
-        async exec(md, options) {
+        async parse(md, options) {
             try {
                 md = await app.module.plugin.exec(BEFORE_PARSE, md, options);
                 let html = marked(md, markedOptions);
@@ -65,13 +65,6 @@ export default function (app, addModule) {
         init(options) {
             parser.setOptions(Object.assign({}, parser.default, options));
         }
-        // ,
-        // mount: {
-        //     name: 'parse',
-        //     get() {
-        //         return parser.exec;
-        //     }
-        // }
     });
 }
 
