@@ -6,10 +6,7 @@
 import stylusEngine from 'stylus';
 
 export default class Stylus {
-    constructor({
-        priority,
-        name = 'Stylus'
-    } = {}) {
+    constructor({priority} = {}) {
         this.name = name;
         this.priority = priority;
     }
@@ -43,14 +40,12 @@ function empty(css) {
 }
 
 function reomveExtraIndent(css) {
-    let arr = css.replace(/\t/mg, '    ')
+    let arr = css
+        .replace(/\t/mg, '    ')
         .split('\n')
         .filter(str => !/^[ ]*$/.test(str));
 
-    let spaceLen = arr.reduce(
-        (res, str) => Math.min(res, indent(str)),
-        css.length
-    );
+    let spaceLen = arr.reduce((res, str) => Math.min(res, indent(str)), css.length);
 
     return arr.map(str => str.slice(spaceLen)).join('\n');
 }

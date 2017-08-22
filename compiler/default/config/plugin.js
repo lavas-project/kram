@@ -4,19 +4,15 @@
  */
 
 import URLPlugin from '../plugin/url';
-// import Stylus from '../plugin/stylus';
-// import Style from '../plugin/style';
-// import Minify from '../plugin/minify';
-
-// export default [
-//     new URLPlugin(),
-//     new Stylus({priority: 9997}),
-//     new Style({priority: 9998}),
-//     new Minify({priority: 9999})
-// ];
+import Stylus from '../plugin/stylus';
+import Style from '../plugin/style';
+import Minify from '../plugin/minify';
 
 export default function (app) {
     return {
-        URLPlugin: new URLPlugin()
+        URLPlugin: new URLPlugin(),
+        stylus: new Stylus(),
+        style: new Style(),
+        minify: new Minify()
     };
 };

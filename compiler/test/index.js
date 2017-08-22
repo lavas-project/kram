@@ -31,8 +31,18 @@ var app = new Compiler({
     ]
 });
 
-// console.log(app.store)
-// var fs = require('fs-extra');
+var fs = require('fs-extra');
+var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
+
+app.parse(md, {})
+    .then((html) => {
+        console.log(html);
+    })
+    .catch(err => {
+        console.log(err)
+    })
+// console.log(app.parse)
+// console.log(app.parse(md, {}))
 // var path = require('path');
 // var kram = require('../index');
 

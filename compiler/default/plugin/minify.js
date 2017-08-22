@@ -8,11 +8,7 @@ const minifyEngine = minifier.minify;
 
 
 export default class Minify {
-    constructor({
-        priority,
-        name = 'Minify'
-    } = {}) {
-        this.name = name;
+    constructor({priority} = {}) {
         this.priority = priority;
     }
 

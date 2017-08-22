@@ -35,8 +35,8 @@ export class Compiler {
         const addModule = (name, {config, module, init, mount}) => {
             config && set(this.config, name, config);
             module && set(this.module, name, module);
-            init && inits.push({props: options(name), fn: init});
-            mount && Object.defineProperty(this, module.name || name, mount);
+            init && inits.push({props: options[name], fn: init});
+            mount && Object.defineProperty(this, mount.name || name, mount);
         };
 
         moduleNames.forEach(key => modules[key](this, addModule));

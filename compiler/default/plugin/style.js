@@ -4,10 +4,7 @@
  */
 
 export default class Style {
-    constructor({
-        priority,
-        name = 'Style'
-    } = {}) {
+    constructor({priority} = {}) {
         this.name = name;
         this.priority = priority;
     }

@@ -97,7 +97,6 @@ export default function (app, addModule) {
         module: plugin,
         init(plugins = plugin.default) {
             each(plugins, plugin.register);
-            // Object.keys(plugins).forEach(name => plugin.register(name, plugins[name]));
         }
     });
 };

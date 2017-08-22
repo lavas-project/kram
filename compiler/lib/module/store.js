@@ -24,7 +24,7 @@ export default function (app, addModule) {
         },
 
         setOptions(opts) {
-            if (opts) {
+            if (!opts) {
                 return;
             }
 

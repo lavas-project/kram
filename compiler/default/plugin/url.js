@@ -4,9 +4,7 @@
  */
 
 export default class URLPlugin {
-    constructor() {
-        this.name = 'URLPlugin';
-    }
+    constructor() {}
 
     apply(on, app) {
         on('beforeRender', function (md, options) {

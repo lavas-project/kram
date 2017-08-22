@@ -3,9 +3,7 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 import marked from 'marked';
-// import {highlight} from '../../lib/module/renderer/highlight';
 
-// export const defaultRenderer = new marked.Renderer();
 export const BUILDIN_RENDERER_METHODS = Object.assign({}, marked.Renderer.prototype);
 
 export default function (app) {
