@@ -20,6 +20,10 @@ export default class Style {
                 }
             );
 
+            if (!style.length) {
+                return html;
+            }
+
             style = `<style>${style.join('\n')}</style>`;
 
             if (/<head>[\s\S]*?<\/head>/.test(html)) {

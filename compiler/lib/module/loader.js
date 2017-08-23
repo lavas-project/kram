@@ -41,21 +41,23 @@ export default function (app, addModule) {
 
             info = await app.module.plugin.exec(AFTER_LOAD, info, source);
 
-            app.logger.info(`load finish: ${source.name}`);
+            if (info === false) {
+                app.logger.info(`load cancel: ${source.name}`);
+                return false;
+            }
 
-            return {source, info};
+            app.logger.info(`load finish: ${source.name}`);
+            return source;
         },
 
         async loadAll() {
-            let infos = await Promise.all(
+            let sources = await Promise.all(
                 app.config.sources.map(
                     async source => await loader.load(source.loader, source)
                 )
             );
 
-            return infos.filter(
-                ({info}) => info !== false && !(info && isEmptyObject(info))
-            );
+            return sources.filter(source => source !== false);
         }
     };
 

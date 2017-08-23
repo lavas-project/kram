@@ -2,6 +2,7 @@
  * @file 路径处理相关
  * @author tanglei (tanglei02@baidu.com)
  */
+import glob from 'glob';
 import path from 'path';
 
 /**
@@ -10,7 +11,7 @@ import path from 'path';
  * @param {string} str 路径字符串
  * @return {string} 处理好的路径
  */
-export function delimiter(str) {
+export function sep(str) {
     return str.replace(/\\/g, '/').replace(/\/$/, '');
 }
 
@@ -21,7 +22,7 @@ export function delimiter(str) {
  * @return {string} 拼接好的路径
  */
 export function join(...arr) {
-    return delimiter(path.join(...arr));
+    return sep(path.join(...arr));
 }
 
 /**
@@ -60,4 +61,17 @@ export function removePrefix(str, prefix) {
 
 export function level(dir) {
     return dir.split('/').length;
+}
+
+export function getDirs(baseDir, ext = '') {
+    return new Promise((resolve, reject) => {
+        glob(path.resolve(baseDir, '**/*' + ext), (err, dirs) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(dirs);
+            }
+        });
+    });
 }

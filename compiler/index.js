@@ -32,8 +32,12 @@ export class Compiler {
         inits.forEach(({fn, props}) => fn(props));
     }
 
-    async exec() {
+    exec() {
+        let {loader, dir, builder} = this.module;
 
+        return loader.loadAll()
+            .then(dir.processAll)
+            .then(builder.buildAll);
     }
 
     get parse() {

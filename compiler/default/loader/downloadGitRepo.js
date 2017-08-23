@@ -2,13 +2,9 @@ import fs from 'fs-extra';
 import {get} from '../../lib/utils';
 import download from 'download-git-repo';
 
-export async function downloadGitRepo({from, to}) {
-    if (await fs.exists(to)) {
-        await fs.remove(to);
-    }
-
+export async function downloadGitRepo({from, to, tmp}) {
     await new Promise((resolve, reject) => {
-        download(from, to, {clone: false}, err => {
+        download(from, tmp, {clone: false}, err => {
             if (err) {
                 reject(err);
             }
@@ -18,6 +14,6 @@ export async function downloadGitRepo({from, to}) {
         });
     });
 
-    return to;
-    // await fs.move(tmp, to, {overwrite: true});
+    // return to;
+    await fs.move(tmp, to, {overwrite: true});
 }

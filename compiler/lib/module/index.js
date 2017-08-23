@@ -6,15 +6,19 @@
 import loader from './loader';
 import plugin from './plugin';
 import parser from './parser';
-import highlight from './parser/highlight';
+import highlighter from './parser/highlighter';
 import store from './store';
 import logger from './logger';
+import dir from './dir';
+import builder from './builder';
 
 export default {
     loader,
     plugin,
     parser,
-    highlight,
+    highlighter,
     store,
-    logger
+    logger,
+    dir,
+    builder
 };

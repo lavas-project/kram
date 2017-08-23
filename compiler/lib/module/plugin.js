@@ -13,8 +13,8 @@ export const AFTER_LOAD = 'afterLoad';
 export const BEFORE_BUILD_REPOS = 'beforeBuildRepos';
 export const BEFORE_PARSE = 'beforeRender';
 export const AFTER_PARSE = 'afterRender';
-export const BEFORE_DOC_STORE = 'beforeDocStore';
-export const AFTER_DOC_STORE = 'afterDocStore';
+export const BEFORE_STORE = 'beforeStore';
+export const AFTER_STORE = 'afterStore';
 export const BEFORE_BUILD_DOCS = 'beforeBuildDocs';
 export const FINISH_BUILD_DOCS = 'finishBuildDocs';
 
@@ -25,8 +25,8 @@ export const STAGES = [
     BEFORE_BUILD_REPOS,
     BEFORE_PARSE,
     AFTER_PARSE,
-    BEFORE_DOC_STORE,
-    AFTER_DOC_STORE,
+    BEFORE_STORE,
+    AFTER_STORE,
     BEFORE_BUILD_DOCS,
     FINISH_BUILD_DOCS
 ]
