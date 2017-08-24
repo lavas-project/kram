@@ -4,7 +4,7 @@
  */
 
 import defaultData from './default';
-import modules from './lib/module';
+import * as modules from './lib/module';
 import {merge, set, isFunction} from './lib/utils';
 
 
@@ -35,8 +35,8 @@ export class Compiler {
     exec() {
         let {loader, dir, builder} = this.module;
 
-        return loader.loadAll()
-            .then(dir.processAll)
+        return loader.load()
+            .then(dir.process)
             .then(builder.build);
     }
 
@@ -57,8 +57,4 @@ export class Compiler {
             delete: store.delete
         };
     }
-}
-
-function toList(repos) {
-    return Object.keys(repos).map(name => Object.assign({name}, repos[name]));
 }

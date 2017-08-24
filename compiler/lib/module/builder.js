@@ -6,6 +6,8 @@
 import path from 'path';
 import fs from 'fs-extra';
 
+import {classify} from '../utils';
+
 import {
     BEFORE_STORE,
     AFTER_STORE
@@ -18,11 +20,13 @@ export default function (app, addModule) {
 
             list = list.filter(info => path.extname(info.dir) === '.md');
 
-            let listToDelete = list.filter(info => info.type === 'delete');
-            let listToUpdate = list.filter(info => info.type === 'add' || info.type === 'modify');
+            let {toUpdate, toDelete} = classify(
+                list,
+                ({type}) => type === 'delete' ? 'toDelete' : 'toUpdate'
+            );
 
-            await Promise.all(
-                listToUpdate.map(async info => {
+            await Promise.all([
+                ...toUpdate.map(async info => {
                     let md = await fs.readFile(info.fullDir, 'utf-8');
                     let html = await parser.parse(md, info);
 
@@ -32,13 +36,11 @@ export default function (app, addModule) {
 
                     await store.set('article', info.dir, obj);
                     await plugin.exec(AFTER_STORE, obj, info);
+                }),
+                ...toDelete.map(async info => {
+                    await store.delete('article', info.dir);
                 })
-                .concat(
-                    listToDelete.map(async info => {
-                        await store.delete('article', info.dir);
-                    })
-                )
-            );
+            ]});
         }
     };
 

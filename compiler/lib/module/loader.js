@@ -34,7 +34,7 @@ export default function (app, addModule) {
         getLoader(name) {
             return config[name];
         },
-        async load(name, source) {
+        async loadSource(name, source) {
             app.logger.info(`load start: ${source.name}`);
 
             let isContinue = await app.module.plugin.exec(BEFORE_LOAD, true, source);
@@ -45,7 +45,6 @@ export default function (app, addModule) {
             }
 
             isContinue = await loader.getLoader(name)(source, app);
-
             isContinue = await app.module.plugin.exec(AFTER_LOAD, true, source);
 
             if (!isContinue) {
@@ -57,14 +56,14 @@ export default function (app, addModule) {
             return source;
         },
 
-        async loadAll() {
+        async load() {
             let sources = app.config.sources;
 
             let sourcesToLoad = await app.module.plugin.exec(BEFORE_LOAD_ALL, sources.slice(0), sources);
 
             let loadedSources = await Promise.all(
                 sourcesToLoad.map(
-                    async source => await loader.load(source.loader, source)
+                    async source => await loader.loadSource(source.loader, source)
                 )
             );
 

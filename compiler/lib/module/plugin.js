@@ -3,8 +3,6 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-// import * as kram from '../../index';
-// import {locals} from '../share/locals';
 import {isValidArray, noop, each} from '../utils';
 
 export const BEFORE_LOAD_ALL = 'beforeLoadAll';
@@ -28,6 +26,9 @@ export const STAGES = {
     AFTER_LOAD_ALL,
     BEFORE_LOAD,
     AFTER_LOAD,
+
+    BEFORE_PROCESS_ALL_DIR,
+    AFTER_PROCESS_ALL_DIR,
 
     BEFORE_BUILD_REPOS,
     BEFORE_PARSE,

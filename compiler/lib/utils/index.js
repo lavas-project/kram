@@ -6,4 +6,3 @@
 export * from './basic';
 export * from './html';
 export * from './path';
-export * from './promise';

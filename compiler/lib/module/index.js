@@ -3,24 +3,12 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-import loader from './loader';
-import plugin from './plugin';
-import parser from './parser';
-import highlighter from './parser/highlighter';
-import store from './store';
-import logger from './logger';
-import dir from './dir';
-import builder from './builder';
-import routes from './routes';
-
-export default {
-    loader,
-    plugin,
-    parser,
-    highlighter,
-    store,
-    logger,
-    dir,
-    builder,
-    routes
-};
+export {default as loader} from './loader';
+export {default as plugin} from './plugin';
+export {default as parser} from './parser';
+export {default as highlighter} from './parser/highlighter';
+export {default as store} from './store';
+export {default as logger} from './logger';
+export {default as dir} from './dir';
+export {default as builder} from './builder';
+export {default as routes} from './routes';

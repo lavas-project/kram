@@ -21,27 +21,24 @@ export default function (app, addModule) {
             return sourceDirMap[sourceName];
         },
 
-        createKey(relativeDir) {
-            return removeExt(relativeDir, '.md');
-        },
-
         getRelativeDir(dir) {
             let baseDir = app.config.baseDir;
             return removePrefix(sep(dir), sep(baseDir));
         },
 
-        async processAll(sources) {
-            let sourcesToProcess = await app.module.plugin.exec(BEFORE_PROCESS_ALL_DIR, sources.slice(0), sources);
+        async process(sources) {
+            let plugin = app.module.plugin;
+            let toProcess = await plugin.exec(BEFORE_PROCESS_ALL_DIR, sources.slice(0), sources);
 
             let sourceList = await Promise.all(
-                sourcesToProcess.map(async source => dirModule.process(source))
+                toProcess.map(async source => dirModule.processSource(source))
             );
 
             let all = sourceList.reduce((res, list) => res.concat(list), []);
             return await app.module.plugin.exec(AFTER_PROCESS_ALL_DIR, all.slice(0), all);
         },
 
-        async process(source) {
+        async processSource(source) {
             let dirs = await getDirs(source.to, '.*');
             dirs = dirs.filter(dir => !/\/\./.test(dir));
 
@@ -67,14 +64,8 @@ export default function (app, addModule) {
 
             if (oldDirInfos) {
                 let deleteInfos = oldDirInfos
-                    .filter(oldDirInfo => dirInfos.every(dirInfo => dirInfo.dir !== oldDirInfo.dir))
-                    .map(({fullDir, dir}) => {
-                        return {
-                            fullDir,
-                            dir,
-                            type: 'delete'
-                        }
-                    });
+                    .filter(({dir: oldDir}) => dirInfos.every(({dir: newDir}) => newDir !== oldDir))
+                    .map(({fullDir, dir}) => ({fullDir, dir, type: 'delete'}));
 
                 results = results.concat(deleteInfos);
             }

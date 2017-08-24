@@ -194,3 +194,11 @@ export function each(list, fn) {
         Object.keys(list).forEach(name => fn(name, list[name]));
     }
 }
+
+function classify(list, fn) {
+    return list.reduce((res, info) => {
+        let type = fn(info);
+        res[type] = res[type] || [];
+        res[type].push(info);
+    }, {});
+}
