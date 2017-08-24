@@ -109,6 +109,10 @@ export default function (app, addModule) {
     };
 
     addModule('dir', {
-        module: dirModule
+        module: {
+            get() {
+                return dirModule;
+            }
+        }
     });
 }

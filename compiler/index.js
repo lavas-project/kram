@@ -18,8 +18,10 @@ export class Compiler {
         let inits = [];
 
         const addModule = (name, {config, module, init}) => {
-            config && set(this.config, name, config);
-            module && set(this.module, name, module);
+            // config && set(this.config, name, config);
+            config && Object.defineProperty(this.config, config.name || name, config);
+            module && Object.defineProperty(this.module, module.name || name, module);
+            // module && set(this.module, name, module);
             init && inits.push({props: options[name], fn: init});
         };
 

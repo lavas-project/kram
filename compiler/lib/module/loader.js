@@ -74,8 +74,16 @@ export default function (app, addModule) {
     };
 
     addModule('loader', {
-        config: config,
-        module: loader,
+        config: {
+            get() {
+                return config;
+            }
+        },
+        module: {
+            get() {
+                return loader;
+            }
+        },
         init(loaders = loader.default) {
             each(loaders, loader.addLoader);
         }

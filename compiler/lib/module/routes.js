@@ -30,7 +30,19 @@ export default function (app, addModule) {
     };
 
     addModule('routes', {
-        module: routes,
+        config: {
+            get() {
+                return config;
+            },
+            set(val) {
+                routes.config = val;
+            }
+        },
+        module: {
+            get() {
+                return routes;
+            }
+        },
         init(urlConfig) {
             config = urlConfig;
 

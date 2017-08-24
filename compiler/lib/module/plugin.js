@@ -106,8 +106,16 @@ export default function (app, addModule) {
     };
 
     addModule('plugin', {
-        config: config,
-        module: plugin,
+        config: {
+            get() {
+                return config;
+            }
+        },
+        module: {
+            get() {
+                return plugin;
+            }
+        },
         init(plugins = plugin.default) {
             each(plugins, plugin.register);
         }

@@ -56,8 +56,16 @@ export default function (app, addModule) {
     };
 
     addModule('highlighter', {
-        config: config,
-        module: highlighter,
+        config: {
+            get() {
+                return config;
+            }
+        },
+        module: {
+            get() {
+                return highlighter;
+            }
+        },
         init({options = highlighter.default.options, languages = highlighter.default.languages} = {}) {
             highlighter.setOptions(options);
             highlighter.addLanguage(languages);

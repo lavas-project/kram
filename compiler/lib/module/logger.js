@@ -19,8 +19,16 @@ export default function (app, addModule) {
     };
 
     addModule('logger', {
-        config: config,
-        module: log,
+        config: {
+            get() {
+                return config;
+            }
+        },
+        module: {
+            get() {
+                return log;
+            }
+        },
         init(logger = log.default) {
             log.logger = logger;
         }

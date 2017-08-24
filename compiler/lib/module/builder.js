@@ -45,6 +45,10 @@ export default function (app, addModule) {
     };
 
     addModule('builder', {
-        module: builder
+        module: {
+            get() {
+                return builder;
+            }
+        }
     });
 }

@@ -56,8 +56,16 @@ export default function (app, addModule) {
     };
 
     addModule('store', {
-        config: config,
-        module: store,
+        config: {
+            get() {
+                return config;
+            }
+        },
+        module: {
+            get() {
+                return store;
+            }
+        },
         init({options = store.default.options, storage = store.default.storage} = {}) {
             store.setStorage(storage);
             store.setOptions(options);

@@ -60,8 +60,16 @@ export default function (app, addModule) {
     };
 
     addModule('parser', {
-        config: config,
-        module: parser,
+        config: {
+            get() {
+                return config;
+            }
+        },
+        module: {
+            get() {
+                return parser;
+            }
+        },
         init(options) {
             parser.setOptions(Object.assign({}, parser.default, options));
         }
