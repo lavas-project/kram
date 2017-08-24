@@ -73,7 +73,8 @@ export default function (app, addModule) {
         }
     };
 
-    addModule('loader', {
+    return {
+        name: 'loader',
         config: {
             get() {
                 return config;
@@ -87,5 +88,5 @@ export default function (app, addModule) {
         init(loaders = loader.default) {
             each(loaders, loader.addLoader);
         }
-    });
+    };
 };

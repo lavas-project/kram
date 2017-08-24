@@ -59,7 +59,8 @@ export default function (app, addModule) {
         }
     };
 
-    addModule('parser', {
+    return {
+        name: 'parser',
         config: {
             get() {
                 return config;
@@ -73,7 +74,7 @@ export default function (app, addModule) {
         init(options) {
             parser.setOptions(Object.assign({}, parser.default, options));
         }
-    });
+    };
 }
 
 function getMarkedOptions(options, oldRenderer) {

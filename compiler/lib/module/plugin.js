@@ -13,13 +13,12 @@ export const AFTER_LOAD = 'afterLoad';
 export const BEFORE_PROCESS_ALL_DIR = 'beforeProcessAllDir';
 export const AFTER_PROCESS_ALL_DIR = 'afterProcessAllDir';
 
-export const BEFORE_BUILD_REPOS = 'beforeBuildRepos';
 export const BEFORE_PARSE = 'beforeRender';
 export const AFTER_PARSE = 'afterRender';
 export const BEFORE_STORE = 'beforeStore';
 export const AFTER_STORE = 'afterStore';
-export const BEFORE_BUILD_DOCS = 'beforeBuildDocs';
-export const FINISH_BUILD_DOCS = 'finishBuildDocs';
+export const BEFORE_BUILD = 'beforeBuild';
+export const AFTER_BUILD = 'afterBuild';
 
 export const STAGES = {
     BEFORE_LOAD_ALL,
@@ -30,13 +29,12 @@ export const STAGES = {
     BEFORE_PROCESS_ALL_DIR,
     AFTER_PROCESS_ALL_DIR,
 
-    BEFORE_BUILD_REPOS,
     BEFORE_PARSE,
     AFTER_PARSE,
     BEFORE_STORE,
     AFTER_STORE,
-    BEFORE_BUILD_DOCS,
-    FINISH_BUILD_DOCS
+    BEFORE_BUILD,
+    AFTER_BUILD
 };
 
 export const STAGE_SET = Object.keys(STAGES)
@@ -105,7 +103,8 @@ export default function (app, addModule) {
         }
     };
 
-    addModule('plugin', {
+    return {
+        name: 'plugin',
         config: {
             get() {
                 return config;
@@ -119,5 +118,5 @@ export default function (app, addModule) {
         init(plugins = plugin.default) {
             each(plugins, plugin.register);
         }
-    });
+    };
 };

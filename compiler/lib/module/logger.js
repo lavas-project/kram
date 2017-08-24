@@ -18,7 +18,8 @@ export default function (app, addModule) {
         }
     };
 
-    addModule('logger', {
+    return {
+        name: 'logger',
         config: {
             get() {
                 return config;
@@ -32,5 +33,5 @@ export default function (app, addModule) {
         init(logger = log.default) {
             log.logger = logger;
         }
-    });
+    };
 }

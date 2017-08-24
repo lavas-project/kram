@@ -6,7 +6,7 @@
 import hljs from 'highlight.js';
 import {isObject, each, encodeTag} from '../../utils';
 
-export default function (app, addModule) {
+export default function (app) {
     const config = {
         options: {},
         languages: {}
@@ -55,7 +55,8 @@ export default function (app, addModule) {
         }
     };
 
-    addModule('highlighter', {
+    return {
+        name: 'highlighter',
         config: {
             get() {
                 return config;
@@ -70,5 +71,5 @@ export default function (app, addModule) {
             highlighter.setOptions(options);
             highlighter.addLanguage(languages);
         }
-    });
+    };
 }

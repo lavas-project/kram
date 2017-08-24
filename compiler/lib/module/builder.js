@@ -10,7 +10,9 @@ import {classify} from '../utils';
 
 import {
     BEFORE_STORE,
-    AFTER_STORE
+    AFTER_STORE,
+    BEFORE_BUILD,
+    AFTER_BUILD
 } from './plugin';
 
 export default function (app, addModule) {
@@ -20,10 +22,11 @@ export default function (app, addModule) {
 
             list = list.filter(info => path.extname(info.dir) === '.md');
 
-            let {toUpdate, toDelete} = classify(
-                list,
-                ({type}) => type === 'delete' ? 'toDelete' : 'toUpdate'
-            );
+            let toBuild = plugin.exec(BEFORE_BUILD, list.slice(0), list);
+
+            let {toUpdate, toDelete} = classify(toBuild, ({type}) => {
+                return type === 'delete' ? 'toDelete' : 'toUpdate';
+            });
 
             await Promise.all([
                 ...toUpdate.map(async info => {
@@ -41,14 +44,17 @@ export default function (app, addModule) {
                     await store.delete('article', info.dir);
                 })
             ]});
+
+            plugin.exec(AFTER_BUILD, toBuild);
         }
     };
 
-    addModule('builder', {
+    return {
+        name: 'builder',
         module: {
             get() {
                 return builder;
             }
         }
-    });
+    };
 }

@@ -108,11 +108,12 @@ export default function (app, addModule) {
         }
     };
 
-    addModule('dir', {
+    return {
+        name: 'dir',
         module: {
             get() {
                 return dirModule;
             }
         }
-    });
+    };
 }

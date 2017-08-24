@@ -29,7 +29,8 @@ export default function (app, addModule) {
         addRule: plugin.addRule.bind(plugin)
     };
 
-    addModule('routes', {
+    return {
+        name: 'routes',
         config: {
             get() {
                 return config;
@@ -49,7 +50,7 @@ export default function (app, addModule) {
             plugin.setConfig(urlConfig);
             app.module.plugin.register('processURL', plugin);
         }
-    });
+    };
 }
 
 class URLPlugin {

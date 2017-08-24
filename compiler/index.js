@@ -17,15 +17,13 @@ export class Compiler {
 
         let inits = [];
 
-        const addModule = (name, {config, module, init}) => {
-            // config && set(this.config, name, config);
-            config && Object.defineProperty(this.config, config.name || name, config);
-            module && Object.defineProperty(this.module, module.name || name, module);
-            // module && set(this.module, name, module);
-            init && inits.push({props: options[name], fn: init});
-        };
-
-        moduleNames.forEach(key => modules[key](this, addModule));
+        moduleNames.map(key => modules[key](this))
+            .filter(module => !!module)
+            .forEach(({name, config, module, init}) => {
+                config && Object.defineProperty(this.config, config.name || name, config);
+                module && Object.defineProperty(this.module, module.name || name, module);
+                init && inits.push({props: options[name], fn: init});
+            });
 
         this.default = defaultData(this);
         options = isFunction(options) ? options(this) : options;

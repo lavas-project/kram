@@ -55,7 +55,8 @@ export default function (app, addModule) {
         }
     };
 
-    addModule('store', {
+    return {
+        name: 'store',
         config: {
             get() {
                 return config;
@@ -70,7 +71,7 @@ export default function (app, addModule) {
             store.setStorage(storage);
             store.setOptions(options);
         }
-    });
+    };
 };
 
 function generateKey(type, key, {prefix, delimiter}) {
