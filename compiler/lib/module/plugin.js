@@ -7,9 +7,14 @@
 // import {locals} from '../share/locals';
 import {isValidArray, noop, each} from '../utils';
 
-export const BEFORE_LOAD_REPOS = 'beforeLoadRepos';
+export const BEFORE_LOAD_ALL = 'beforeLoadAll';
+export const AFTER_LOAD_ALL = 'afterLoadAll';
 export const BEFORE_LOAD = 'beforeLoad';
 export const AFTER_LOAD = 'afterLoad';
+
+export const BEFORE_PROCESS_ALL_DIR = 'beforeProcessAllDir';
+export const AFTER_PROCESS_ALL_DIR = 'afterProcessAllDir';
+
 export const BEFORE_BUILD_REPOS = 'beforeBuildRepos';
 export const BEFORE_PARSE = 'beforeRender';
 export const AFTER_PARSE = 'afterRender';
@@ -18,10 +23,12 @@ export const AFTER_STORE = 'afterStore';
 export const BEFORE_BUILD_DOCS = 'beforeBuildDocs';
 export const FINISH_BUILD_DOCS = 'finishBuildDocs';
 
-export const STAGES = [
-    BEFORE_LOAD_REPOS,
+export const STAGES = {
+    BEFORE_LOAD_ALL,
+    AFTER_LOAD_ALL,
     BEFORE_LOAD,
     AFTER_LOAD,
+
     BEFORE_BUILD_REPOS,
     BEFORE_PARSE,
     AFTER_PARSE,
@@ -29,8 +36,10 @@ export const STAGES = [
     AFTER_STORE,
     BEFORE_BUILD_DOCS,
     FINISH_BUILD_DOCS
-]
-.reduce((set, val) => set.add(val), new Set());
+};
+
+export const STAGE_SET = Object.keys(STAGES)
+    .reduce((set, key) => set.add(STAGES[key]), new Set());
 
 export default function (app, addModule) {
     const config = {
@@ -45,6 +54,9 @@ export default function (app, addModule) {
         get default() {
             return app.default.config.plugin;
         },
+        get STAGES() {
+            return STAGES;
+        },
         register(name, plugin) {
             if (config.list[name]) {
                 return;
@@ -52,7 +64,7 @@ export default function (app, addModule) {
 
             plugin.apply(
                 (stage, fn, priority = 999) => {
-                    if (!STAGES.has(stage)) {
+                    if (!STAGE_SET.has(stage)) {
                         return;
                     }
 

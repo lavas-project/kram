@@ -3,7 +3,9 @@
 
 import {
     BEFORE_LOAD,
-    AFTER_LOAD
+    AFTER_LOAD,
+    BEFORE_LOAD_ALL,
+    AFTER_LOAD_ALL
 } from './plugin';
 
 import {each, getPrototype, isEmptyObject} from '../utils';
@@ -35,13 +37,18 @@ export default function (app, addModule) {
         async load(name, source) {
             app.logger.info(`load start: ${source.name}`);
 
-            await app.module.plugin.exec(BEFORE_LOAD, source);
+            let isContinue = await app.module.plugin.exec(BEFORE_LOAD, true, source);
 
-            let info = await loader.getLoader(name)(source, app);
+            if (!isContinue) {
+                app.logger.info(`load cancel: ${source.name}`);
+                return false;
+            }
 
-            info = await app.module.plugin.exec(AFTER_LOAD, info, source);
+            isContinue = await loader.getLoader(name)(source, app);
 
-            if (info === false) {
+            isContinue = await app.module.plugin.exec(AFTER_LOAD, true, source);
+
+            if (!isContinue) {
                 app.logger.info(`load cancel: ${source.name}`);
                 return false;
             }
@@ -51,13 +58,19 @@ export default function (app, addModule) {
         },
 
         async loadAll() {
-            let sources = await Promise.all(
-                app.config.sources.map(
+            let sources = app.config.sources;
+
+            let sourcesToLoad = await app.module.plugin.exec(BEFORE_LOAD_ALL, sources.slice(0), sources);
+
+            let loadedSources = await Promise.all(
+                sourcesToLoad.map(
                     async source => await loader.load(source.loader, source)
                 )
             );
 
-            return sources.filter(source => source !== false);
+            loadedSources = loadedSources.filter(source => source !== false);
+
+            return await app.module.plugin.exec(AFTER_LOAD_ALL, loadedSources, sources);
         }
     };
 

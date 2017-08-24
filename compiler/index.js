@@ -37,7 +37,7 @@ export class Compiler {
 
         return loader.loadAll()
             .then(dir.processAll)
-            .then(builder.buildAll);
+            .then(builder.build);
     }
 
     get parse() {

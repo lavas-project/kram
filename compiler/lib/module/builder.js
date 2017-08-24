@@ -2,6 +2,7 @@
  * @file builder
  * @author tanglei (tanglei02@baidu.com)
  */
+
 import path from 'path';
 import fs from 'fs-extra';
 
@@ -12,30 +13,36 @@ import {
 
 export default function (app, addModule) {
     const builder = {
-        build({source, list}) {
+        async build(list) {
             let {parser, store, plugin} = app.module;
 
-            return Promise.all(
-                list.filter(info => path.extname(info.dir) === '.md')
-                .map(async info => {
-                    let md = await fs.readFile(info.dir, 'utf-8');
-                    let html = await parser.parse(md, {source, info});
+            list = list.filter(info => path.extname(info.dir) === '.md');
 
-                    let obj = {html, key: info.key};
+            let listToDelete = list.filter(info => info.type === 'delete');
+            let listToUpdate = list.filter(info => info.type === 'add' || info.type === 'modify');
 
-                    obj = await plugin.exec(BEFORE_STORE, obj, {source, md, info});
-                    await store.set('article', info.key, obj);
-                    await plugin.exec(AFTER_STORE, obj, {source, md, info})
+            await Promise.all(
+                listToUpdate.map(async info => {
+                    let md = await fs.readFile(info.fullDir, 'utf-8');
+                    let html = await parser.parse(md, info);
+
+                    let obj = {html, dir: info.dir};
+
+                    obj = await plugin.exec(BEFORE_STORE, obj, info);
+
+                    await store.set('article', info.dir, obj);
+                    await plugin.exec(AFTER_STORE, obj, info);
                 })
+                .concat(
+                    listToDelete.map(async info => {
+                        await store.delete('article', info.dir);
+                    })
+                )
             );
-        },
-
-        async buildAll(infos) {
-            await Promise.all(infos.map(info => builder.build(info)));
         }
     };
 
     addModule('builder', {
-        module: builder,
-    })
+        module: builder
+    });
 }

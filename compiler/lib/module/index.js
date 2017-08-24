@@ -11,6 +11,7 @@ import store from './store';
 import logger from './logger';
 import dir from './dir';
 import builder from './builder';
+import routes from './routes';
 
 export default {
     loader,
@@ -20,5 +21,6 @@ export default {
     store,
     logger,
     dir,
-    builder
+    builder,
+    routes
 };

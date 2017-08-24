@@ -86,3 +86,7 @@ export function countIndent(str) {
     }
     return max;
 }
+
+export function isRelativeUrl(url) {
+    return /^\.{1,2}\//.test(url);
+}

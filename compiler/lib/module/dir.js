@@ -7,58 +7,74 @@ import crypto from 'crypto';
 import fs from 'fs-extra';
 import path from 'path';
 import {getDirs, removePrefix, removeExt, sep, set} from '../utils';
+import {
+    BEFORE_PROCESS_ALL_DIR,
+    AFTER_PROCESS_ALL_DIR
+} from './plugin';
 
 export default function (app, addModule) {
     const md5map = new Map();
     const sourceDirMap = {};
-    const keyMap = {};
 
     const dirModule = {
         dirs(sourceName) {
             return sourceDirMap[sourceName];
         },
 
-        createKey(dir) {
-            let baseDir = app.config.baseDir;
-            let key = removePrefix(sep(dir), sep(baseDir));
-            return removeExt(key, '.md');
+        createKey(relativeDir) {
+            return removeExt(relativeDir, '.md');
         },
 
-        processAll(sources) {
-            return Promise.all(
-                sources.map(async source => dirModule.process(source))
+        getRelativeDir(dir) {
+            let baseDir = app.config.baseDir;
+            return removePrefix(sep(dir), sep(baseDir));
+        },
+
+        async processAll(sources) {
+            let sourcesToProcess = await app.module.plugin.exec(BEFORE_PROCESS_ALL_DIR, sources.slice(0), sources);
+
+            let sourceList = await Promise.all(
+                sourcesToProcess.map(async source => dirModule.process(source))
             );
+
+            let all = sourceList.reduce((res, list) => res.concat(list), []);
+            return await app.module.plugin.exec(AFTER_PROCESS_ALL_DIR, all.slice(0), all);
         },
 
         async process(source) {
             let dirs = await getDirs(source.to, '.*');
+            dirs = dirs.filter(dir => !/\/\./.test(dir));
 
-            let list = await dirModule.classify(dirs, sourceDirMap[source.name]);
-            list = list.map(info => {
-                if (path.extname(info.dir) === '.md') {
-                    info.key = dirModule.createKey(info.dir);
-                }
+            let dirInfos = dirs.map(fullDir => ({
+                dir: dirModule.getRelativeDir(fullDir),
+                fullDir: fullDir
+            }));
 
-                return info;
-            });
+            let list = await dirModule.classify(dirInfos, sourceDirMap[source.name]);
 
-            sourceDirMap[source.name] = dirs;
+            sourceDirMap[source.name] = dirInfos;
             list.forEach(result => dirModule.updateMD5(result));
 
-            return {source, list};
+            return list;
         },
 
-        async classify(dirs, oldDirs) {
+        async classify(dirInfos, oldDirInfos) {
             let results = await Promise.all(
-                dirs.map(async dir => await dirModule.detect(dir))
+                dirInfos.map(async info => await dirModule.detect(info))
             );
 
             results = results.filter(result => result !== false);
 
-            if (oldDirs) {
-                let deleteInfos = oldDirs
-                    .filter(oldDir => dirs.every(dir => dir !== oldDir))
-                    .map(dir => ({dir, type: 'delete'}));
+            if (oldDirInfos) {
+                let deleteInfos = oldDirInfos
+                    .filter(oldDirInfo => dirInfos.every(dirInfo => dirInfo.dir !== oldDirInfo.dir))
+                    .map(({fullDir, dir}) => {
+                        return {
+                            fullDir,
+                            dir,
+                            type: 'delete'
+                        }
+                    });
 
                 results = results.concat(deleteInfos);
             }
@@ -66,18 +82,18 @@ export default function (app, addModule) {
             return results;
         },
 
-        async detect(dir) {
+        async detect({fullDir, dir}) {
             let mappedMD5 = md5map.get(dir);
 
-            if (!await fs.exists(dir)) {
+            if (!await fs.exists(fullDir)) {
                 if (mappedMD5) {
-                    return {dir, type: 'delete'};
+                    return {fullDir, dir, type: 'delete'};
                 }
 
                 return false;
             }
 
-            let file = await fs.readFile(dir);
+            let file = await fs.readFile(fullDir);
             let md5 = crypto.createHash('md5').update(file).digest('hex');
 
             if (mappedMD5 === md5) {
@@ -85,10 +101,10 @@ export default function (app, addModule) {
             }
 
             if (mappedMD5) {
-                return {dir, md5, type: 'modify'};
+                return {fullDir, dir, md5, type: 'modify'};
             }
 
-            return {dir, md5, type: 'add'};
+            return {fullDir, dir, md5, type: 'add'};
         },
 
         updateMD5({dir, md5, type}) {

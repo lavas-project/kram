@@ -20,7 +20,6 @@ var path = require('path');
 var Compiler = require('../index').Compiler;
 
 
-// console.log(Compiler)
 var app = new Compiler({
     baseDir: path.resolve(__dirname, '../../doc'),
     sources: [
@@ -31,22 +30,38 @@ var app = new Compiler({
             to: path.resolve(__dirname, '../../doc/lavas'),
             tmp: path.resolve(__dirname, '../../doc/git/lavas')
         }
-    ]
+    ],
+    routes: [
+        {
+            dir(dir) {
+                return path.extname(dir) !== '.md';
+            },
+            url(dir) {
+                return `/assets/${dir}`;
+            }
+        },
+        {
+            dir: /^lavas\/vue\/foundation/,
+            url(dir) {
+                return `/happy/${dir}`;
+            }
+            // dir: '正则 or function or 字符串',
+            // path: '对应的真实路径${dir}',
+            // renderer: 'rendererName',
+            // layout: 'layoutName'
+        }
+    ],
+
 });
 
 app.exec()
 .then(() => {
-    app.store.get('article', 'lavas/vue/webpack/router-loader')
+    app.store.get('article', 'lavas/vue/foundation/build-and-deploy-project.md')
     .then(obj => {
         console.log(obj)
     });
+})
+.catch(err => {
+    console.log('in error')
+    console.log(err)
 });
-
-// app.module.loader.loadAll()
-// .then(obj => app.module.dir.processAll(obj))
-// .then(obj => {
-//     console.log(JSON.stringify(obj))
-// })
-// .catch(err => {
-//     console.log(err)
-// });
