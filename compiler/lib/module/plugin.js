@@ -23,7 +23,7 @@ export const AFTER_BUILD = 'afterBuild';
 
 export const ON_RENDER_PREFIX = 'onRender:';
 
-let RENDER_STAGES = RENDER_NAMES.reduce((res, name) => {
+export const RENDER_STAGES = RENDER_NAMES.reduce((res, name) => {
         res['ON_RENDER_' + name.toUpperCase()] = ON_RENDER_PREFIX + name;
         return res;
     },
@@ -50,8 +50,7 @@ export const STAGES = Object.assign(
     RENDER_STAGES
 );
 
-export const STAGE_SET = Object.keys(STAGES)
-    .reduce((set, key) => set.add(STAGES[key]), new Set());
+export const STAGE_SET = Object.keys(STAGES).reduce((set, key) => set.add(STAGES[key]), new Set());
 
 export default function (app, addModule) {
     const config = {

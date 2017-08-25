@@ -21,7 +21,7 @@ export default class Chapter {
         on(ON_RENDER_HEADING, (html, {args: [text, level, raw], dir}) => {
             let hash = raw.trim()
                 .toLowerCase()
-                .replace(/[^0-9a-zA-Z_ \u0391-\uFFE5+]/g, '-')
+                .replace(/[^0-9a-zA-Z_ \u0391-\uFFE5+]/g, '')
                 .replace(/ +/g, '-');
 
             let content = plainify(html);
