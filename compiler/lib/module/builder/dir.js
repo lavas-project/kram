@@ -25,7 +25,7 @@ export default function (app, addModule) {
     let dirInfoList = [];
 
     const dirModule = {
-        get list() {
+        get dirs() {
             return dirInfoList;
         },
 

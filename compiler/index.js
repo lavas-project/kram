@@ -57,4 +57,8 @@ export class Compiler {
             delete: store.delete
         };
     }
+
+    get dirs() {
+        return this.module.dir.dirs;
+    }
 }
