@@ -100,6 +100,31 @@ export default function (app, addModule) {
             }
 
             return result();
+        },
+        execSync(stage, ...args) {
+            let deliverable = args.length > 1;
+            let result = deliverable ? () => args[0] : noop;
+
+            let hook = config.hooks[stage];
+
+            if (!isValidArray(hook)) {
+                return result();
+            }
+
+            for (let i = 0; i < hook.length; i++) {
+                try {
+                    let val = hook[i].fn(...args);
+                    if (deliverable && val != null) {
+                        args[0] = val;
+                    }
+                }
+                catch (e) {
+                    app.logger.error(`Plugin: ${hook[i].name} occur ERROR in stage: ${stage}`);
+                    app.logger.error(e);
+                }
+            }
+
+            return result();
         }
     };
 
