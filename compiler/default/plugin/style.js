@@ -8,8 +8,8 @@ export default class Style {
         this.priority = priority;
     }
 
-    apply(on, kram) {
-        on('afterRender', function (html) {
+    apply(on, app) {
+        on(app.module.plugin.STAGES.AFTER_PARSE, function (html) {
             let style = [];
 
             html = html.replace(

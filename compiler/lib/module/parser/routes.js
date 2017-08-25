@@ -10,7 +10,7 @@ import {
     join,
     sep,
     removePrefix
-} from '../utils';
+} from '../../utils';
 
 import path from 'path';
 

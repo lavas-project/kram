@@ -8,7 +8,7 @@ export default class Info {
         this.priority = priority;
     }
 
-    apply(on, kram) {
+    apply(on, app) {
         on('beforeRender', function (md, options) {
             // md = md.replace()
         });

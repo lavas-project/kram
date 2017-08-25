@@ -141,10 +141,6 @@ export function isFunction(obj) {
     return typeof obj === 'function';
 }
 
-// export function isValidObject(obj) {
-
-// }
-
 export function isEmptyObject(obj) {
     return Object.keys(obj).length === 0;
 }
@@ -195,10 +191,19 @@ export function each(list, fn) {
     }
 }
 
-function classify(list, fn) {
+export function classify(list, fn) {
     return list.reduce((res, info) => {
         let type = fn(info);
         res[type] = res[type] || [];
         res[type].push(info);
+        return res;
     }, {});
+}
+
+export function first(list, fn) {
+    for (let i = 0; i < list.length; i++) {
+        if (fn(list[i], i, list)) {
+            return list[i];
+        }
+    }
 }

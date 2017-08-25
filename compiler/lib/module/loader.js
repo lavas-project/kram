@@ -10,9 +10,6 @@ import {
 
 import {each, getPrototype, isEmptyObject} from '../utils';
 import path from 'path';
-// import glob from 'glob';
-// import crypto from 'crypto';
-
 
 export default function (app, addModule) {
     const config = {};
@@ -34,7 +31,7 @@ export default function (app, addModule) {
         getLoader(name) {
             return config[name];
         },
-        async loadSource(name, source) {
+        async loadOne(name, source) {
             app.logger.info(`load start: ${source.name}`);
 
             let isContinue = await app.module.plugin.exec(BEFORE_LOAD, true, source);
@@ -63,7 +60,7 @@ export default function (app, addModule) {
 
             let loadedSources = await Promise.all(
                 sourcesToLoad.map(
-                    async source => await loader.loadSource(source.loader, source)
+                    async source => await loader.loadOne(source.loader, source)
                 )
             );
 

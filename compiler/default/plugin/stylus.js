@@ -10,8 +10,8 @@ export default class Stylus {
         this.priority = priority;
     }
 
-    apply(on, kram) {
-        on('afterRender', function (md) {
+    apply(on, app) {
+        on(app.module.plugin.STAGES.AFTER_PARSE, function (md) {
             return md.replace(
                 /<style([\s\S]*?)lang="stylus"([\s\S]*?)>([\s\S]*?)<\/style>/mg,
                 (str, attr1, attr2, css) => {
@@ -25,7 +25,7 @@ export default class Stylus {
                         return `<style${attr1}${attr2}>${css}</style>`;
                     }
                     catch (e) {
-                        kram.locals.logger(e);
+                        app.logger(e);
                         return '';
                     }
                 }
