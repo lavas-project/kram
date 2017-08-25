@@ -26,7 +26,9 @@ export default function (app, addModule) {
             config = val;
             plugin.setConfig(ensureArray(urlConfig));
         },
-        addRule: plugin.addRule.bind(plugin)
+        get addRule() {
+            return plugin.addRule;
+        }
     };
 
     return {

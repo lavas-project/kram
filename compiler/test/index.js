@@ -58,6 +58,7 @@ app.exec()
 .then(() => {
     app.store.get('article', 'lavas/vue/foundation/build-and-deploy-project.md')
     .then(obj => {
+        // console.log(app.config.plugin.hooks)
         console.log(obj)
     });
 })

@@ -10,5 +10,6 @@ export {default as logger} from './logger';
 export {default as builder} from './builder';
 export {default as dir} from './builder/dir';
 export {default as parser} from './parser';
+export {default as renderer} from './parser/renderer';
 export {default as highlighter} from './parser/highlighter';
 export {default as routes} from './parser/routes';

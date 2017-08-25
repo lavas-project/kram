@@ -3,16 +3,21 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 import marked from 'marked';
-import {contain} from '../../utils';
+import {contain, each} from '../../utils';
+import {ON_RENDER_PREFIX} from '../plugin';
 
 export const ORIGIN_RENDER = Object.assign({}, marked.Renderer.prototype);
 export const RENDER_NAMES = Object.keys(ORIGIN_RENDER);
 
 export default function (app) {
-    // const methods = Object.assign
+    let rendererMethods = {};
     let renderer = new marked.Renderer();
+    let pluginOptions;
 
     const module = {
+        get rendererMethods() {
+            return rendererMethods;
+        },
         get renderer() {
             return renderer;
         },
@@ -26,25 +31,29 @@ export default function (app) {
                     return;
                 }
 
-                renderer[name] = (...args) => {
-                    let html = fn(...args);
-                    return plugin.execSync('onRender:' + name, html, args);
+                rendererMethods[name] = fn;
+
+                renderer[name] = function (...args) {
+                    let html = fn.apply(renderer, args);
+                    let options = Object.assign({args}, pluginOptions);
+                    return plugin.execSync(ON_RENDER_PREFIX + name, html, options);
                 };
             }
-            else if (typeof args[0] === 'function') {
-
-            }
             else {
-
+                each(args[0], module.setRenderer);
             }
+        },
+        setPluginOptions(opts) {
+            pluginOptions = opts;
         }
     };
 
     return {
         name: 'renderer',
-        module: module,
-        init() {
-
+        module: {
+            get() {
+                return module;
+            }
         }
     };
 }

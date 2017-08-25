@@ -7,12 +7,14 @@
 import Stylus from '../plugin/stylus';
 import Style from '../plugin/style';
 import Minify from '../plugin/minify';
+import Chapter from '../plugin/chapter';
 
 export default function (app) {
     return {
         // URLPlugin: new URLPlugin(),
         stylus: new Stylus(),
         style: new Style(),
-        minify: new Minify()
+        minify: new Minify(),
+        chapter: new Chapter()
     };
 };

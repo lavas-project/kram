@@ -18,8 +18,17 @@ import {
 
 
 export default function (app, addModule) {
-    const config = {};
-    let markedOptions = {};
+    const config = {
+        get renderer() {
+            return app.module.renderer.rendererMethods;
+        }
+    };
+
+    const markedOptions = {
+        get renderer() {
+            return app.module.renderer.renderer;
+        }
+    };
 
     const parser = {
         get config() {
@@ -31,26 +40,23 @@ export default function (app, addModule) {
         setOptions(options) {
             merge(config, options, {ignore: 'renderer'});
 
-            if (options.renderer) {
-                this.setRenderer(options.renderer);
-            }
-            else {
-                markedOptions = getMarkedOptions(config, markedOptions.renderer);
+            if (get(options, 'renderer')) {
+                app.module.renderer.setRenderer(options.renderer);
             }
         },
-        setRenderer(renderer) {
-            if (isObject(renderer)) {
-                renderer = Object.assign({}, this.default.renderer, renderer);
-            }
-
-            merge(config, {renderer});
-            markedOptions = getMarkedOptions(config, markedOptions.renderer);
+        get setRenderer() {
+            return app.module.renderer.setRenderer;
         },
         async parse(md, options) {
+            let {renderer, plugin} = app.module;
+
             try {
-                md = await app.module.plugin.exec(BEFORE_PARSE, md, options);
+                md = await plugin.exec(BEFORE_PARSE, md, options);
+
+                renderer.setPluginOptions(options);
                 let html = marked(md, markedOptions);
-                html = await app.module.plugin.exec(AFTER_PARSE, html, options);
+
+                html = await plugin.exec(AFTER_PARSE, html, options);
                 return html;
             }
             catch (e) {
@@ -72,28 +78,8 @@ export default function (app, addModule) {
             }
         },
         init(options) {
-            parser.setOptions(Object.assign({}, parser.default, options));
+            let renderer = Object.assign({}, parser.default.renderer, get(options, 'renderer'));
+            parser.setOptions(Object.assign({}, parser.default, options, {renderer}));
         }
     };
-}
-
-function getMarkedOptions(options, oldRenderer) {
-    let result = merge({}, options, {ignore: 'renderer'});
-
-    switch (getPrototype(options.renderer)) {
-        case 'Object':
-            let renderer = new marked.Renderer();
-            merge(renderer, options.renderer);
-            result.renderer = renderer;
-            break;
-
-        case 'Function':
-            result.renderer = options.renderer;
-            break;
-
-        default:
-            result.renderer = oldRenderer;
-    }
-
-    return result;
 }
