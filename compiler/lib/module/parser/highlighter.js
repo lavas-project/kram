@@ -21,14 +21,14 @@ export default function (app) {
         },
         setOptions(opts) {
             if (!opts) {
-                return this;
+                return;
             }
-            config.options = Object.assign({}, config.options, opts);
+            config.options = Object.assign(config.options, opts);
             hljs.configure(config.options);
         },
         addLanguage(...args) {
             if (args.length === 1 && isObject(args[0])) {
-                return each(args[0], this.addLanguage.bind(this));
+                return each(args[0], highlighter.addLanguage);
             }
 
             let [name, fn] = args;
