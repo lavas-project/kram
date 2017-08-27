@@ -52,7 +52,7 @@ export default class Chapter {
             }
             obj.chapters = buildTree(info.list);
             return obj;
-        });
+        }, this.priority);
     }
 }
 

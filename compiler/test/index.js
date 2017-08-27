@@ -31,7 +31,7 @@ var app = new Compiler({
             tmp: path.resolve(__dirname, '../../doc/git/lavas')
         }
     ],
-    routes: [
+    router: [
         {
             dir(dir) {
                 return path.extname(dir) !== '.md';

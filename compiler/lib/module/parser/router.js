@@ -18,7 +18,7 @@ export default function (app, addModule) {
     let config;
     let plugin = new URLPlugin();
 
-    const routes = {
+    const router = {
         get config() {
             return config;
         },
@@ -32,18 +32,18 @@ export default function (app, addModule) {
     };
 
     return {
-        name: 'routes',
+        name: 'router',
         config: {
             get() {
                 return config;
             },
             set(val) {
-                routes.config = val;
+                router.config = val;
             }
         },
         module: {
             get() {
-                return routes;
+                return router;
             }
         },
         init(urlConfig) {

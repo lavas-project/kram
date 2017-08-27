@@ -22,8 +22,6 @@ export default function (app) {
             return renderer;
         },
         setRenderer(...args) {
-            let plugin = app.module.plugin;
-
             if (args.length === 2) {
                 let [name, fn] = args;
 
@@ -36,7 +34,7 @@ export default function (app) {
                 renderer[name] = function (...args) {
                     let html = fn.apply(renderer, args);
                     let options = Object.assign({args}, pluginOptions);
-                    return plugin.execSync(ON_RENDER_PREFIX + name, html, options);
+                    return app.module.plugin.execSync(ON_RENDER_PREFIX + name, html, options);
                 };
             }
             else {
