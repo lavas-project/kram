@@ -35,7 +35,7 @@ export default class Info {
 export function tpl({title, author, time, tag}, options, app) {
     let titleHtml = title ? `<h1>${title}</h1>` : '';
     let authorHtml = listHtml(author, 'km-author');
-    let tagHtml = listHtml(tag, 'km-tag')
+    let tagHtml = listHtml(tag, 'km-tag');
     let timeHtml = time ? `<p class="km-release-time">${time}</p>` : '';
 
     return `
