@@ -3,7 +3,7 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-export default function (app, addModule) {
+export default function (app) {
     let config = null;
 
     const log = {

@@ -34,7 +34,7 @@ export default function (app, addModule) {
             return removePrefix(sep(dir), sep(baseDir));
         },
 
-        async process(sources) {
+        async process(sources = app.config.sources) {
             let plugin = app.module.plugin;
             let toProcess = await plugin.exec(BEFORE_PROCESS_ALL_DIR, sources.slice(0), sources);
 

@@ -1,6 +1,7 @@
 /**
  * @file 生成文章目录结构插件
  */
+import path from 'path';
 
 export default class Catalog {
     constructor({priority} = {}) {
@@ -8,11 +9,10 @@ export default class Catalog {
     }
 
     apply(on, app) {
-        // let {BEFORE_STORE} = app.module.plugin.STAGES;
-        let BEFORE_STORE = app.module.plugin.STAGES.BEFORE_STORE;
+        let AFTER_STORE = app.module.plugin.STAGES.AFTER_STORE;
 
-        on(BEFORE_STORE, (obj, {dir}) => {
-            
+        on(AFTER_STORE, (obj, {dir}) => {
+            let metaDirs = app.dirs.filter(({dir}) => path.basename(dir) === 'meta.json');
         }, this.priority);
     }
 }

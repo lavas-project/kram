@@ -16,37 +16,122 @@
 // export function merge(a, b, {type = 'overwrite', ignore = []} = {}) {
 
 export function merge(...args) {
-    if (Array.isArray(args[0]) && args.length < 3) {
-        let opts = mergeOptions(args[1]);
-        return args[0].slice(1).reduce((a, b) => merge(a, b, opts), args[0][0]);
+    let arr;
+    let options;
+
+    if (Array.isArray(args[0])) {
+        arr = args[0];
+        options = args[1];
+    }
+    else {
+        arr = args.slice(0, 2);
+        options = args[2];
     }
 
-    let [a, b, opts] = args;
+    let {
+        type = 'overwrite',
+        ignore = [],
+        proxy = false
+    } = options || {};
 
-    if (!b || typeof b !== 'object') {
-        return a;
-    }
-
-    let {ignore, type} = mergeOptions(opts);
-    ignore = ensureArray(ignore);
-
-    let keys = Object.keys(b);
+    let keys = arr.reduce((res, obj) => res.concat(Object.keys(obj)), []);
+    keys = Array.from(new Set(keys));
 
     if (isValidArray(ignore)) {
         keys = keys.filter(key => !contain(ignore, key));
     }
 
     if (type === 'append') {
-        keys = keys.filter(key => a[key] == null);
+        keys = keys.filter(key => arr[0][key] == null);
     }
 
-    return keys.reduce((res, key) => set(res, key, b[key]), a);
+    let [a, ...res] = arr[0];
+    res = res.filter(obj => obj != null);
+
+    return keys.reduce((a, key) => {
+            let item = last(res, (item) => item.key != null);
+            if (item && item !== a) {
+                if (proxy) {
+                    Object.defineProperty(a, key, {
+                        get() {
+                            return item[key];
+                        },
+                        set(val) {
+                            item[key] = a;
+                        }
+                    });
+                }
+                else {
+                    a[key] = item[key];
+                }
+            }
+            return a;
+        },
+        a
+    );
+    // if (Array.isArray(args[0]) && args.length < 3) {
+    //     let opts = mergeOptions(args[1]);
+    //     return args[0].slice(1).reduce((a, b) => merge(a, b, opts), args[0][0]);
+    // }
+
+    // let [a, b, opts] = args;
+
+    // if (!b || typeof b !== 'object') {
+    //     return a;
+    // }
+
+    // let {ignore, type} = mergeOptions(opts);
+    // ignore = ensureArray(ignore);
+
+    // let keys = Object.keys(b);
+
+    // if (isValidArray(ignore)) {
+    //     keys = keys.filter(key => !contain(ignore, key));
+    // }
+
+    // if (type === 'append') {
+    //     keys = keys.filter(key => a[key] == null);
+    // }
+
+    // return keys.reduce((res, key) => set(res, key, b[key]), a);
 }
 
-function mergeOptions(options) {
-    let {type = 'overwrite', ignore = []} = options || {};
-    return {type, ignore};
-}
+// export function mergeAll(arr, options) {
+//     let {type, ignore} = mergeOptions(options);
+//     let keys = arr.reduce((res, obj) => res.concat(Object.keys(obj)), []);
+//     keys = Array.from(new Set(keys));
+
+//     if (isValidArray(ignore)) {
+//         keys = keys.filter(key => !contain(ignore, key));
+//     }
+
+//     if (type === 'append') {
+//         keys = keys.filter(key => arr[0][key] == null);
+//     }
+
+//     let [a, ...res] = arr[0];
+//     res = res.filter(obj => obj != null);
+
+//     return keys.reduce((a, key) => {
+//             let item = last(res, (item) => item.key != null);
+//             if (item) {
+//                 a[key] = item[key];
+//             }
+//             return a;
+//         },
+//         a
+//     );
+// }
+
+// function mergeOptions(options) {
+//     let {
+//         type = 'overwrite',
+//         ignore = [],
+//         proxy = false
+//     } = options || {};
+
+//     return {type, ignore};
+// }
 
 /**
  * 安全获取多级属性的方法，省的去写各种容错判断
@@ -202,6 +287,14 @@ export function classify(list, fn) {
 
 export function first(list, fn) {
     for (let i = 0; i < list.length; i++) {
+        if (fn(list[i], i, list)) {
+            return list[i];
+        }
+    }
+}
+
+export function last(list, fn) {
+    for (let i = list.length - 1; i > -1; i--) {
         if (fn(list[i], i, list)) {
             return list[i];
         }
