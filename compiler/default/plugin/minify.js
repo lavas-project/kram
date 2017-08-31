@@ -13,7 +13,7 @@ export default class Minify {
     }
 
     apply(on, app) {
-        on(app.module.plugin.STAGES.AFTER_PARSE, function (html) {
+        on(app.module.hook.STAGES.AFTER_PARSE, function (html) {
             try {
                 return minifyEngine(html, {
                     collapseWhitespace: true,

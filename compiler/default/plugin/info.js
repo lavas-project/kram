@@ -15,7 +15,7 @@ export default class Info {
     apply(on, app) {
         let map = new Map();
 
-        on('beforeRender', function (md, options) {
+        on(app.module.hook.STAGES.BEFORE_PARSE, function (md, options) {
             md = md.replace(/^((.+?[:：].*?\r?\n)|\s)+-+\r?\n/mg, (str) => {
                 let data = str.split('\n')
                     .filter(line => line.test(/^\s+$/))

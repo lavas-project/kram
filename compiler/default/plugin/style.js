@@ -9,7 +9,7 @@ export default class Style {
     }
 
     apply(on, app) {
-        on(app.module.plugin.STAGES.AFTER_PARSE, function (html) {
+        on(app.module.hook.STAGES.AFTER_PARSE, function (html) {
             let style = [];
 
             html = html.replace(

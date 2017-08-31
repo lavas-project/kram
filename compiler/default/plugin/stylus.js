@@ -11,7 +11,7 @@ export default class Stylus {
     }
 
     apply(on, app) {
-        on(app.module.plugin.STAGES.AFTER_PARSE, function (md) {
+        on(app.module.hook.STAGES.AFTER_PARSE, function (md) {
             return md.replace(
                 /<style([\s\S]*?)lang="stylus"([\s\S]*?)>([\s\S]*?)<\/style>/mg,
                 (str, attr1, attr2, css) => {

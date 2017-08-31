@@ -63,6 +63,6 @@ export class Compiler {
     }
 
     on(stage, callback) {
-
+        this.module.event.on(stage, callback);
     }
 }

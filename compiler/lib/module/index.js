@@ -4,7 +4,9 @@
  */
 
 export {default as loader} from './loader';
-export {default as plugin} from './plugin';
+export {default as hook} from './hook';
+export {default as plugin} from './hook/plugin';
+export {default as event} from './hook/event';
 export {default as store} from './store';
 export {default as logger} from './logger';
 export {default as builder} from './builder';

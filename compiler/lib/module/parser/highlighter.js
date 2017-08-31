@@ -33,7 +33,7 @@ export default function (app) {
 
             let [name, fn] = args;
 
-            if (app.config.highlighter.languages[name]) {
+            if (config.languages[name]) {
                 return;
             }
 

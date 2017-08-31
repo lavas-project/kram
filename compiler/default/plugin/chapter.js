@@ -15,7 +15,7 @@ export default class Chapter {
     }
 
     apply(on, app) {
-        let {ON_RENDER_HEADING, BEFORE_STORE} = app.module.plugin.STAGES;
+        let {ON_RENDER_HEADING, BEFORE_STORE} = app.module.hook.STAGES;
         let map = new Map();
 
         on(ON_RENDER_HEADING, (html, {args: [text, level, raw], dir}) => {
