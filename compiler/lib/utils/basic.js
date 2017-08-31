@@ -30,9 +30,10 @@ export function merge(...args) {
 
     let {
         type = 'overwrite',
-        ignore = [],
-        proxy = false
+        ignore = []
     } = options || {};
+
+    ignore = ensureArray(ignore);
 
     let keys = arr.reduce((res, obj) => res.concat(Object.keys(obj)), []);
     keys = Array.from(new Set(keys));
@@ -45,93 +46,18 @@ export function merge(...args) {
         keys = keys.filter(key => arr[0][key] == null);
     }
 
-    let [a, ...res] = arr[0];
+    let [a, ...res] = arr;
     res = res.filter(obj => obj != null);
-
     return keys.reduce((a, key) => {
-            let item = last(res, (item) => item.key != null);
-            if (item && item !== a) {
-                if (proxy) {
-                    Object.defineProperty(a, key, {
-                        get() {
-                            return item[key];
-                        },
-                        set(val) {
-                            item[key] = a;
-                        }
-                    });
-                }
-                else {
-                    a[key] = item[key];
-                }
+            let item = last(res, (item) => item[key] != null);
+            if (item) {
+                a[key] = item[key];
             }
             return a;
         },
         a
     );
-    // if (Array.isArray(args[0]) && args.length < 3) {
-    //     let opts = mergeOptions(args[1]);
-    //     return args[0].slice(1).reduce((a, b) => merge(a, b, opts), args[0][0]);
-    // }
-
-    // let [a, b, opts] = args;
-
-    // if (!b || typeof b !== 'object') {
-    //     return a;
-    // }
-
-    // let {ignore, type} = mergeOptions(opts);
-    // ignore = ensureArray(ignore);
-
-    // let keys = Object.keys(b);
-
-    // if (isValidArray(ignore)) {
-    //     keys = keys.filter(key => !contain(ignore, key));
-    // }
-
-    // if (type === 'append') {
-    //     keys = keys.filter(key => a[key] == null);
-    // }
-
-    // return keys.reduce((res, key) => set(res, key, b[key]), a);
 }
-
-// export function mergeAll(arr, options) {
-//     let {type, ignore} = mergeOptions(options);
-//     let keys = arr.reduce((res, obj) => res.concat(Object.keys(obj)), []);
-//     keys = Array.from(new Set(keys));
-
-//     if (isValidArray(ignore)) {
-//         keys = keys.filter(key => !contain(ignore, key));
-//     }
-
-//     if (type === 'append') {
-//         keys = keys.filter(key => arr[0][key] == null);
-//     }
-
-//     let [a, ...res] = arr[0];
-//     res = res.filter(obj => obj != null);
-
-//     return keys.reduce((a, key) => {
-//             let item = last(res, (item) => item.key != null);
-//             if (item) {
-//                 a[key] = item[key];
-//             }
-//             return a;
-//         },
-//         a
-//     );
-// }
-
-// function mergeOptions(options) {
-//     let {
-//         type = 'overwrite',
-//         ignore = [],
-//         proxy = false
-//     } = options || {};
-
-//     return {type, ignore};
-// }
 
 /**
  * 安全获取多级属性的方法，省的去写各种容错判断

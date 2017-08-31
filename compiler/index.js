@@ -14,6 +14,7 @@ export class Compiler {
     constructor(options = {}) {
         this.config = {};
         this.module = {};
+        // this.event
 
         let inits = [];
 
@@ -28,7 +29,6 @@ export class Compiler {
         this.default = defaultData(this);
         options = isFunction(options) ? options(this) : options;
         merge([this.config, this.default.config, options], {ignore: moduleNames});
-
         inits.forEach(({fn, props}) => fn(props));
     }
 
@@ -60,5 +60,9 @@ export class Compiler {
 
     get dirs() {
         return this.module.dir.dirs;
+    }
+
+    on(stage, callback) {
+
     }
 }

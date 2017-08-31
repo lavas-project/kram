@@ -50,8 +50,7 @@ var app = new Compiler({
             // renderer: 'rendererName',
             // layout: 'layoutName'
         }
-    ],
-
+    ]
 });
 
 app.exec()
