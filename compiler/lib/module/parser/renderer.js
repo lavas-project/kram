@@ -4,7 +4,7 @@
  */
 import marked from 'marked';
 import {contain, each} from '../../utils';
-import {ON_RENDER_PREFIX} from '../plugin';
+import {ON_RENDER_PREFIX} from '../hook/stage';
 
 export const ORIGIN_RENDER = Object.assign({}, marked.Renderer.prototype);
 export const RENDER_NAMES = Object.keys(ORIGIN_RENDER);
@@ -12,7 +12,7 @@ export const RENDER_NAMES = Object.keys(ORIGIN_RENDER);
 export default function (app) {
     let rendererMethods = {};
     let renderer = new marked.Renderer();
-    let pluginOptions;
+    let hookOptions;
 
     const module = {
         get rendererMethods() {
@@ -33,16 +33,17 @@ export default function (app) {
 
                 renderer[name] = function (...args) {
                     let html = fn.apply(renderer, args);
-                    let options = Object.assign({args}, pluginOptions);
-                    return app.module.plugin.execSync(ON_RENDER_PREFIX + name, html, options);
+                    let options = Object.assign({args}, hookOptions);
+                    html = app.module.hook.execSync(ON_RENDER_PREFIX + name, html, options);
+                    return html;
                 };
             }
             else {
                 each(args[0], module.setRenderer);
             }
         },
-        setPluginOptions(opts) {
-            pluginOptions = opts;
+        setHookOptions(opts) {
+            hookOptions = opts;
         }
     };
 

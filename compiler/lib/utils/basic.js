@@ -3,60 +3,39 @@
  * @author  tanglei (tanglei02@baidu.com)
  */
 
-// *
-//  * 拼合两个 object，并返回第一个 object
-//  *
-//  * @param {Object} a 待拼合对象
-//  * @param {Object} b 待拼合对象
-//  * @param {Object|undefined} options 参数
-//  * @param {string} options.type 拼合类型 overwrite/append，默认为 b 覆盖 a 已有的属性
-//  * @param {Array} options.ignore 忽略 b 的某些属性名
-//  * @return {Object} 拼合好的 a 对象
+export function merge(a, b, options) {
+    if (!options) {
+        if (Array.isArray(b)) {
+            return Object.assign(a, ...b);
+        }
 
-// export function merge(a, b, {type = 'overwrite', ignore = []} = {}) {
-
-export function merge(...args) {
-    let arr;
-    let options;
-
-    if (Array.isArray(args[0])) {
-        arr = args[0];
-        options = args[1];
-    }
-    else {
-        arr = args.slice(0, 2);
-        options = args[2];
+        return Object.assign(a, b);
     }
 
-    let {
-        type = 'overwrite',
-        ignore = []
-    } = options || {};
-
-    ignore = ensureArray(ignore);
-
-    let keys = arr.reduce((res, obj) => res.concat(Object.keys(obj)), []);
-    keys = Array.from(new Set(keys));
-
-    if (isValidArray(ignore)) {
-        keys = keys.filter(key => !contain(ignore, key));
+    if (Array.isArray(b)) {
+        b = Object.assign({}, ...b);
     }
 
-    if (type === 'append') {
-        keys = keys.filter(key => arr[0][key] == null);
+    let keys = Object.keys(b);
+    let {append, ignore} = options;
+
+    if (ignore) {
+        if (typeof ignore === 'string') {
+            keys = keys.filter(key => key !== ignore);
+        }
+        else {
+            keys = keys.filter(key => ignore.indexOf(key) > -1);
+        }
     }
 
-    let [a, ...res] = arr;
-    res = res.filter(obj => obj != null);
+    if (append) {
+        keys = keys.filter(key => a[key] != null);
+    }
+
     return keys.reduce((a, key) => {
-            let item = last(res, (item) => item[key] != null);
-            if (item) {
-                a[key] = item[key];
-            }
-            return a;
-        },
-        a
-    );
+        a[key] = b[key];
+        return a;
+    }, a);
 }
 
 /**
@@ -112,9 +91,7 @@ export function isValidArray(arr) {
 export function ensureArray(arr) {
     return Array.isArray(arr)
         ? arr
-        : arr === undefined
-            ? []
-            : [arr];
+        : arr === undefined ? [] : [arr];
 }
 
 /**
@@ -190,7 +167,20 @@ export function chunk(arr, size) {
 }
 
 export function toArray(obj) {
-    return Object.keys(obj).map(key => obj[key]);
+    switch (getPrototype(obj)) {
+        case 'Object':
+            return Object.keys(obj).map(key => obj[key]);
+        case 'Set':
+            return Array.from(obj);
+        case 'Map':
+            return Array.from(map).map(keyVal => keyVal[1]);
+        default:
+            break;
+    }
+}
+
+export function toObject(obj) {
+    return Array.from(obj).reduce((item, [key, val]) => set(item, key, val), {});
 }
 
 export function each(list, fn) {

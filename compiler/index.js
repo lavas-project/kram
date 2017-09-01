@@ -14,30 +14,28 @@ export class Compiler {
     constructor(options = {}) {
         this.config = {};
         this.module = {};
-        // this.event
 
         let inits = [];
 
         moduleNames.map(key => modules[key](this))
             .filter(module => !!module)
-            .forEach(({name, config, module, init}) => {
-                config && Object.defineProperty(this.config, config.name || name, config);
+            .forEach(({name, module, init}) => {
+                // config && Object.defineProperty(this.config, config.name || name, config);
                 module && Object.defineProperty(this.module, module.name || name, module);
                 init && inits.push({props: options[name], fn: init});
             });
 
         this.default = defaultData(this);
         options = isFunction(options) ? options(this) : options;
-        merge([this.config, this.default.config, options], {ignore: moduleNames});
+        // @TODO 这里是有问题的
+        // 因为实际 module 在读配置的时候 都有自己的 default merge 策略
+        merge(this.config, [this.default.config, options]);
         inits.forEach(({fn, props}) => fn(props));
     }
 
     exec() {
-        let {loader, dir, builder} = this.module;
-
-        return loader.load()
-            .then(dir.process)
-            .then(builder.build);
+        let {loader, builder} = this.module;
+        return loader.load().then(builder.build);
     }
 
     get parse() {
@@ -59,7 +57,15 @@ export class Compiler {
     }
 
     get dirs() {
-        return this.module.dir.dirs;
+        return this.module.dir.dirInfoArray;
+    }
+
+    get docDirs() {
+        return this.module.dir.builtInfoArray;
+    }
+
+    get STAGES() {
+        return this.module.hook.STAGES;
     }
 
     on(stage, callback) {

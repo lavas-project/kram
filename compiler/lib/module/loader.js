@@ -6,7 +6,7 @@ import {
     AFTER_LOAD,
     BEFORE_LOAD_ALL,
     AFTER_LOAD_ALL
-} from './plugin';
+} from './hook/stage';
 
 import {each, getPrototype, isEmptyObject} from '../utils';
 import path from 'path';
@@ -34,7 +34,7 @@ export default function (app, addModule) {
         async loadOne(name, source) {
             app.logger.info(`load start: ${source.name}`);
 
-            let isContinue = await app.module.plugin.exec(BEFORE_LOAD, true, source);
+            let isContinue = await app.module.hook.exec(BEFORE_LOAD, true, source);
 
             if (!isContinue) {
                 app.logger.info(`load cancel: ${source.name}`);
@@ -72,11 +72,11 @@ export default function (app, addModule) {
 
     return {
         name: 'loader',
-        config: {
-            get() {
-                return config;
-            }
-        },
+        // config: {
+        //     get() {
+        //         return config;
+        //     }
+        // },
         module: {
             get() {
                 return loader;

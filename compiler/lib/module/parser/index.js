@@ -14,7 +14,7 @@ import {
 import {
     BEFORE_PARSE,
     AFTER_PARSE
-} from '../plugin';
+} from '../hook/stage';
 
 
 export default function (app, addModule) {
@@ -34,9 +34,11 @@ export default function (app, addModule) {
         get config() {
             return config;
         },
+
         get default() {
             return app.default.config.parser;
         },
+
         setOptions(options) {
             merge(config, options, {ignore: 'renderer'});
 
@@ -44,19 +46,21 @@ export default function (app, addModule) {
                 app.module.renderer.setRenderer(options.renderer);
             }
         },
+
         get setRenderer() {
             return app.module.renderer.setRenderer;
         },
+
         async parse(md, options) {
-            let {renderer, plugin} = app.module;
+            let {renderer, hook} = app.module;
 
             try {
-                md = await plugin.exec(BEFORE_PARSE, md, options);
+                md = await hook.exec(BEFORE_PARSE, md, options);
 
                 renderer.setPluginOptions(options);
                 let html = marked(md, markedOptions);
 
-                html = await plugin.exec(AFTER_PARSE, html, options);
+                html = await hook.exec(AFTER_PARSE, html, options);
                 return html;
             }
             catch (e) {
@@ -67,11 +71,11 @@ export default function (app, addModule) {
 
     return {
         name: 'parser',
-        config: {
-            get() {
-                return config;
-            }
-        },
+        // config: {
+        //     get() {
+        //         return config;
+        //     }
+        // },
         module: {
             get() {
                 return parser;

@@ -3,24 +3,32 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-import {isValidArray, noop, each} from '../utils';
+import {isValidArray, noop, each} from '../../utils';
 import {STAGE_SET} from './stage';
 
 export default function (app) {
-    const config = {
-        list: {},
-        hooks: {}
-    };
+    const list = {};
+    const hooks = {};
 
     const plugin = {
-        get config() {
-            return config.list;
+        get hooks() {
+            return hooks;
         },
+
+        hook(stage) {
+            return hooks[stage];
+        },
+
+        get list() {
+            return list;
+        },
+
         get default() {
             return app.default.config.plugin;
         },
+
         register(name, plugin) {
-            if (config.list[name]) {
+            if (list[name]) {
                 return;
             }
 
@@ -30,29 +38,27 @@ export default function (app) {
                         return;
                     }
 
-                    config.hooks[stage] = config.hooks[stage] || [];
-                    config.hooks[stage].push({priority, fn, name});
-                    config.hooks[stage].sort((a, b) => a.priority - b.priority);
+                    hooks[stage] = hooks[stage] || [];
+                    hooks[stage].push({priority, fn, name});
+                    hooks[stage].sort((a, b) => a.priority - b.priority);
                 },
                 app
             );
 
-            config.list[name] = plugin;
+            list[name] = plugin;
         },
-        async exec(stage, ...args) {
-            let deliverable = args.length > 1;
-            let result = deliverable ? () => args[0] : noop;
 
-            let hook = config.hooks[stage];
+        async exec(stage, data, options) {
+            let hook = hooks[stage];
 
             if (!isValidArray(hook)) {
-                return result();
+                return data;
             }
 
             for (let i = 0; i < hook.length; i++) {
                 try {
-                    let val = await hook[i].fn(...args);
-                    if (deliverable && val != null) {
+                    let val = await hook[i].fn(data, options);
+                    if (val != null) {
                         args[0] = val;
                     }
                 }
@@ -62,22 +68,20 @@ export default function (app) {
                 }
             }
 
-            return result();
+            return data;
         },
+
         execSync(stage, ...args) {
-            let deliverable = args.length > 1;
-            let result = deliverable ? () => args[0] : noop;
-
-            let hook = config.hooks[stage];
+            let hook = hooks[stage];
 
             if (!isValidArray(hook)) {
-                return result();
+                return data;
             }
 
             for (let i = 0; i < hook.length; i++) {
                 try {
-                    let val = hook[i].fn(...args);
-                    if (deliverable && val != null) {
+                    let val = hook[i].fn(data, options);
+                    if (val != null) {
                         args[0] = val;
                     }
                 }
@@ -87,17 +91,12 @@ export default function (app) {
                 }
             }
 
-            return result();
+            return data;
         }
     };
 
     return {
         name: 'plugin',
-        config: {
-            get() {
-                return config;
-            }
-        },
         module: {
             get() {
                 return plugin;

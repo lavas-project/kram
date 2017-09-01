@@ -57,11 +57,11 @@ export default function (app) {
 
     return {
         name: 'highlighter',
-        config: {
-            get() {
-                return config;
-            }
-        },
+        // config: {
+        //     get() {
+        //         return config;
+        //     }
+        // },
         module: {
             get() {
                 return highlighter;

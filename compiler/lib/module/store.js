@@ -57,11 +57,11 @@ export default function (app, addModule) {
 
     return {
         name: 'store',
-        config: {
-            get() {
-                return config;
-            }
-        },
+        // config: {
+        //     get() {
+        //         return config;
+        //     }
+        // },
         module: {
             get() {
                 return store;

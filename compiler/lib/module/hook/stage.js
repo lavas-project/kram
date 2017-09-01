@@ -10,8 +10,9 @@ export const AFTER_LOAD_ALL = 'afterLoadAll';
 export const BEFORE_LOAD = 'beforeLoad';
 export const AFTER_LOAD = 'afterLoad';
 
-export const BEFORE_PROCESS_ALL_DIR = 'beforeProcessAllDir';
-export const AFTER_PROCESS_ALL_DIR = 'afterProcessAllDir';
+export const ON_PROCESS_DIR = 'onProcessDir';
+// export const BEFORE_PROCESS_ALL_DIR = 'beforeProcessAllDir';
+// export const AFTER_PROCESS_ALL_DIR = 'afterProcessAllDir';
 
 export const BEFORE_PARSE = 'beforeRender';
 export const AFTER_PARSE = 'afterRender';
@@ -36,8 +37,9 @@ export const STAGES = Object.assign(
         BEFORE_LOAD,
         AFTER_LOAD,
 
-        BEFORE_PROCESS_ALL_DIR,
-        AFTER_PROCESS_ALL_DIR,
+        ON_PROCESS_DIR,
+        // BEFORE_PROCESS_ALL_DIR,
+        // AFTER_PROCESS_ALL_DIR,
 
         BEFORE_PARSE,
         AFTER_PARSE,

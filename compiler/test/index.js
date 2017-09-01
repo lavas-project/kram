@@ -53,16 +53,16 @@ var app = new Compiler({
     ]
 });
 
-app.exec()
-.then(() => {
-    app.store.get('article', 'lavas/vue/foundation/build-and-deploy-project.md')
-    .then(obj => {
-        // console.log(app.config.plugin.hooks)
-        console.log('--------')
-        console.log(obj)
-    });
-})
-.catch(err => {
-    console.log('in error')
-    console.log(err)
-});
+// app.exec()
+// .then(() => {
+//     app.store.get('article', 'lavas/vue/foundation/build-and-deploy-project.md')
+//     .then(obj => {
+//         // console.log(app.config.plugin.hooks)
+//         console.log('--------')
+//         console.log(obj)
+//     });
+// })
+// .catch(err => {
+//     console.log('in error')
+//     console.log(err)
+// });

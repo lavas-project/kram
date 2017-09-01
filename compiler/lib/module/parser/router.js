@@ -33,14 +33,14 @@ export default function (app, addModule) {
 
     return {
         name: 'router',
-        config: {
-            get() {
-                return config;
-            },
-            set(val) {
-                router.config = val;
-            }
-        },
+        // config: {
+        //     get() {
+        //         return config;
+        //     },
+        //     set(val) {
+        //         router.config = val;
+        //     }
+        // },
         module: {
             get() {
                 return router;
@@ -65,7 +65,7 @@ class URLPlugin {
         let baseDir = app.config.baseDir;
         let sepBaseDir = sep(baseDir);
 
-        let {AFTER_PARSE, BEFORE_STORE} = app.module.plugin.STAGES;
+        let {AFTER_PARSE, BEFORE_STORE} = app.STAGES;
 
         on(AFTER_PARSE, (html, info) => {
             return html.replace(

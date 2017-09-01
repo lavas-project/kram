@@ -6,32 +6,32 @@ export default function (app) {
         get STAGES() {
             return STAGES;
         },
-        async exec(stage, ...args) {
+        async exec(stage, data, options) {
             let {event, plugin} = app.module;
             let result;
 
             if (startWith(stage, 'before')) {
-                event.emit(stage, ...args);
-                result = await plugin.exec(stage, ...args);
+                event.emit(stage, data, options);
+                result = await plugin.exec(stage, data, options);
             }
             else {
-                result = await plugin.exec(stage, ...args);
-                event.emit(stage, ...args);
+                result = await plugin.exec(stage, data, options);
+                event.emit(stage, data, options);
             }
 
             return result;
         },
-        execSync(stage,) {
+        execSync(stage, data, options) {
             let {event, plugin} = app.module;
             let result;
 
             if (startWith(stage, 'before')) {
-                event.emit(stage, ...args);
-                result = plugin.execSync(stage, ...args);
+                event.emit(stage, data, options);
+                result = plugin.execSync(stage, data, options);
             }
             else {
-                result = plugin.execSync(stage, ...args);
-                event.emit(stage, ...args);
+                result = plugin.execSync(stage, data, options);
+                event.emit(stage, data, options);
             }
 
             return result;
