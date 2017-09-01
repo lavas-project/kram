@@ -15,5 +15,5 @@ export default function (app) {
                 return event;
             }
         }
-    }
+    };
 }
