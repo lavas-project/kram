@@ -13,6 +13,7 @@ export default function (app, addModule) {
         get config() {
             return config;
         },
+
         get default() {
             return app.default.config.store;
         },
@@ -24,16 +25,14 @@ export default function (app, addModule) {
         },
 
         setOptions(opts) {
-            if (!opts) {
-                return;
+            if (opts) {
+                config.options = Object.assign(
+                    {},
+                    this.default.options,
+                    config.options,
+                    opts
+                );
             }
-
-            config.options = Object.assign(
-                {},
-                this.default.options,
-                config.options,
-                opts
-            );
         },
 
         async set(type, key, value) {
@@ -55,22 +54,16 @@ export default function (app, addModule) {
         }
     };
 
-    return {
-        name: 'store',
-        // config: {
-        //     get() {
-        //         return config;
-        //     }
-        // },
-        module: {
-            get() {
-                return store;
-            }
-        },
-        init({options = store.default.options, storage = store.default.storage} = {}) {
-            store.setStorage(storage);
-            store.setOptions(options);
-        }
+    app.addModule('store', () => store);
+
+    return () => {
+        let {
+            options = store.default.options,
+            storage = store.default.storage
+        } = app.config.store || {};
+
+        store.setStorage(storage);
+        store.setOptions(options);
     };
 };
 

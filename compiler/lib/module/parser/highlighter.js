@@ -12,13 +12,15 @@ export default function (app) {
         languages: {}
     };
 
-    const highlighter = {
+    const hler = {
         get config() {
             return config;
         },
+
         get default() {
             return app.default.config.highlight;
         },
+
         setOptions(opts) {
             if (!opts) {
                 return;
@@ -26,9 +28,10 @@ export default function (app) {
             config.options = Object.assign(config.options, opts);
             hljs.configure(config.options);
         },
+
         addLanguage(...args) {
             if (args.length === 1 && isObject(args[0])) {
-                return each(args[0], highlighter.addLanguage);
+                return each(args[0], hler.addLanguage);
             }
 
             let [name, fn] = args;
@@ -40,6 +43,7 @@ export default function (app) {
             config.languages[name] = fn;
             hljs.registerLanguage(name, fn);
         },
+
         highlight(code, language) {
             if (hljs.getLanguage(language)) {
                 try {
@@ -55,21 +59,29 @@ export default function (app) {
         }
     };
 
-    return {
-        name: 'highlighter',
-        // config: {
-        //     get() {
-        //         return config;
-        //     }
-        // },
-        module: {
-            get() {
-                return highlighter;
-            }
-        },
-        init({options = highlighter.default.options, languages = highlighter.default.languages} = {}) {
-            highlighter.setOptions(options);
-            highlighter.addLanguage(languages);
-        }
+    app.addModule('highlighter', () => hler);
+
+    return () => {
+        let {options, languages} = Object.assign({}, app.config.highlight, hler.default);
+        hler.setOptions(options);
+        hler.addLanguage(languages);
     };
+
+    // return {
+    //     name: 'highlighter',
+    //     // config: {
+    //     //     get() {
+    //     //         return config;
+    //     //     }
+    //     // },
+    //     module: {
+    //         get() {
+    //             return highlighter;
+    //         }
+    //     },
+    //     init({options = highlighter.default.options, languages = highlighter.default.languages} = {}) {
+    //         highlighter.setOptions(options);
+    //         highlighter.addLanguage(languages);
+    //     }
+    // };
 }

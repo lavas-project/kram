@@ -47,12 +47,5 @@ export default function (app) {
         }
     };
 
-    return {
-        name: 'renderer',
-        module: {
-            get() {
-                return module;
-            }
-        }
-    };
+    app.addModule('renderer', () => module);
 }

@@ -11,26 +11,25 @@ import {merge, set, isFunction} from './lib/utils';
 let moduleNames = Object.keys(modules);
 
 export class Compiler {
-    constructor(options = {}) {
-        this.config = {};
+    constructor(config = {}) {
         this.module = {};
 
-        let inits = [];
-
-        moduleNames.map(key => modules[key](this))
-            .filter(module => !!module)
-            .forEach(({name, module, init}) => {
-                // config && Object.defineProperty(this.config, config.name || name, config);
-                module && Object.defineProperty(this.module, module.name || name, module);
-                init && inits.push({props: options[name], fn: init});
-            });
+        let inits = moduleNames.map(key => modules[key](this)).filter(init => !!init);
 
         this.default = defaultData(this);
-        options = isFunction(options) ? options(this) : options;
-        // @TODO 这里是有问题的
-        // 因为实际 module 在读配置的时候 都有自己的 default merge 策略
-        merge(this.config, [this.default.config, options]);
-        inits.forEach(({fn, props}) => fn(props));
+        this.config = isFunction(config) ? config(this) : config;
+
+        inits.forEach(fn => fn());
+    }
+
+    addModule(name, module) {
+        if (isFunction(module)) {
+            module = {
+                get: module
+            };
+        }
+
+        Object.defineProperty(this.module, name, module);
     }
 
     exec() {
@@ -43,7 +42,7 @@ export class Compiler {
     }
 
     get logger() {
-        return this.module.logger.logger;
+        return this.module.logger;
     }
 
     get store() {

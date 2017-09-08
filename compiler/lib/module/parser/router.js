@@ -14,7 +14,7 @@ import {
 
 import path from 'path';
 
-export default function (app, addModule) {
+export default function (app) {
     let config;
     let plugin = new URLPlugin();
 
@@ -31,33 +31,19 @@ export default function (app, addModule) {
         }
     };
 
-    return {
-        name: 'router',
-        // config: {
-        //     get() {
-        //         return config;
-        //     },
-        //     set(val) {
-        //         router.config = val;
-        //     }
-        // },
-        module: {
-            get() {
-                return router;
-            }
-        },
-        init(urlConfig) {
-            config = urlConfig;
+    app.addModule('router', () => router);
 
-            plugin.setConfig(urlConfig);
-            app.module.plugin.register('processURL', plugin);
-        }
+    return () => {
+        config = app.config.routes;
+        plugin.setConfig(config);
+        app.module.plugin.register('processURL', plugin);
     };
 }
 
 class URLPlugin {
     constructor(urlConfig) {
         this.priority = 500;
+        this.deletable = false;
         this.setConfig(urlConfig);
     }
 
@@ -99,7 +85,7 @@ class URLPlugin {
                     return `${arrowStart}${propName}=${newUrl}${arrowEnd}`;
                 }
             );
-        }, 500);
+        }, this.priority);
 
         on(BEFORE_STORE, (info) => {
             let rule = getRule(this.config, info.dir);

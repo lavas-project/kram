@@ -4,34 +4,18 @@
  */
 
 export default function (app) {
-    let config = null;
+    let logger;
 
-    const log = {
-        get default() {
-            return app.default.config.logger;
+    app.addModule('logger', {
+        get() {
+            return logger;
         },
-        set logger(logger) {
-            config = logger;
-        },
-        get logger() {
-            return config;
+        set(val) {
+            logger = val;
         }
-    };
+    });
 
-    return {
-        name: 'logger',
-        // config: {
-        //     get() {
-        //         return config;
-        //     }
-        // },
-        module: {
-            get() {
-                return log;
-            }
-        },
-        init(logger = log.default) {
-            log.logger = logger;
-        }
+    return () => {
+        logger = app.config.logger || app.default.config.logger;
     };
 }
