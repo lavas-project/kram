@@ -5,7 +5,7 @@
 
 import crypto from 'crypto';
 import fs from 'fs-extra';
-import path from 'path';
+// import path from 'path';
 import {
     getDirs,
     removePrefix,
@@ -131,18 +131,11 @@ export default function (app, addModule) {
         }
     };
 
-    return {
-        name: 'dir',
-        module: {
-            get() {
-                return dirModule;
-            }
-        },
-        init() {
-            let AFTER_BUILD = app.STAGES.AFTER_BUILD;
-            app.on(AFTER_BUILD, builtInfos => {
-                builtInfos.forEach(dirModule.updateBuiltInfo);
-            });
-        }
+    app.addModule('dir', () => dirModule);
+
+    return () => {
+        app.on(app.STAGES.AFTER_BUILD, builtInfos => {
+            builtInfos.forEach(dirModule.updateBuiltInfo);
+        });
     };
 }

@@ -42,7 +42,7 @@ export default function (app, addModule) {
         },
 
         async get(type, key) {
-            let {storage, options} =config;
+            let {storage, options} = config;
             let name = generateKey(type, key, options);
             return await storage.get(name);
         },
@@ -65,7 +65,7 @@ export default function (app, addModule) {
         store.setStorage(storage);
         store.setOptions(options);
     };
-};
+}
 
 function generateKey(type, key, {prefix, delimiter}) {
     return [prefix, type, key].join(delimiter);

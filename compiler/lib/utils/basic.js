@@ -173,7 +173,7 @@ export function toArray(obj) {
         case 'Set':
             return Array.from(obj);
         case 'Map':
-            return Array.from(map).map(keyVal => keyVal[1]);
+            return Array.from(obj).map(keyVal => keyVal[1]);
         default:
             break;
     }

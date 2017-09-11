@@ -59,7 +59,7 @@ export default function (app) {
                 try {
                     let val = await hook[i].fn(data, options);
                     if (val != null) {
-                        args[0] = val;
+                        data = val;
                     }
                 }
                 catch (e) {
@@ -71,7 +71,7 @@ export default function (app) {
             return data;
         },
 
-        execSync(stage, ...args) {
+        execSync(stage, data, options) {
             let hook = hooks[stage];
 
             if (!isValidArray(hook)) {
@@ -82,7 +82,7 @@ export default function (app) {
                 try {
                     let val = hook[i].fn(data, options);
                     if (val != null) {
-                        args[0] = val;
+                        data = val;
                     }
                 }
                 catch (e) {

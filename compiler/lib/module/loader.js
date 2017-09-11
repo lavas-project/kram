@@ -1,14 +1,14 @@
-
-// import {locals} from '../share/locals';
+/**
+ * @file loader.js
+ * @author tanglei (tanglei02@baidu.com)
+ */
 
 import {
     BEFORE_LOAD,
-    AFTER_LOAD,
-    BEFORE_LOAD_ALL,
-    AFTER_LOAD_ALL
+    AFTER_LOAD
 } from './hook/stage';
 
-import {each, getPrototype, isEmptyObject} from '../utils';
+import {each} from '../utils';
 import path from 'path';
 
 export default function (app) {

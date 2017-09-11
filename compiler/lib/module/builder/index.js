@@ -46,7 +46,7 @@ export default function (app) {
         },
 
         async setDoc(info) {
-            let hook = app.module.hook;
+            let {hook, parser, store} = app.module;
 
             let md = await readFile(info.fullDir, 'utf-8');
             let html = await parser.parse(md, info);
@@ -63,12 +63,5 @@ export default function (app) {
         }
     };
 
-    return {
-        name: 'builder',
-        module: {
-            get() {
-                return builder;
-            }
-        }
-    };
+    app.addModule('builder', () => builder);
 }

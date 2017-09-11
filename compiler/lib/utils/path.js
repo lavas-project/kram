@@ -2,6 +2,7 @@
  * @file 路径处理相关
  * @author tanglei (tanglei02@baidu.com)
  */
+
 import glob from 'glob';
 import path from 'path';
 
@@ -56,7 +57,7 @@ export function removePrefix(str, prefix) {
         return str;
     }
 
-    return str
+    return str;
 }
 
 export function level(dir) {

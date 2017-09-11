@@ -49,9 +49,9 @@ export class Compiler {
         let store = this.module.store;
 
         return {
-            set: store.set,
-            get: store.get,
-            delete: store.delete
+            'set': store.set,
+            'get': store.get,
+            'delete': store.delete
         };
     }
 

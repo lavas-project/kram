@@ -57,7 +57,7 @@ export default function (app, addModule) {
             try {
                 md = await hook.exec(BEFORE_PARSE, md, options);
 
-                renderer.setPluginOptions(options);
+                renderer.setHookOptions(options);
                 let html = marked(md, markedOptions);
 
                 html = await hook.exec(AFTER_PARSE, html, options);
@@ -73,24 +73,6 @@ export default function (app, addModule) {
 
     return () => {
         let renderer = Object.assign({}, parser.default.renderer, get(app.config.parser, 'renderer'));
-        parser.setOptions(Object.assign({}, parser.default, options, {renderer}));
+        parser.setOptions(Object.assign({}, parser.default, app.config.parser, {renderer}));
     };
-
-    // return {
-    //     name: 'parser',
-    //     // config: {
-    //     //     get() {
-    //     //         return config;
-    //     //     }
-    //     // },
-    //     module: {
-    //         get() {
-    //             return parser;
-    //         }
-    //     },
-    //     init(options) {
-    //         let renderer = Object.assign({}, parser.default.renderer, get(options, 'renderer'));
-    //         parser.setOptions(Object.assign({}, parser.default, options, {renderer}));
-    //     }
-    // };
 }
