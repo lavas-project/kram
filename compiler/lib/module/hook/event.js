@@ -8,12 +8,5 @@ import events from 'events';
 
 export default function (app) {
     const event = new events.EventEmitter();
-    return {
-        name: 'event',
-        module: {
-            get() {
-                return event;
-            }
-        }
-    };
+    app.addModule('event', () => event);
 }

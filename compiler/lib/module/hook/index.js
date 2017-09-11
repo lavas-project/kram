@@ -38,12 +38,5 @@ export default function (app) {
         }
     };
 
-    return {
-        name: 'hook',
-        module: {
-            get() {
-                return hook;
-            }
-        }
-    }
+    app.addModule('hook', () => hook);
 }

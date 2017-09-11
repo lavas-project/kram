@@ -69,21 +69,28 @@ export default function (app, addModule) {
         }
     };
 
-    return {
-        name: 'parser',
-        // config: {
-        //     get() {
-        //         return config;
-        //     }
-        // },
-        module: {
-            get() {
-                return parser;
-            }
-        },
-        init(options) {
-            let renderer = Object.assign({}, parser.default.renderer, get(options, 'renderer'));
-            parser.setOptions(Object.assign({}, parser.default, options, {renderer}));
-        }
+    app.addModule('parser', () => parser);
+
+    return () => {
+        let renderer = Object.assign({}, parser.default.renderer, get(app.config.parser, 'renderer'));
+        parser.setOptions(Object.assign({}, parser.default, options, {renderer}));
     };
+
+    // return {
+    //     name: 'parser',
+    //     // config: {
+    //     //     get() {
+    //     //         return config;
+    //     //     }
+    //     // },
+    //     module: {
+    //         get() {
+    //             return parser;
+    //         }
+    //     },
+    //     init(options) {
+    //         let renderer = Object.assign({}, parser.default.renderer, get(options, 'renderer'));
+    //         parser.setOptions(Object.assign({}, parser.default, options, {renderer}));
+    //     }
+    // };
 }

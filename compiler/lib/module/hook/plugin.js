@@ -95,15 +95,10 @@ export default function (app) {
         }
     };
 
-    return {
-        name: 'plugin',
-        module: {
-            get() {
-                return plugin;
-            }
-        },
-        init(plugins = plugin.default) {
-            each(plugins, plugin.register);
-        }
+    app.addModule('plugin', () => plugin);
+
+    return () => {
+        let plugins = app.config.plugin || plugin.default;
+        each(plugins, plugin.register);
     };
 };

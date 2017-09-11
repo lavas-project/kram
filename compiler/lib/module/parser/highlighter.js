@@ -62,26 +62,8 @@ export default function (app) {
     app.addModule('highlighter', () => hler);
 
     return () => {
-        let {options, languages} = Object.assign({}, app.config.highlight, hler.default);
+        let {options, languages} = Object.assign({}, hler.default, app.config.highlight);
         hler.setOptions(options);
         hler.addLanguage(languages);
     };
-
-    // return {
-    //     name: 'highlighter',
-    //     // config: {
-    //     //     get() {
-    //     //         return config;
-    //     //     }
-    //     // },
-    //     module: {
-    //         get() {
-    //             return highlighter;
-    //         }
-    //     },
-    //     init({options = highlighter.default.options, languages = highlighter.default.languages} = {}) {
-    //         highlighter.setOptions(options);
-    //         highlighter.addLanguage(languages);
-    //     }
-    // };
 }
