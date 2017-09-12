@@ -86,7 +86,8 @@ export default function (app, addModule) {
         },
 
         async detect({fullDir, dir}) {
-            let oldInfo = first(dirInfoList, info => info.dir === dir);
+            let oldInfo = dirInfoMap.get(dir);
+            // let oldInfo = first(dirInfoList, info => info.dir === dir);
             let oldMD5 = get(oldInfo, 'md5');
 
             if (!await fs.exists(fullDir)) {

@@ -14,32 +14,6 @@ import {
 
 import path from 'path';
 
-export default function (app) {
-    let config;
-    let plugin = new URLPlugin();
-
-    const router = {
-        get config() {
-            return config;
-        },
-        set config(val) {
-            config = val;
-            plugin.setConfig(ensureArray(urlConfig));
-        },
-        get addRule() {
-            return plugin.addRule;
-        }
-    };
-
-    app.addModule('router', () => router);
-
-    return () => {
-        config = app.config.routes;
-        plugin.setConfig(config);
-        app.module.plugin.register('processURL', plugin);
-    };
-}
-
 class URLPlugin {
     constructor(urlConfig) {
         this.priority = 500;
@@ -87,7 +61,7 @@ class URLPlugin {
             );
         }, this.priority);
 
-        on(BEFORE_STORE, (info) => {
+        on(BEFORE_STORE, info => {
             let rule = getRule(this.config, info.dir);
 
             if (!rule) {
@@ -145,7 +119,7 @@ function getRule(rules, key) {
 
 function getQuote(str) {
     if (str.length < 2) {
-        return null;
+        return;
     }
 
     let start = str[0];
@@ -155,5 +129,31 @@ function getQuote(str) {
         return start;
     }
 
-    return null;
+    return;
+}
+
+export default function (app) {
+    let config;
+    let plugin = new URLPlugin();
+
+    const router = {
+        get config() {
+            return config;
+        },
+        set config(val) {
+            config = val;
+            plugin.setConfig(val);
+        },
+        get addRule() {
+            return plugin.addRule;
+        }
+    };
+
+    app.addModule('router', () => router);
+
+    return () => {
+        config = app.config.routes;
+        plugin.setConfig(config);
+        app.module.plugin.register('processURL', plugin);
+    };
 }
