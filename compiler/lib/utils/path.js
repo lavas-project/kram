@@ -51,10 +51,8 @@ export function removePrefix(str, prefix) {
         str = str.slice(len);
 
         if (str[0] === '/') {
-            str = str.slice(1);
+            return str.slice(1);
         }
-
-        return str;
     }
 
     return str;

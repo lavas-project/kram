@@ -10,17 +10,19 @@ export const ORIGIN_RENDER = Object.assign({}, marked.Renderer.prototype);
 export const RENDER_NAMES = Object.keys(ORIGIN_RENDER);
 
 export default function (app) {
-    let rendererMethods = {};
+    let methods = {};
     let renderer = new marked.Renderer();
     let hookOptions;
 
     const module = {
-        get rendererMethods() {
-            return rendererMethods;
+        get methods() {
+            return methods;
         },
+
         get renderer() {
             return renderer;
         },
+
         setRenderer(...args) {
             if (args.length === 2) {
                 let [name, fn] = args;
@@ -29,7 +31,7 @@ export default function (app) {
                     return;
                 }
 
-                rendererMethods[name] = fn;
+                methods[name] = fn;
 
                 renderer[name] = function (...args) {
                     let html = fn.apply(renderer, args);
@@ -42,7 +44,8 @@ export default function (app) {
                 each(args[0], module.setRenderer);
             }
         },
-        setHookOptions(opts) {
+
+        set hookOptions(opts) {
             hookOptions = opts;
         }
     };

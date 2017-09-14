@@ -3,52 +3,49 @@
 * @author tanglei (tanglei02@baidu.com)
 */
 
-export default function (app, addModule) {
-    const config = {
-        options: {},
-        storage: null
-    };
+export default function (app) {
+    let options;
+    let storage;
 
     const store = {
-        get config() {
-            return config;
+        get storage() {
+            return storage;
+        },
+
+        set storage(val) {
+            storage = val;
+        },
+
+        get options() {
+            return options;
+        },
+
+        set options(val) {
+            if (val) {
+                options = Object.assign(
+                    {},
+                    this.default.options,
+                    options,
+                    val
+                );
+            }
         },
 
         get default() {
             return app.default.config.store;
         },
 
-        setStorage(storage) {
-            if (storage) {
-                config.storage = storage;
-            }
-        },
-
-        setOptions(opts) {
-            if (opts) {
-                config.options = Object.assign(
-                    {},
-                    this.default.options,
-                    config.options,
-                    opts
-                );
-            }
-        },
-
         async set(type, key, value) {
-            let {storage, options} = config;
             let name = generateKey(type, key, options);
             return await storage.set(name, value);
         },
 
         async get(type, key) {
-            let {storage, options} = config;
             let name = generateKey(type, key, options);
             return await storage.get(name);
         },
 
         async delete(type, key) {
-            let {storage, options} = config;
             let name = generateKey(type, key, options);
             return await storage.delete(name);
         }
@@ -62,8 +59,8 @@ export default function (app, addModule) {
             storage = store.default.storage
         } = app.config.store || {};
 
-        store.setStorage(storage);
-        store.setOptions(options);
+        store.storage = storage;
+        store.options = options;
     };
 }
 

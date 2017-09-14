@@ -7,7 +7,7 @@ import marked from 'marked';
 import {
     set,
     get,
-    merge,
+    subset,
     isObject,
     getPrototype
 } from '../../utils';
@@ -18,9 +18,9 @@ import {
 
 
 export default function (app, addModule) {
-    const config = {
+    const options = {
         get renderer() {
-            return app.module.renderer.rendererMethods;
+            return app.module.renderer.methods;
         }
     };
 
@@ -31,24 +31,27 @@ export default function (app, addModule) {
     };
 
     const parser = {
-        get config() {
-            return config;
-        },
-
         get default() {
             return app.default.config.parser;
         },
 
-        setOptions(options) {
-            merge(config, options, {ignore: 'renderer'});
+        get options() {
+            return options;
+        },
 
-            if (get(options, 'renderer')) {
-                app.module.renderer.setRenderer(options.renderer);
+        setOptions(val = {}) {
+            let otherOptions = subset(val, 'renderer');
+
+            Object.assign(options, otherOptions);
+            Object.assign(markedOptions, otherOptions);
+
+            if (val.renderer) {
+                this.setRenderer(val.renderer);
             }
         },
 
-        get setRenderer() {
-            return app.module.renderer.setRenderer;
+        setRenderer(...args) {
+            app.module.renderer.setRenderer(...args);
         },
 
         async parse(md, options) {
@@ -57,7 +60,7 @@ export default function (app, addModule) {
             try {
                 md = await hook.exec(BEFORE_PARSE, md, options);
 
-                renderer.setHookOptions(options);
+                renderer.hookOptions = options;
                 let html = marked(md, markedOptions);
 
                 html = await hook.exec(AFTER_PARSE, html, options);

@@ -15,10 +15,10 @@ import {
 import path from 'path';
 
 class URLPlugin {
-    constructor(urlConfig) {
+    constructor(routes) {
         this.priority = 500;
-        this.deletable = false;
-        this.setConfig(urlConfig);
+        // this.deletable = false;
+        this.setRoutes(routes);
     }
 
     apply(on, app) {
@@ -27,92 +27,90 @@ class URLPlugin {
 
         let {AFTER_PARSE, BEFORE_STORE} = app.STAGES;
 
-        on(AFTER_PARSE, (html, info) => {
-            return html.replace(
-                /(<[a-zA-Z0-9-]+ [^<]*?)(href|src)=(.*?)(>| [^<]*?>)/mg,
-                (str, arrowStart, propName, url, arrowEnd) => {
-                    let quote = getQuote(url);
+        on(AFTER_PARSE, (html, info) => html.replace(
+            /(<[a-zA-Z0-9-]+ [^<]*?)(href|src)=(.*?)(>| [^<]*?>)/mg,
+            (str, arrowStart, propName, url, arrowEnd) => {
+                let quote = getQuote(url);
 
-                    if (quote) {
-                        url = url.slice(1, -1);
-                    }
-
-                    if (!isRelativeUrl(url)) {
-                        return str;
-                    }
-
-                    url = path.join(info.fullDir, '..', url);
-                    url = removePrefix(sep(url), sepBaseDir);
-
-                    let rule = getRule(this.config, url);
-
-                    if (!rule) {
-                        return str;
-                    }
-
-                    let newUrl = isFunction(rule.url) ? rule.url(url) : rule.url;
-
-                    if (quote) {
-                        newUrl = quote + newUrl + quote;
-                    }
-
-                    return `${arrowStart}${propName}=${newUrl}${arrowEnd}`;
+                if (quote) {
+                    url = url.slice(1, -1);
                 }
-            );
-        }, this.priority);
+
+                if (!isRelativeUrl(url)) {
+                    return str;
+                }
+
+                url = path.join(info.fullDir, '..', url);
+                url = removePrefix(sep(url), sepBaseDir);
+
+                let route = this.getRoute(url);
+
+                if (!route) {
+                    return str;
+                }
+
+                let newUrl = isFunction(route.url) ? route.url(url) : route.url;
+
+                if (quote) {
+                    newUrl = quote + newUrl + quote;
+                }
+
+                return `${arrowStart}${propName}=${newUrl}${arrowEnd}`;
+            }
+        ), this.priority);
 
         on(BEFORE_STORE, info => {
-            let rule = getRule(this.config, info.dir);
+            let route = this.getRoute(info.dir);
 
-            if (!rule) {
+            if (!route) {
                 return;
             }
 
-            info.url = isFunction(rule.url) ? rule.url(info.dir) : rule.url;
+            info.url = isFunction(route.url) ? route.url(info.dir) : route.url;
             return info;
         });
     }
 
-    setConfig(urlConfig) {
-        if (urlConfig) {
-            this.config = ensureArray(urlConfig);
+    setRoutes(routes) {
+        if (routes) {
+            this.routes = ensureArray(routes);
         }
     }
 
-    addRule(rule) {
-        this.config.push(rule);
+    addRoute(route) {
+        this.routes.push(route);
     }
-}
 
-function getRule(rules, key) {
-    for (let i = 0; i < rules.length; i++) {
+    getRoute(key) {
+        for (let i = 0; i < this.routes.length; i++) {
 
-        let rule = rules[i];
+            let route = this.routes[i];
 
-        switch (typeof rule.dir) {
-            case 'string':
-                if (rule.dir === key) {
-                    return rule;
-                }
+            switch (typeof route.dir) {
+                case 'string':
+                    if (route.dir === key) {
+                        return route;
+                    }
 
-                break;
+                    break;
 
-            case 'object':
-                if (rule.dir.test(key)) {
-                    return rule;
-                }
+                case 'object':
+                    if (route.dir.test(key)) {
+                        return route;
+                    }
 
-                break;
+                    break;
 
-            case 'function':
-                if (rule.dir(key)) {
-                    return rule;
-                }
+                case 'function':
+                    if (route.dir(key)) {
+                        return route;
+                    }
 
-                break;
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
     }
 }
@@ -133,27 +131,26 @@ function getQuote(str) {
 }
 
 export default function (app) {
-    let config;
+    let routes;
     let plugin = new URLPlugin();
 
     const router = {
-        get config() {
-            return config;
+        get routes() {
+            return routes;
         },
-        set config(val) {
-            config = val;
-            plugin.setConfig(val);
+        set routes(val) {
+            routes = val;
+            plugin.setRules(val);
         },
-        get addRule() {
-            return plugin.addRule;
+        get addRoute() {
+            return plugin.addRoute;
         }
     };
 
     app.addModule('router', () => router);
 
     return () => {
-        config = app.config.routes;
-        plugin.setConfig(config);
+        router.routes = app.config.routes;
         app.module.plugin.register('processURL', plugin);
     };
 }

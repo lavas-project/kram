@@ -5,8 +5,8 @@
 
 import {RENDER_NAMES} from '../parser/renderer';
 
-export const BEFORE_LOAD_ALL = 'beforeLoadAll';
-export const AFTER_LOAD_ALL = 'afterLoadAll';
+// export const BEFORE_LOAD_ALL = 'beforeLoadAll';
+// export const AFTER_LOAD_ALL = 'afterLoadAll';
 export const BEFORE_LOAD = 'beforeLoad';
 export const AFTER_LOAD = 'afterLoad';
 
@@ -32,8 +32,8 @@ export const RENDER_STAGES = RENDER_NAMES.reduce((res, name) => {
 
 export const STAGES = Object.assign(
     {
-        BEFORE_LOAD_ALL,
-        AFTER_LOAD_ALL,
+        // BEFORE_LOAD_ALL,
+        // AFTER_LOAD_ALL,
         BEFORE_LOAD,
         AFTER_LOAD,
 

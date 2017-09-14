@@ -7,41 +7,44 @@ import hljs from 'highlight.js';
 import {isObject, each, encodeTag} from '../../utils';
 
 export default function (app) {
-    const config = {
-        options: {},
-        languages: {}
-    };
+    let options;
+    let languages;
 
     const hler = {
-        get config() {
-            return config;
-        },
-
         get default() {
             return app.default.config.highlight;
         },
 
-        setOptions(opts) {
-            if (!opts) {
+        set options(val) {
+            if (!val) {
                 return;
             }
-            config.options = Object.assign(config.options, opts);
-            hljs.configure(config.options);
+
+            options = Object.assign({}, options, val);
+            hljs.configure(options);
+        },
+
+        get options() {
+            return options;
         },
 
         addLanguage(...args) {
             if (args.length === 1 && isObject(args[0])) {
-                return each(args[0], hler.addLanguage);
+                return each(args[0], this.addLanguage);
             }
 
             let [name, fn] = args;
 
-            if (config.languages[name]) {
+            if (languages[name]) {
                 return;
             }
 
-            config.languages[name] = fn;
+            languages[name] = fn;
             hljs.registerLanguage(name, fn);
+        },
+
+        get languages() {
+            return languages;
         },
 
         highlight(code, language) {
@@ -63,7 +66,7 @@ export default function (app) {
 
     return () => {
         let {options, languages} = Object.assign({}, hler.default, app.config.highlight);
-        hler.setOptions(options);
+        hler.options = options;
         hler.addLanguage(languages);
     };
 }

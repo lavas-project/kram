@@ -3,7 +3,7 @@
  * @author  tanglei (tanglei02@baidu.com)
  */
 
-export function merge(a, b, options) {
+export function assign(a, b, options) {
     if (!options) {
         if (Array.isArray(b)) {
             return Object.assign(a, ...b);
@@ -16,32 +16,55 @@ export function merge(a, b, options) {
         b = Object.assign({}, ...b);
     }
 
-    let keys = Object.keys(b);
     let {append, ignore} = options;
+    let keys = Object.keys(b);
 
     if (ignore) {
-        if (typeof ignore === 'string') {
-            keys = keys.filter(key => key !== ignore);
-        }
-        else {
-            keys = keys.filter(key => ignore.indexOf(key) > -1);
-        }
+        keys = exclude(keys, ignore);
     }
 
     if (append) {
         keys = keys.filter(key => a[key] != null);
     }
 
-    return keys.reduce((a, key) => {
-        a[key] = b[key];
-        return a;
-    }, a);
+    return keys.reduce((a, key) => set(a, key, b[key]), a);
+}
+
+export function subset(obj, keys, ignore) {
+    if (ignore) {
+        keys = exclude(Object.keys(obj), keys);
+    }
+
+    return keys.reduce((res, key) => set(res, key, obj[key]), {});
+}
+
+export function exclude(arr, ignores, keys) {
+    ignores = ensureArray(ignores);
+    let fn;
+
+    if (keys) {
+        fn = obj => ignores.every(ignore => !equal(obj, ignore, keys));
+    }
+    else {
+        fn = obj => ignores.indexOf(obj) > -1;
+    }
+
+    return arr.filter(fn);
+}
+
+export function equal(a, b, keys) {
+    return ensureArray(keys).every(key => a[key] === b[key]);
+}
+
+
+export function flatten(list) {
+    return list.reduce((res, arr) => res.concat(arr), []);
 }
 
 /**
  * 安全获取多级属性的方法，省的去写各种容错判断
  * 如：a.b.c.d => get(a, 'b', 'c', 'd')
- *     a[1].b.c => get(a, 1, 'b', c)
+ *     a[1].b.c => get(a, 1, 'b', 'c')
  *
  * @param {Object} obj 待获取属性的对象
  * @param {...string|number} arr 属性名
@@ -129,6 +152,8 @@ export function isFunction(obj) {
     return typeof obj === 'function';
 }
 
+
+
 export function isEmptyObject(obj) {
     return Object.keys(obj).length === 0;
 }
@@ -202,6 +227,10 @@ export function classify(list, fn) {
 }
 
 export function first(list, fn) {
+    if (typeof list.find === 'function') {
+        return list.find(fn);
+    }
+
     for (let i = 0; i < list.length; i++) {
         if (fn(list[i], i, list)) {
             return list[i];

@@ -9,7 +9,6 @@ import {
 } from './hook/stage';
 
 import {each} from '../utils';
-import path from 'path';
 
 export default function (app) {
     const config = {};
@@ -35,9 +34,7 @@ export default function (app) {
 
         async loadOne(name, source) {
             app.logger.info(`load start: ${source.name}`);
-
-            await loader.getLoader(name)(source, app);
-
+            await this.getLoader(name)(source, app);
             app.logger.info(`load finish: ${source.name}`);
             return source;
         },
@@ -45,15 +42,11 @@ export default function (app) {
         async load() {
             let sources = app.config.sources;
 
-            let sourcesToLoad = await app.module.plugin.exec(BEFORE_LOAD, sources);
-
-            let loadedSources = await Promise.all(
-                sourcesToLoad.map(
-                    async source => await loader.loadOne(source.loader, source)
-                )
+            sources = await app.module.plugin.exec(BEFORE_LOAD, sources);
+            await Promise.all(
+                sources.map(source => this.loadOne(source.loader, source))
             );
-
-            return await app.module.plugin.exec(AFTER_LOAD, loadedSources);
+            return await app.module.plugin.exec(AFTER_LOAD, sources);
         }
     };
 
