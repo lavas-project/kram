@@ -15,7 +15,7 @@ export default function (app) {
             return hooks;
         },
 
-        hook(stage) {
+        getHook(stage) {
             return hooks[stage];
         },
 

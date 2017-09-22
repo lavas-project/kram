@@ -5,7 +5,7 @@
 
 import {
     ensureArray,
-    isFunction,
+    is,
     isRelativeUrl,
     join,
     sep,
@@ -17,6 +17,7 @@ import path from 'path';
 class URLPlugin {
     constructor(routes) {
         this.priority = 500;
+        this.routes = [];
         // this.deletable = false;
         this.setRoutes(routes);
     }
@@ -27,37 +28,43 @@ class URLPlugin {
 
         let {AFTER_PARSE, BEFORE_STORE} = app.STAGES;
 
-        on(AFTER_PARSE, (html, info) => html.replace(
-            /(<[a-zA-Z0-9-]+ [^<]*?)(href|src)=(.*?)(>| [^<]*?>)/mg,
-            (str, arrowStart, propName, url, arrowEnd) => {
-                let quote = getQuote(url);
-
-                if (quote) {
-                    url = url.slice(1, -1);
-                }
-
-                if (!isRelativeUrl(url)) {
-                    return str;
-                }
-
-                url = path.join(info.fullDir, '..', url);
-                url = removePrefix(sep(url), sepBaseDir);
-
-                let route = this.getRoute(url);
-
-                if (!route) {
-                    return str;
-                }
-
-                let newUrl = isFunction(route.url) ? route.url(url) : route.url;
-
-                if (quote) {
-                    newUrl = quote + newUrl + quote;
-                }
-
-                return `${arrowStart}${propName}=${newUrl}${arrowEnd}`;
+        on(AFTER_PARSE, (html, info) => {
+            if (!info) {
+                return;
             }
-        ), this.priority);
+
+            return html.replace(
+                /(<[a-zA-Z0-9-]+ [^<]*?)(href|src)=(.*?)(>| [^<]*?>)/mg,
+                (str, arrowStart, propName, url, arrowEnd) => {
+                    let quote = getQuote(url);
+
+                    if (quote) {
+                        url = url.slice(1, -1);
+                    }
+
+                    if (!isRelativeUrl(url)) {
+                        return str;
+                    }
+
+                    url = path.join(info.fullDir, '..', url);
+                    url = removePrefix(sep(url), sepBaseDir);
+
+                    let route = this.getRoute(url);
+
+                    if (!route) {
+                        return str;
+                    }
+
+                    let newUrl = is(Function, route.url) ? route.url(url) : route.url;
+
+                    if (quote) {
+                        newUrl = quote + newUrl + quote;
+                    }
+
+                    return `${arrowStart}${propName}=${newUrl}${arrowEnd}`;
+                }
+            );
+        }, this.priority);
 
         on(BEFORE_STORE, info => {
             let route = this.getRoute(info.dir);
@@ -66,7 +73,7 @@ class URLPlugin {
                 return;
             }
 
-            info.url = isFunction(route.url) ? route.url(info.dir) : route.url;
+            info.url = is(Function, route.url) ? route.url(info.dir) : route.url;
             return info;
         });
     }
@@ -140,7 +147,7 @@ export default function (app) {
         },
         set routes(val) {
             routes = val;
-            plugin.setRules(val);
+            plugin.setRoutes(val);
         },
         get addRoute() {
             return plugin.addRoute;

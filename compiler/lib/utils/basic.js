@@ -3,33 +3,6 @@
  * @author  tanglei (tanglei02@baidu.com)
  */
 
-export function assign(a, b, options) {
-    if (!options) {
-        if (Array.isArray(b)) {
-            return Object.assign(a, ...b);
-        }
-
-        return Object.assign(a, b);
-    }
-
-    if (Array.isArray(b)) {
-        b = Object.assign({}, ...b);
-    }
-
-    let {append, ignore} = options;
-    let keys = Object.keys(b);
-
-    if (ignore) {
-        keys = exclude(keys, ignore);
-    }
-
-    if (append) {
-        keys = keys.filter(key => a[key] != null);
-    }
-
-    return keys.reduce((a, key) => set(a, key, b[key]), a);
-}
-
 export function subset(obj, keys, ignore) {
     if (ignore) {
         keys = exclude(Object.keys(obj), keys);
@@ -39,21 +12,21 @@ export function subset(obj, keys, ignore) {
 }
 
 export function exclude(arr, ignores, keys) {
-    ignores = ensureArray(ignores);
+    ignores = ignores;
     let fn;
 
     if (keys) {
         fn = obj => ignores.every(ignore => !equal(obj, ignore, keys));
     }
     else {
-        fn = obj => ignores.indexOf(obj) > -1;
+        fn = obj => ignores.indexOf(obj) === -1;
     }
 
     return arr.filter(fn);
 }
 
 export function equal(a, b, keys) {
-    return ensureArray(keys).every(key => a[key] === b[key]);
+    return keys.every(key => a[key] === b[key]);
 }
 
 
@@ -138,19 +111,24 @@ export function getPrototype(obj) {
     return Object.prototype.toString.call(obj).slice(8, -1);
 }
 
+export function is(proto, obj) {
+    return obj === proto || obj.constructor === proto;
+    // return getPrototype(obj) === protoName;
+}
+
 /**
  * 判断是否为 object
  *
  * @param {*} obj 待测对象
  * @return {boolean} 是否为 object
  */
-export function isObject(obj) {
-    return getPrototype(obj) === 'Object';
-}
+// export function isObject(obj) {
+//     return getPrototype(obj) === 'Object';
+// }
 
-export function isFunction(obj) {
-    return typeof obj === 'function';
-}
+// export function isFunction(obj) {
+//     return typeof obj === 'function';
+// }
 
 
 

@@ -18,6 +18,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 var path = require('path');
 var Compiler = require('../index').Compiler;
+var fs = require('fs-extra');
 
 
 var app = new Compiler({
@@ -52,6 +53,11 @@ var app = new Compiler({
         }
     ]
 });
+
+var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
+app.parse(md).then(function (html) {
+    console.log(html);
+})
 
 // app.exec()
 // .then(() => {

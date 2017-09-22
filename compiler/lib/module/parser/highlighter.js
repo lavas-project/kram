@@ -4,11 +4,11 @@
  */
 
 import hljs from 'highlight.js';
-import {isObject, each, encodeTag} from '../../utils';
+import {is, each, encodeTag} from '../../utils';
 
 export default function (app) {
     let options;
-    let languages;
+    let languages = {};
 
     const hler = {
         get default() {
@@ -29,8 +29,8 @@ export default function (app) {
         },
 
         addLanguage(...args) {
-            if (args.length === 1 && isObject(args[0])) {
-                return each(args[0], this.addLanguage);
+            if (args.length === 1 && is(Object, args[0])) {
+                return each(args[0], hler.addLanguage);
             }
 
             let [name, fn] = args;

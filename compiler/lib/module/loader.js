@@ -34,7 +34,7 @@ export default function (app) {
 
         async loadOne(name, source) {
             app.logger.info(`load start: ${source.name}`);
-            await this.getLoader(name)(source, app);
+            await loader.get(name)(source, app);
             app.logger.info(`load finish: ${source.name}`);
             return source;
         },
@@ -44,7 +44,7 @@ export default function (app) {
 
             sources = await app.module.plugin.exec(BEFORE_LOAD, sources);
             await Promise.all(
-                sources.map(source => this.loadOne(source.loader, source))
+                sources.map(source => loader.loadOne(source.loader, source))
             );
             return await app.module.plugin.exec(AFTER_LOAD, sources);
         }

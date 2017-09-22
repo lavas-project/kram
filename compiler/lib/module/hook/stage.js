@@ -10,7 +10,8 @@ import {RENDER_NAMES} from '../parser/renderer';
 export const BEFORE_LOAD = 'beforeLoad';
 export const AFTER_LOAD = 'afterLoad';
 
-export const ON_PROCESS_DIR = 'onProcessDir';
+export const BEFORE_PROCESS_DIR = 'beforeProcessDir';
+export const AFTER_PROCESS_DIR = 'afterProcessDir';
 // export const BEFORE_PROCESS_ALL_DIR = 'beforeProcessAllDir';
 // export const AFTER_PROCESS_ALL_DIR = 'afterProcessAllDir';
 
@@ -37,7 +38,8 @@ export const STAGES = Object.assign(
         BEFORE_LOAD,
         AFTER_LOAD,
 
-        ON_PROCESS_DIR,
+        BEFORE_PROCESS_DIR,
+        AFTER_PROCESS_DIR,
         // BEFORE_PROCESS_ALL_DIR,
         // AFTER_PROCESS_ALL_DIR,
 
@@ -51,4 +53,5 @@ export const STAGES = Object.assign(
     RENDER_STAGES
 );
 
-export const STAGE_SET = Object.keys(STAGES).reduce((set, key) => set.add(STAGES[key]), new Set());
+export const STAGE_SET = Object.keys(STAGES)
+    .reduce((set, key) => set.add(STAGES[key]), new Set());

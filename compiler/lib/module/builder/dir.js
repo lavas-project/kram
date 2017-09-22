@@ -19,7 +19,10 @@ import {
     toArray,
     flatten
 } from '../../utils';
-import {ON_PROCESS_DIR} from '../hook/stage';
+import {
+    BEFORE_PROCESS_DIR,
+    AFTER_PROCESS_DIR
+} from '../hook/stage';
 
 export default function (app) {
     let dirInfoMap = new Map();
@@ -30,10 +33,12 @@ export default function (app) {
     const getSourceInfo = async source => {
         let dirs = await getDirs(source.to, '.*');
 
-        let dirInfos = dirs.map(fullDir => ({
-            dir: relativeDir(fullDir),
-            fullDir: fullDir
-        }));
+        let dirInfos = dirs.map(
+            fullDir => ({
+                dir: relativeDir(fullDir),
+                fullDir: fullDir
+            })
+        );
 
         return await classify(dirInfos);
     };
@@ -56,7 +61,6 @@ export default function (app) {
 
     const detect = async ({fullDir, dir}) => {
         let oldInfo = dirInfoMap.get(dir);
-        // let oldInfo = first(dirInfoList, info => info.dir === dir);
         let oldMD5 = get(oldInfo, 'md5');
 
         if (!await fs.exists(fullDir)) {
@@ -68,63 +72,46 @@ export default function (app) {
         }
 
         let file = await fs.readFile(fullDir);
-        let md5 = crypto.createHash('md5').update(file).digest('hex');
+        let md5 = createMD5(file);
 
         if (oldMD5 === md5) {
             return false;
         }
 
-        if (oldMD5) {
-            return {fullDir, dir, md5, type: 'modify'};
-        }
-
-        return {fullDir, dir, md5, type: 'add'};
+        return {
+            fullDir,
+            dir,
+            md5,
+            type: oldMD5 ? 'modify' : 'add'
+        };
     };
 
-        // updateDirInfo(info) {
-        //     if (info.type === 'delete') {
-        //         dirInfoMap.delete(info.dir);
-        //     }
-        //     else {
-        //         dirInfoMap.set(info.dir, subset(info, 'type', 'ignore'));
-        //     }
-
-        // },
-
-        // updateBuiltInfo(info) {
-        //     if (info.type === 'delete') {
-        //         builtInfoMap.delete(info.dir);
-        //     }
-        //     else {
-        //         builtInfoMap.set(info.dir, subset(info, 'type', 'ignore'));
-        //     }
-        // }
-
+    const update = (map, info) => {
+        if (info.type === 'delete') {
+            map.delete(info.dir);
+        }
+        else {
+            map.set(info.dir, subset(info, ['type'], 'ignore'));
+        }
+    };
 
     const dirModule = {
-        // get dirInfoArray() {
-        //     return Array.from(dirInfoMap).map(keyVal => keyVal[1]);
-        // },
+        get originalDirs() {
+            return dirInfoMap;
+        },
 
-        // get dirInfoObject() {
-        //     return Array.from(dirInfoMap).reduce((obj, [key, val]) => set(obj, key, val), {});
-        // },
-
-        // get builtInfoArray() {
-        //     return Array.from(builtInfoMap).map(keyVal => keyVal[1]);
-        // },
-
-        // get builtInfoObject() {
-        //     return Array.from(builtInfoMap).reduce((obj, [key, val]) => set(obj, key, val), {});
-        // },
+        get builtDirs() {
+            return builtInfoMap;
+        },
 
         async process(sources = app.config.sources) {
+            sources = await app.module.hook.exec(BEFORE_PROCESS_DIR, sources);
+
             let infoChunk = await Promise.all(sources.map(getSourceInfo));
             let infoList = flatten(infoChunk);
-            // let infoList = infoChunk.reduce((res, list) => res.concat(list), []);
-            infoList = await app.module.hook.exec(ON_PROCESS_DIR, infoList);
 
-            infoList.forEach(this.updateDirInfo);
+            infoList = await app.module.hook.exec(AFTER_PROCESS_DIR, infoList);
+            infoList.forEach(info => update(dirInfoMap, info));
 
             return infoList;
         }
@@ -134,7 +121,11 @@ export default function (app) {
 
     return () => {
         app.on(app.STAGES.AFTER_BUILD, builtInfos => {
-            builtInfos.forEach(dirModule.updateBuiltInfo);
+            builtInfos.forEach(info => update(builtInfoMap, info));
         });
     };
+}
+
+function createMD5(str) {
+    return crypto.createHash('md5').update(str).digest('hex');
 }

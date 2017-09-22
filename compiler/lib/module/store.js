@@ -24,7 +24,7 @@ export default function (app) {
             if (val) {
                 options = Object.assign(
                     {},
-                    this.default.options,
+                    store.default.options,
                     options,
                     val
                 );

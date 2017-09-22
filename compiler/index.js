@@ -5,7 +5,7 @@
 
 import defaultData from './default';
 import * as modules from './lib/module';
-import {set, isFunction, subset} from './lib/utils';
+import {set, is, subset} from './lib/utils';
 
 
 let moduleNames = Object.keys(modules);
@@ -20,13 +20,13 @@ export class Compiler {
     constructor(config = {}) {
         this.module = {};
         // modules instantiation
-        let inits = moduleNames.map(key => modules[key](this)).filter(init => !!init);
+        let inits = moduleNames.map(key => modules[key](this));
         // default configs and components initialization
         this.default = defaultData(this);
         // config initialization
-        this.config = isFunction(config) ? config(this) : config;
+        this.config = is(Function, config) ? config(this) : config;
         // modules initialization
-        inits.forEach(fn => fn());
+        inits.filter(init => !!init).forEach(fn => fn());
     }
 
     /**
@@ -38,7 +38,7 @@ export class Compiler {
      * @param {Function|Object} descriptor property descriptor or simply a getter function
      */
     addModule(name, descriptor) {
-        if (isFunction(descriptor)) {
+        if (is(Function, descriptor)) {
             descriptor = {
                 get: descriptor
             };
@@ -65,6 +65,13 @@ export class Compiler {
         return subset(this.module.store, ['set', 'get', 'delete']);
     }
 
+    get originalDirs() {
+        return this.module.dir.originalDirs;
+    }
+
+    get builtDirs() {
+        return this.module.dir.builtDirs;
+    }
     // get dirs() {
     //     return this.module.dir.dirInfoArray;
     // }

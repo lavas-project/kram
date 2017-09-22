@@ -18,12 +18,8 @@ import {
 export default function (app) {
     const builder = {
         async build(sources) {
-            let list = await this.getBuildRequiredInfos(sources);
-            return await this.buildDocs(list);
-        },
-
-        get getBuildRequiredInfos() {
-            return app.module.dir.process;
+            let list = await app.module.dir.process(sources);
+            return await builder.buildDocs(list);
         },
 
         async buildDocs(list) {
@@ -33,13 +29,14 @@ export default function (app) {
 
             let toBuild = await hook.exec(BEFORE_BUILD, list);
 
-            let {toSet = [], toDel = []} = classify(toBuild, ({type}) => {
-                return type === 'delete' ? 'toDel' : 'toSet';
-            });
+            let {toSet = [], toDel = []} = classify(
+                toBuild,
+                ({type}) => type === 'delete' ? 'toDel' : 'toSet'
+            );
 
             await Promise.all([
-                ...toSet.map(this.setDoc),
-                ...toDel.map(this.deleteDoc)
+                ...toSet.map(builder.setDoc),
+                ...toDel.map(builder.deleteDoc)
             ]);
 
             return await hook.exec(AFTER_BUILD, toBuild);

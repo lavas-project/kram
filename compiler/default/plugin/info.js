@@ -15,10 +15,10 @@ export default class Info {
     apply(on, app) {
         let map = new Map();
 
-        on(app.module.hook.STAGES.BEFORE_PARSE, function (md, options) {
-            md = md.replace(/^((.+?[:：].*?\r?\n)|\s)+-+\r?\n/mg, (str) => {
+        on(app.module.hook.STAGES.BEFORE_PARSE, (md, options) => {
+            return md.replace(/^((.+?[:：].*?\r?\n)|\s)+-+\r?\n/mg, (str) => {
                 let data = str.split('\n')
-                    .filter(line => line.test(/^\s+$/))
+                    .filter(line => /^\s+$/.test(line))
                     .map(line => line.match(/^(.+)[:：](.*)$/))
                     .filter(match => match != null)
                     .reduce((res, match) => {

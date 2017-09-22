@@ -9,6 +9,7 @@ import Style from '../plugin/style';
 import Minify from '../plugin/minify';
 import Chapter from '../plugin/chapter';
 import Catalog from '../plugin/catalog';
+import Info from '../plugin/info';
 
 export default function (app) {
     return {
@@ -17,6 +18,7 @@ export default function (app) {
         style: new Style(),
         minify: new Minify(),
         chapter: new Chapter(),
-        catalog: new Catalog()
+        catalog: new Catalog(),
+        info: new Info()
     };
 };

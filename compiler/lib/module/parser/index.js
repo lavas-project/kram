@@ -40,13 +40,12 @@ export default function (app, addModule) {
         },
 
         setOptions(val = {}) {
-            let otherOptions = subset(val, 'renderer');
-
+            let otherOptions = subset(val, ['renderer'], 'ignore');
             Object.assign(options, otherOptions);
             Object.assign(markedOptions, otherOptions);
 
             if (val.renderer) {
-                this.setRenderer(val.renderer);
+                parser.setRenderer(val.renderer);
             }
         },
 
