@@ -39,9 +39,7 @@ export class Compiler {
      */
     addModule(name, descriptor) {
         if (is(Function, descriptor)) {
-            descriptor = {
-                get: descriptor
-            };
+            descriptor = {get: descriptor};
         }
 
         Object.defineProperty(this.module, name, descriptor);
@@ -72,13 +70,10 @@ export class Compiler {
     get builtDirs() {
         return this.module.dir.builtDirs;
     }
-    // get dirs() {
-    //     return this.module.dir.dirInfoArray;
-    // }
 
-    // get keys() {
-    //     return this.module.dir.builtInfoArray;
-    // }
+    get plugins() {
+        return this.module.plugin.list;
+    }
 
     get STAGES() {
         return this.module.hook.STAGES;

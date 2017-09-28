@@ -105,12 +105,13 @@ export default function (app) {
         },
 
         async process(sources = app.config.sources) {
-            sources = await app.module.hook.exec(BEFORE_PROCESS_DIR, sources);
+            let hook = app.module.hook;
+            sources = await hook.exec(BEFORE_PROCESS_DIR, sources);
 
             let infoChunk = await Promise.all(sources.map(getSourceInfo));
             let infoList = flatten(infoChunk);
 
-            infoList = await app.module.hook.exec(AFTER_PROCESS_DIR, infoList);
+            infoList = await hook.exec(AFTER_PROCESS_DIR, infoList);
             infoList.forEach(info => update(dirInfoMap, info));
 
             return infoList;

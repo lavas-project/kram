@@ -53,16 +53,16 @@ export default function (app, addModule) {
             app.module.renderer.setRenderer(...args);
         },
 
-        async parse(md, options) {
+        parse(md, options) {
             let {renderer, hook} = app.module;
 
             try {
-                md = await hook.exec(BEFORE_PARSE, md, options);
+                md = hook.execSync(BEFORE_PARSE, md, options);
 
                 renderer.hookOptions = options;
                 let html = marked(md, markedOptions);
 
-                html = await hook.exec(AFTER_PARSE, html, options);
+                html = hook.execSync(AFTER_PARSE, html, options);
                 return html;
             }
             catch (e) {

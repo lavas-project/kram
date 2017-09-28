@@ -46,7 +46,7 @@ export default function (app) {
             let {hook, parser, store} = app.module;
 
             let md = await readFile(info.fullDir, 'utf-8');
-            let html = await parser.parse(md, info);
+            let html = parser.parse(md, info);
 
             let obj = {html, dir: info.dir};
 
