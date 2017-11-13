@@ -26,7 +26,7 @@ tag: 飞火 流星
 
 ### 这是一个测试三级标题
 
-[测试链接](./path/to/mock)
+[测试链接](/lavas/vue/foundation/hahaha)
 
 ![测试图片](./path/to/image.jpg)
 

@@ -32,7 +32,7 @@ var app = new Compiler({
             tmp: path.resolve(__dirname, '../../doc/git/lavas')
         }
     ],
-    router: [
+    routes: [
         {
             dir(dir) {
                 return path.extname(dir) !== '.md';
@@ -55,20 +55,23 @@ var app = new Compiler({
 });
 
 var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
-var html = app.parse(md);
-
-console.log(html);
-
-// app.exec()
-// .then(() => {
-//     app.store.get('article', 'lavas/vue/foundation/build-and-deploy-project.md')
-//     .then(obj => {
-//         // console.log(app.config.plugin.hooks)
-//         console.log('--------')
-//         console.log(obj)
-//     });
-// })
-// .catch(err => {
-//     console.log('in error')
-//     console.log(err)
+// app.parse(md, {
+//     fullDir: path.resolve(__dirname, './md/test.md'),
+//     dir: './md/test.md'
+// }).then(function (html) {
+//     console.log(html);
 // });
+
+app.exec()
+.then(() => {
+    app.store.get('article', 'lavas/vue/foundation/build-and-deploy-project.md')
+    .then(obj => {
+        // console.log(app.config.plugin.hooks)
+        console.log('--------')
+        console.log(obj)
+    });
+})
+.catch(err => {
+    console.log('in error')
+    console.log(err)
+});

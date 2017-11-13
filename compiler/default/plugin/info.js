@@ -2,6 +2,7 @@
  * @file 获取文章信息
  * @author tanglei (tanglei02@baidu.com)
  */
+const INFO_REGEX = /^(.+?[:：].+?\r?\n)+(-+\r?\n)/mg;
 
 export default class Info {
     constructor({
@@ -16,7 +17,7 @@ export default class Info {
         let map = new Map();
 
         on(app.module.hook.STAGES.BEFORE_PARSE, (md, options) => {
-            return md.replace(/^((.+?[:：].*?\r?\n)|\s)+-+\r?\n/mg, (str) => {
+            return md.replace(INFO_REGEX, (str) => {
                 let data = str.split('\n')
                     .filter(line => !/^\s+$/.test(line))
                     .map(line => line.match(/^(.+?)[:：](.*)/))

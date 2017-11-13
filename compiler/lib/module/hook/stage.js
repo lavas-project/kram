@@ -11,8 +11,8 @@ export const AFTER_LOAD = 'afterLoad';
 export const BEFORE_PROCESS_DIR = 'beforeProcessDir';
 export const AFTER_PROCESS_DIR = 'afterProcessDir';
 
-export const BEFORE_PARSE = 'beforeRender';
-export const AFTER_PARSE = 'afterRender';
+export const BEFORE_PARSE = 'beforeParse';
+export const AFTER_PARSE = 'afterParse';
 export const BEFORE_STORE = 'beforeStore';
 export const AFTER_STORE = 'afterStore';
 export const BEFORE_BUILD = 'beforeBuild';

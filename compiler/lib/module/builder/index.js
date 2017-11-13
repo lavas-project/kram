@@ -3,8 +3,8 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-import {extname} from 'path';
-import {readFile} from 'fs-extra';
+import path from 'path';
+import fs from 'fs-extra';
 
 import {classify} from '../../utils';
 
@@ -23,9 +23,9 @@ export default function (app) {
         },
 
         async buildDocs(list) {
-            let hook = app.module.hook;
+            let {hook, logger} = app.module;
 
-            list = list.filter(info => extname(info.dir) === '.md');
+            list = list.filter(info => path.extname(info.dir) === '.md');
 
             let toBuild = await hook.exec(BEFORE_BUILD, list);
 
@@ -39,14 +39,15 @@ export default function (app) {
                 ...toDel.map(builder.deleteDoc)
             ]);
 
-            return await hook.exec(AFTER_BUILD, toBuild);
+            toBuild = await hook.exec(AFTER_BUILD, toBuild);
+
+            return toBuild;
         },
 
         async setDoc(info) {
             let {hook, parser, store} = app.module;
-
-            let md = await readFile(info.fullDir, 'utf-8');
-            let html = parser.parse(md, info);
+            let md = await fs.readFile(info.fullDir, 'utf-8');
+            let html = await parser.parse(md, info);
 
             let obj = {html, dir: info.dir};
 

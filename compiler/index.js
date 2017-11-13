@@ -38,11 +38,11 @@ export class Compiler {
      * @param {Function|Object} descriptor property descriptor or simply a getter function
      */
     addModule(name, descriptor) {
-        if (is(Function, descriptor)) {
-            descriptor = {get: descriptor};
-        }
-
-        Object.defineProperty(this.module, name, descriptor);
+        Object.defineProperty(
+            this.module,
+            name,
+            is(Function, descriptor) ? {get: descriptor}: descriptor
+        );
     }
 
     async exec() {
