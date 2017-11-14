@@ -9,8 +9,8 @@ import fs from 'fs-extra';
 import {classify} from '../../utils';
 
 import {
-    BEFORE_STORE,
-    AFTER_STORE,
+    BEFORE_STORE_DOC,
+    AFTER_STORE_DOC,
     BEFORE_BUILD,
     AFTER_BUILD
 } from '../hook/stage';
@@ -26,9 +26,9 @@ export default function (app) {
             let hook = app.module.hook;
             // let {hook, logger} = app.module;
 
-            list = list.filter(info => path.extname(info.dir) === '.md');
+            let toBuild = list.filter(info => path.extname(info.dir) === '.md');
 
-            let toBuild = await hook.exec(BEFORE_BUILD, list);
+            // let toBuild = await hook.exec(BEFORE_BUILD, list);
 
             let {toSet = [], toDel = []} = classify(
                 toBuild,
@@ -52,9 +52,9 @@ export default function (app) {
 
             let obj = {html, dir: info.dir};
 
-            obj = await hook.exec(BEFORE_STORE, obj, info);
+            obj = await hook.exec(BEFORE_STORE_DOC, obj, info);
             await store.set('article', info.dir, obj);
-            await hook.exec(AFTER_STORE, obj, info);
+            await hook.exec(AFTER_STORE_DOC, obj, info);
         },
 
         async deleteDoc(info) {

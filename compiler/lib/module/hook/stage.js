@@ -13,8 +13,8 @@ export const AFTER_DIFF_DIR = 'afterDiffDir';
 
 export const BEFORE_PARSE = 'beforeParse';
 export const AFTER_PARSE = 'afterParse';
-export const BEFORE_STORE = 'beforeStore';
-export const AFTER_STORE = 'afterStore';
+export const BEFORE_STORE_DOC = 'beforeStoreDoc';
+export const AFTER_STORE_DOC = 'afterStoreDoc';
 export const BEFORE_BUILD = 'beforeBuild';
 export const AFTER_BUILD = 'afterBuild';
 
@@ -37,8 +37,8 @@ export const STAGES = Object.assign(
 
         BEFORE_PARSE,
         AFTER_PARSE,
-        BEFORE_STORE,
-        AFTER_STORE,
+        BEFORE_STORE_DOC,
+        AFTER_STORE_DOC,
         BEFORE_BUILD,
         AFTER_BUILD
     },
