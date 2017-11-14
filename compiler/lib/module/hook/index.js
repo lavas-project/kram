@@ -1,3 +1,8 @@
+/**
+ * @file hook index
+ * @author tanglei (tanglei02@baidu.com)
+ */
+
 import {startWith} from '../../utils';
 import {STAGES} from './stage';
 

@@ -8,56 +8,26 @@ import fs from 'fs-extra';
 // import path from 'path';
 import {
     getDirs,
-    removePrefix,
-    removeExt,
-    sep,
-    set,
+    // removePrefix,
+    // removeExt,
+    relativeDir,
+    // sep,
+    // set,
     get,
-    first,
+    // first,
     subset,
     exclude,
     toArray,
     flatten
 } from '../../utils';
 import {
-    BEFORE_PROCESS_DIR,
-    AFTER_PROCESS_DIR
+    BEFORE_DIFF_DIR,
+    AFTER_DIFF_DIR
 } from '../hook/stage';
 
 export default function (app) {
     let dirInfoMap = new Map();
     let builtInfoMap = new Map();
-
-    const relativeDir = dir => removePrefix(sep(dir), sep(app.config.baseDir));
-
-    const getSourceInfo = async source => {
-        let dirs = await getDirs(source.to, '.*');
-
-        let dirInfos = dirs.map(
-            fullDir => ({
-                dir: relativeDir(fullDir),
-                fullDir: fullDir
-            })
-        );
-
-        return await classify(dirInfos);
-    };
-
-    const classify = async infos => {
-        let results = await Promise.all(infos.map(detect));
-
-        results = results.filter(result => result !== false);
-
-        if (dirInfoMap.size) {
-            results = [
-                ...results,
-                ...exclude(toArray(dirInfoMap), infos, 'dir')
-                    .map(info => Object.assign({type: 'delete'}, info))
-            ];
-        }
-
-        return results;
-    };
 
     const detect = async ({fullDir, dir}) => {
         let oldInfo = dirInfoMap.get(dir);
@@ -86,6 +56,35 @@ export default function (app) {
         };
     };
 
+    const classify = async infos => {
+        let results = await Promise.all(infos.map(detect));
+
+        results = results.filter(result => result !== false);
+
+        if (dirInfoMap.size) {
+            results = [
+                ...results,
+                ...exclude(toArray(dirInfoMap), infos, ['dir'])
+                    .map(info => Object.assign({type: 'delete'}, info))
+            ];
+        }
+
+        return results;
+    };
+
+    const getSourceInfo = async source => {
+        let dirs = await getDirs(source.to, '.*');
+
+        let dirInfos = dirs.map(
+            fullDir => ({
+                dir: relativeDir(app.config.baseDir, fullDir),
+                fullDir: fullDir
+            })
+        );
+
+        return await classify(dirInfos);
+    };
+
     const update = (map, info) => {
         if (info.type === 'delete') {
             map.delete(info.dir);
@@ -104,14 +103,14 @@ export default function (app) {
             return builtInfoMap;
         },
 
-        async process(sources = app.config.sources) {
+        async diff(sources = app.config.sources) {
             let hook = app.module.hook;
-            sources = await hook.exec(BEFORE_PROCESS_DIR, sources);
+            sources = await hook.exec(BEFORE_DIFF_DIR, sources);
 
             let infoChunk = await Promise.all(sources.map(getSourceInfo));
             let infoList = flatten(infoChunk);
 
-            infoList = await hook.exec(AFTER_PROCESS_DIR, infoList);
+            infoList = await hook.exec(AFTER_DIFF_DIR, infoList);
             infoList.forEach(info => update(dirInfoMap, info));
 
             return infoList;

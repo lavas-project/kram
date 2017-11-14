@@ -6,7 +6,11 @@ import marked from 'marked';
 import {contain, each} from '../../utils';
 import {ON_RENDER_PREFIX} from '../hook/stage';
 
-export const ORIGIN_RENDER = Object.assign({}, marked.Renderer.prototype);
+export const ORIGIN_RENDER = Object.assign(
+    /** @lends marked.Renderer.prototype */
+    {},
+    marked.Renderer.prototype
+);
 export const RENDER_NAMES = Object.keys(ORIGIN_RENDER);
 
 export default function (app) {

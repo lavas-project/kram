@@ -3,7 +3,7 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-import {STAGE_SET} from './stage';
+// import {STAGE_SET} from './stage';
 import events from 'events';
 
 export default function (app) {

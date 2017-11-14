@@ -5,11 +5,11 @@
 
 import marked from 'marked';
 import {
-    set,
+    // set,
     get,
-    subset,
-    isObject,
-    getPrototype
+    subset
+    // isObject,
+    // getPrototype
 } from '../../utils';
 import {
     BEFORE_PARSE,

@@ -1,6 +1,8 @@
 /**
  * @file 生成文章目录结构插件
+ * @author tanglei (tanglei02@baidu.com)
  */
+
 import path from 'path';
 
 export default class Catalog {

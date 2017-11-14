@@ -4,7 +4,11 @@
  */
 import marked from 'marked';
 
-export const BUILDIN_RENDERER_METHODS = Object.assign({}, marked.Renderer.prototype);
+export const BUILDIN_RENDERER_METHODS = Object.assign(
+    /** @lends marked.Renderer.prototype */
+    {},
+    marked.Renderer.prototype
+);
 
 export default function (app) {
     return {

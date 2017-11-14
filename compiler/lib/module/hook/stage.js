@@ -8,8 +8,8 @@ import {RENDER_NAMES} from '../parser/renderer';
 export const BEFORE_LOAD = 'beforeLoad';
 export const AFTER_LOAD = 'afterLoad';
 
-export const BEFORE_PROCESS_DIR = 'beforeProcessDir';
-export const AFTER_PROCESS_DIR = 'afterProcessDir';
+export const BEFORE_DIFF_DIR = 'beforeDiffDir';
+export const AFTER_DIFF_DIR = 'afterDiffDir';
 
 export const BEFORE_PARSE = 'beforeParse';
 export const AFTER_PARSE = 'afterParse';
@@ -32,8 +32,8 @@ export const STAGES = Object.assign(
         BEFORE_LOAD,
         AFTER_LOAD,
 
-        BEFORE_PROCESS_DIR,
-        AFTER_PROCESS_DIR,
+        BEFORE_DIFF_DIR,
+        AFTER_DIFF_DIR,
 
         BEFORE_PARSE,
         AFTER_PARSE,

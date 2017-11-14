@@ -12,7 +12,7 @@ export function subset(obj, keys, ignore) {
 }
 
 export function exclude(arr, ignores, keys) {
-    ignores = ignores;
+    // ignores = ignores;
     let fn;
 
     if (keys) {
@@ -112,7 +112,9 @@ export function getPrototype(obj) {
 }
 
 export function is(proto, obj) {
-    return obj === proto || obj.constructor === proto;
+    return obj === proto
+        || obj.constructor === proto
+        || proto.name === getPrototype(obj);
     // return getPrototype(obj) === protoName;
 }
 

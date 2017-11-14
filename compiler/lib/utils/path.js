@@ -74,3 +74,13 @@ export function getDirs(baseDir, ext = '') {
         });
     });
 }
+
+export function isSubpath(subpath, rootpath) {
+    let relativePath = path.relative(subpath, rootpath);
+    return relativePath.split(path.sep).every(str => str === '..');
+}
+
+export function relativeDir(from, to) {
+    return sep(path.relative(from, to));
+    // return removePrefix(sep(dir), sep(baseDir))
+}

@@ -23,13 +23,25 @@ var fs = require('fs-extra');
 
 var app = new Compiler({
     baseDir: path.resolve(__dirname, '../../doc'),
+    // sources: [
+    //     {
+    //         name: 'lavas',
+    //         loader: 'downloadGitRepo',
+    //         from: 'github:lavas-project/lavas-tutorial',
+    //         // to: './lavas',
+    //         // tmp: './git/lavas'
+    //         to: path.resolve(__dirname, '../../doc/lavas'),
+    //         tmp: path.resolve(__dirname, '../../doc/git/lavas')
+    //     }
+    // ],
     sources: [
         {
-            name: 'lavas',
-            loader: 'downloadGitRepo',
-            from: 'github:lavas-project/lavas-tutorial',
-            to: path.resolve(__dirname, '../../doc/lavas'),
-            tmp: path.resolve(__dirname, '../../doc/git/lavas')
+            name: 'test',
+            loader: 'local',
+            from: path.resolve(__dirname, 'md'),
+            // to: './lavas',
+            // tmp: './git/lavas'
+            to: path.resolve(__dirname, '../../doc/test')
         }
     ],
     routes: [
@@ -42,7 +54,7 @@ var app = new Compiler({
             }
         },
         {
-            dir: /^lavas\/vue\/foundation/,
+            dir: /lavas\/vue\/foundation/,
             url(dir) {
                 return `/happy/${dir}`;
             }
@@ -54,7 +66,13 @@ var app = new Compiler({
     ]
 });
 
-var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
+app.on('afterDiffDir', function (args) {
+    console.log('on after diff dir');
+    console.log(args);
+    console.log('---')
+})
+
+// var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
 // app.parse(md, {
 //     fullDir: path.resolve(__dirname, './md/test.md'),
 //     dir: './md/test.md'
@@ -62,16 +80,41 @@ var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
 //     console.log(html);
 // });
 
-app.exec()
+app.exec('test')
 .then(() => {
-    app.store.get('article', 'lavas/vue/foundation/build-and-deploy-project.md')
-    .then(obj => {
-        // console.log(app.config.plugin.hooks)
-        console.log('--------')
-        console.log(obj)
-    });
+    return app.store.get('article', 'test/test.md');
+})
+.then(obj => {
+    // console.log(app.config.plugin.hooks)
+    console.log('--------')
+    console.log(obj)
+})
+.then(() => {
+    var str = fs.readFileSync(path.resolve(__dirname, './md/author.html'), 'utf-8');
+    str += `\n${Date.now()}\n`;
+    fs.writeFileSync(path.resolve(__dirname, './md/author.html'), str);
+})
+.then(() => {
+    return sleep(5000);
+})
+.then(() => {
+    return app.exec('test');
+})
+.then(() => {
+    return app.store.get('article', 'test/test.md');
+})
+.then(obj => {
+    // console.log(app.config.plugin.hooks)
+    console.log('--------')
+    console.log(obj)
 })
 .catch(err => {
     console.log('in error')
     console.log(err)
 });
+
+function sleep(time) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, time);
+    });
+}

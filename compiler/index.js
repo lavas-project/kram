@@ -5,7 +5,7 @@
 
 import defaultData from './default';
 import * as modules from './lib/module';
-import {set, is, subset} from './lib/utils';
+import {is, subset} from './lib/utils';
 
 
 let moduleNames = Object.keys(modules);
@@ -41,13 +41,13 @@ export class Compiler {
         Object.defineProperty(
             this.module,
             name,
-            is(Function, descriptor) ? {get: descriptor}: descriptor
+            is(Function, descriptor) ? {get: descriptor} : descriptor
         );
     }
 
-    async exec() {
+    async exec(sourceName) {
         let {loader, builder} = this.module;
-        let sources = await loader.load();
+        let sources = await loader.load(sourceName);
         return await builder.build(sources);
     }
 

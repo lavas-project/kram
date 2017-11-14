@@ -18,12 +18,13 @@ import {
 export default function (app) {
     const builder = {
         async build(sources) {
-            let list = await app.module.dir.process(sources);
+            let list = await app.module.dir.diff(sources);
             return await builder.buildDocs(list);
         },
 
         async buildDocs(list) {
-            let {hook, logger} = app.module;
+            let hook = app.module.hook;
+            // let {hook, logger} = app.module;
 
             list = list.filter(info => path.extname(info.dir) === '.md');
 
@@ -31,7 +32,7 @@ export default function (app) {
 
             let {toSet = [], toDel = []} = classify(
                 toBuild,
-                ({type}) => type === 'delete' ? 'toDel' : 'toSet'
+                ({type}) => (type === 'delete' ? 'toDel' : 'toSet')
             );
 
             await Promise.all([

@@ -3,12 +3,14 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
+// import path from 'path';
+
 import {
     BEFORE_LOAD,
     AFTER_LOAD
 } from './hook/stage';
 
-import {each} from '../utils';
+import {each, first} from '../utils';
 
 export default function (app) {
     const config = {};
@@ -32,19 +34,27 @@ export default function (app) {
             return config[name];
         },
 
-        async loadOne(name, source) {
+        async loadOne(source) {
             app.logger.info(`load start: ${source.name}`);
-            await loader.get(name)(source, app);
+            await loader.get(source.loader)(source, app);
             app.logger.info(`load finish: ${source.name}`);
             return source;
         },
 
-        async load() {
-            let sources = app.config.sources;
+        async load(sourceName) {
+            let sources;
+
+            if (sourceName) {
+                let source = first(app.config.sources, source => source.name === sourceName);
+                sources = [source];
+            }
+            else {
+                sources = app.config.sources;
+            }
 
             sources = await app.module.plugin.exec(BEFORE_LOAD, sources);
             await Promise.all(
-                sources.map(source => loader.loadOne(source.loader, source))
+                sources.map(source => loader.loadOne(source))
             );
             return await app.module.plugin.exec(AFTER_LOAD, sources);
         }
@@ -53,7 +63,17 @@ export default function (app) {
     app.addModule('loader', () => loader);
 
     return () => {
+        // app.config.sources = app.config.sources.map(source => {
+        //     if (!source.to) {
+        //         source.to = path.resolve(app.config.baseDir, source.name);
+        //     }
+        //     else if (!isSubpath(source.to, app.config.baseDir)) {
+        //         throw new Error('source.to should be subpath of the baseDir');
+        //     }
+        //     return source;
+        // });
+
         let loaders = app.config.loaders || loader.default;
         each(loaders, loader.add);
     };
-};
+}

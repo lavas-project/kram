@@ -1,9 +1,9 @@
 title: 这是一个标题
 author: 测试1 测试2
 tag: 飞火 流星
-
 ----------------
 
+{{- insert: ./author.html -}}
 
 # [测试 `markdown`](./index)
 
@@ -26,7 +26,9 @@ tag: 飞火 流星
 
 ### 这是一个测试三级标题
 
-[测试链接](/lavas/vue/foundation/hahaha)
+<div lala="sda">{{- insert: ./svg.xml -}}</div>
+
+[测试链接](./lavas/vue/foundation/hahaha.md)
 
 ![测试图片](./path/to/image.jpg)
 

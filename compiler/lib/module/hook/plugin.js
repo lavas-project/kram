@@ -3,7 +3,11 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-import {isValidArray, noop, each} from '../../utils';
+import {
+    isValidArray,
+    // noop,
+    each
+} from '../../utils';
 import {STAGE_SET} from './stage';
 
 export default function (app) {
@@ -101,4 +105,4 @@ export default function (app) {
         let plugins = app.config.plugin || plugin.default;
         each(plugins, plugin.register);
     };
-};
+}
