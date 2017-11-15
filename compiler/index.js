@@ -46,9 +46,10 @@ export class Compiler {
     }
 
     async exec(sourceName) {
-        let {loader, dir, builder} = this.module;
+        let {loader, dir, parser, } = this.module;
         let sources = await loader.load(sourceName);
         let {deletable = [], updateable = []} = await dir.diff(sources);
+        // let docInfos = parser.parse
         // let {toSet = [], toDel = []} = classify(
         //     dirInfos,
         //     ({type}) => type === 'delete' ? 'toDel' : 'toSet'
