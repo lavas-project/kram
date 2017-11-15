@@ -113,7 +113,11 @@ export default function (app) {
             infoList = await hook.exec(AFTER_DIFF_DIR, infoList);
             infoList.forEach(info => update(dirInfoMap, info));
 
-            return infoList;
+            return classify(
+                infoList,
+                ({type}) => (type === 'delete' ? 'deletable' : 'updatable')
+            );
+            // return infoList;
         }
     };
 

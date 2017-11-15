@@ -62,7 +62,7 @@ export default function (app, addModule) {
 
                 let html = marked(md, markedOptions);
 
-                html = await hook.execSync(AFTER_PARSE, html, options);
+                html = await hook.exec(AFTER_PARSE, html, options);
                 return html;
             }
             catch (e) {

@@ -46,8 +46,14 @@ export class Compiler {
     }
 
     async exec(sourceName) {
-        let {loader, builder} = this.module;
+        let {loader, dir, builder} = this.module;
         let sources = await loader.load(sourceName);
+        let {deletable = [], updateable = []} = await dir.diff(sources);
+        // let {toSet = [], toDel = []} = classify(
+        //     dirInfos,
+        //     ({type}) => type === 'delete' ? 'toDel' : 'toSet'
+        // );
+
         return await builder.build(sources);
     }
 

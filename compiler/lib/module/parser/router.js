@@ -26,7 +26,7 @@ class URLPlugin {
         let baseDir = app.config.baseDir;
         let sepBaseDir = sep(baseDir);
 
-        let {AFTER_PARSE, BEFORE_STORE} = app.STAGES;
+        let {AFTER_PARSE, BEFORE_STORE_DOC} = app.STAGES;
 
         on(AFTER_PARSE, (html, info) => {
             if (!info) {
@@ -66,7 +66,7 @@ class URLPlugin {
             );
         }, this.priority);
 
-        on(BEFORE_STORE, info => {
+        on(BEFORE_STORE_DOC, info => {
             let route = this.getRoute(info.dir);
 
             if (!route) {
