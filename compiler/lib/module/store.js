@@ -48,6 +48,21 @@ export default function (app) {
         async delete(type, key) {
             let name = generateKey(type, key, options);
             return await storage.delete(name);
+        },
+
+        async update(type, ...args) {
+            let infos = [...args];
+
+            await Promise.all(
+                infos.map(async info => {
+                    if (info.type === 'delete') {
+                        await store.delete(type, info.path);
+                    }
+                    else {
+                        await store.set(type, info.path, info);
+                    }
+                })
+            );
         }
     };
 

@@ -62,9 +62,18 @@ export function level(dir) {
     return dir.split('/').length;
 }
 
-export function getDirs(baseDir, ext = '') {
+export function getPaths(basePath, ext = '') {
+    let extStr;
+
+    if (Array.isArray(ext)) {
+        extStr = `@(${ext.join('|')})`;
+    }
+    else {
+        extStr = ext;
+    }
+
     return new Promise((resolve, reject) => {
-        glob(path.resolve(baseDir, '**/*' + ext), (err, dirs) => {
+        glob(path.resolve(basePath, '**/*' + extStr), (err, dirs) => {
             if (err) {
                 reject(err);
             }
@@ -80,7 +89,7 @@ export function isSubpath(subpath, rootpath) {
     return relativePath.split(path.sep).every(str => str === '..');
 }
 
-export function relativeDir(from, to) {
+export function relativePath(from, to) {
     return sep(path.relative(from, to));
     // return removePrefix(sep(dir), sep(baseDir))
 }

@@ -23,8 +23,8 @@ class URLPlugin {
     }
 
     apply(on, app) {
-        let baseDir = app.config.baseDir;
-        let sepBaseDir = sep(baseDir);
+        let basePath = app.config.basePath;
+        let sepBasePath = sep(basePath);
 
         let {AFTER_PARSE, BEFORE_STORE_DOC} = app.STAGES;
 
@@ -46,8 +46,8 @@ class URLPlugin {
                         return str;
                     }
 
-                    url = path.join(info.fullDir, '..', url);
-                    url = removePrefix(sep(url), sepBaseDir);
+                    url = path.join(info.fullPath, '..', url);
+                    url = removePrefix(sep(url), sepBasePath);
 
                     let route = this.getRoute(url);
 
@@ -67,13 +67,13 @@ class URLPlugin {
         }, this.priority);
 
         on(BEFORE_STORE_DOC, info => {
-            let route = this.getRoute(info.dir);
+            let route = this.getRoute(info.path);
 
             if (!route) {
                 return;
             }
 
-            info.url = is(Function, route.url) ? route.url(info.dir) : route.url;
+            info.url = is(Function, route.url) ? route.url(info.path) : route.url;
             return info;
         });
     }
@@ -93,23 +93,23 @@ class URLPlugin {
 
             let route = this.routes[i];
 
-            switch (typeof route.dir) {
+            switch (typeof route.path) {
                 case 'string':
-                    if (route.dir === key) {
+                    if (route.path === key) {
                         return route;
                     }
 
                     break;
 
                 case 'object':
-                    if (route.dir.test(key)) {
+                    if (route.path.test(key)) {
                         return route;
                     }
 
                     break;
 
                 case 'function':
-                    if (route.dir(key)) {
+                    if (route.path(key)) {
                         return route;
                     }
 

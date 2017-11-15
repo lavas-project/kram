@@ -4,7 +4,7 @@
  */
 import fs from 'fs-extra';
 import path from 'path';
-import {relativeDir} from '../../lib/utils';
+import {relativePath} from '../../lib/utils';
 
 const REGEX = /{{- *insert:(.*)?-}}/;
 const REGEX_GLOBAL = new RegExp(REGEX, 'mg');
@@ -18,31 +18,31 @@ export default class Insert {
 
     apply(on, app) {
         let {
-            AFTER_DIFF_DIR,
+            AFTER_FILTER,
             BEFORE_PARSE
         } = app.module.hook.STAGES;
 
         let map = new Map();
 
-        on(AFTER_DIFF_DIR, dirInfoList => {
-            for (let i = 0; i < dirInfoList.length; i++) {
-                let info = dirInfoList[i];
-                let affects = map.get(info.dir);
+        on(AFTER_FILTER, docInfos => {
+            for (let i = 0; i < docInfos.length; i++) {
+                let info = docInfos[i];
+                let affects = map.get(info.path);
 
                 if (affects) {
                     for (let j = 0; j < affects.length; j++) {
-                        if (dirInfoList.every(info => info.dir !== affects[j].dir)) {
-                            dirInfoList.push(Object.assign({type: 'modify'}, affects[j]));
+                        if (docInfos.every(info => info.path !== affects[j].path)) {
+                            docInfos.push(Object.assign({type: 'modify'}, affects[j]));
                         }
                     }
                 }
 
                 if (info.type === 'delete') {
-                    map.delete(info.dir);
+                    map.delete(info.path);
                 }
             }
 
-            return dirInfoList;
+            return docInfos;
         });
 
         on(BEFORE_PARSE, async (md, options) => {
@@ -51,41 +51,41 @@ export default class Insert {
                 return;
             }
 
-            let insertDirs = matches.map(matched => {
-                let relativeDir = matched.match(REGEX)[1].trim();
-                return path.resolve(options.fullDir, '..', relativeDir);
+            let insertPaths = matches.map(matched => {
+                let insertPath = matched.match(REGEX)[1].trim();
+                return path.resolve(options.fullPath, '..', insertPath);
             });
 
-            insertDirs.forEach(insertFullDir => {
-                let insertDir = relativeDir(app.config.baseDir, insertFullDir);
+            insertPaths.forEach(insertFullPath => {
+                let insertPath = relativePath(app.config.basePath, insertFullPath);
 
-                if (!map.get(insertDir)) {
-                    map.set(insertDir, []);
+                if (!map.get(insertPath)) {
+                    map.set(insertPath, []);
                 }
 
-                if (map.get(insertDir).every(dirInfo => dirInfo.dir !== options.dir)) {
-                    map.get(insertDir).push({
-                        dir: options.dir,
-                        fullDir: options.fullDir,
-                        md5: options.md5
+                if (map.get(insertPath).every(info => info.path !== options.path)) {
+                    map.get(insertPath).push({
+                        path: options.path,
+                        md5: options.md5,
+                        fullPath: options.fullPath
                     });
                 }
             });
 
             let list = await Promise.all(
-                insertDirs.map(async dir => {
+                insertPaths.map(async fullPath => {
                     let result = '';
 
-                    if (!await fs.exists(dir)) {
-                        app.logger.warn(`${dir} isn't exist`);
+                    if (!await fs.exists(fullPath)) {
+                        app.logger.warn(`${fullPath} isn't exist`);
                         return result;
                     }
 
                     try {
-                        result = await fs.readFile(dir, 'utf-8');
+                        result = await fs.readFile(fullPath, 'utf-8');
                     }
                     catch (e) {
-                        app.logger.warn(`readFile ${dir} error`);
+                        app.logger.warn(`readFile ${fullPath} error`);
                     }
 
                     return result;

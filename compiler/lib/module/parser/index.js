@@ -53,21 +53,30 @@ export default function (app, addModule) {
             app.module.renderer.setRenderer(...args);
         },
 
-        async parse(md, options) {
+        async parseOne(fileInfo) {
             let {renderer, hook} = app.module;
 
             try {
-                md = await hook.exec(BEFORE_PARSE, md, options);
-                renderer.hookOptions = options;
+                let md = await hook.exec(BEFORE_PARSE, fileInfo.file, fileInfo);
+                renderer.hookOptions = fileInfo;
 
                 let html = marked(md, markedOptions);
 
-                html = await hook.exec(AFTER_PARSE, html, options);
-                return html;
+                html = await hook.exec(AFTER_PARSE, html, fileInfo);
+
+                return Object.assign({}, fileInfo, {html});
             }
             catch (e) {
                 app.logger.info(e);
             }
+        },
+
+        parse(fileInfos) {
+            if (Array.isArray(fileInfos)) {
+                return Promise.all(fileInfos.map(parser.parseOne));
+            }
+
+            return parser.parseOne(fileInfos);
         }
     };
 

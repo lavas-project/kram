@@ -22,7 +22,7 @@ var fs = require('fs-extra');
 
 
 var app = new Compiler({
-    baseDir: path.resolve(__dirname, '../../doc'),
+    basePath: path.resolve(__dirname, '../../doc'),
     // sources: [
     //     {
     //         name: 'lavas',
@@ -46,17 +46,17 @@ var app = new Compiler({
     ],
     routes: [
         {
-            dir(dir) {
-                return path.extname(dir) !== '.md';
+            path(filePath) {
+                return path.extname(filePath) !== '.md';
             },
-            url(dir) {
-                return `/assets/${dir}`;
+            url(filePath) {
+                return `/assets/${filePath}`;
             }
         },
         {
-            dir: /lavas\/vue\/foundation/,
-            url(dir) {
-                return `/happy/${dir}`;
+            path: /lavas\/vue\/foundation/,
+            url(filePath) {
+                return `/happy/${filePath}`;
             }
             // dir: '正则 or function or 字符串',
             // path: '对应的真实路径${dir}',
@@ -79,20 +79,23 @@ app.on('afterDiffDir', function (args) {
 // }).then(function (html) {
 //     console.log(html);
 // });
+var time;
 
 app.exec('test')
-.then(() => {
-    return app.store.get('article', 'test/test.md');
-})
-.then(obj => {
-    // console.log(app.config.plugin.hooks)
-    console.log('--------')
-    console.log(obj)
-})
+// .then(() => {
+//     return app.store.get('article', 'test/test.md');
+// })
+// .then(obj => {
+//     // console.log(app.config.plugin.hooks)
+//     console.log('--------')
+//     console.log(obj)
+// })
 .then(() => {
     var str = fs.readFileSync(path.resolve(__dirname, './md/author.html'), 'utf-8');
     str += `\n${Date.now()}\n`;
     fs.writeFileSync(path.resolve(__dirname, './md/author.html'), str);
+    time = path.resolve(__dirname, './md/' + Date.now() + '.html');
+    fs.writeFileSync(time, 'test');
 })
 .then(() => {
     return sleep(5000);
@@ -101,13 +104,22 @@ app.exec('test')
     return app.exec('test');
 })
 .then(() => {
-    return app.store.get('article', 'test/test.md');
+    return sleep(5000);
 })
-.then(obj => {
-    // console.log(app.config.plugin.hooks)
-    console.log('--------')
-    console.log(obj)
+.then(() => {
+    fs.unlinkSync(time);
 })
+.then(() => {
+    return app.exec('test');
+})
+// .then(() => {
+//     return app.store.get('article', 'test/test.md');
+// })
+// .then(obj => {
+//     // console.log(app.config.plugin.hooks)
+//     console.log('--------')
+//     console.log(obj)
+// })
 .catch(err => {
     console.log('in error')
     console.log(err)

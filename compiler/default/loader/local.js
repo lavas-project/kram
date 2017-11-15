@@ -17,5 +17,6 @@ export async function local({from, to}) {
     }
 
     await fs.ensureDir(to);
+    await fs.remove(to);
     await fs.copy(from, to);
 }

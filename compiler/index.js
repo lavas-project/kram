@@ -46,16 +46,20 @@ export class Compiler {
     }
 
     async exec(sourceName) {
-        let {loader, dir, parser, } = this.module;
-        let sources = await loader.load(sourceName);
-        let {deletable = [], updateable = []} = await dir.diff(sources);
-        // let docInfos = parser.parse
-        // let {toSet = [], toDel = []} = classify(
-        //     dirInfos,
-        //     ({type}) => type === 'delete' ? 'toDel' : 'toSet'
-        // );
+        let {loader, file, parser, store, catalog, hook} = this.module;
 
-        return await builder.build(sources);
+        let sources = await loader.load(sourceName);
+        let {change = [], remove = []} = await file.filter(sources);
+
+        let docInfos = await parser.parse(change);
+
+        console.log(docInfos)
+        // await store.update('doc', docInfos, remove);
+
+        // let newCatalog = await catalog.generate();
+        // await store.update('catalog', newCatalog);
+
+        // await hook.exec(hook.STAGES.DONE);
     }
 
     get parse() {
@@ -70,12 +74,8 @@ export class Compiler {
         return subset(this.module.store, ['set', 'get', 'delete']);
     }
 
-    get originalDirs() {
-        return this.module.dir.originalDirs;
-    }
-
-    get builtDirs() {
-        return this.module.dir.builtDirs;
+    get fileInfos() {
+        return this.module.file.fileInfos;
     }
 
     get plugins() {
