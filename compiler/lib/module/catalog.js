@@ -15,15 +15,7 @@ export default function (app) {
                 return [];
             }
 
-            console.log(JSON.stringify(treeToCatalog(createCatalog(entryInfos))))
-
-            return [];
-
-            // console.log('--- haha ---')
-            // console.log(entryInfos)
-            // console.log('*')
-
-            // return [];
+            return createCatalog(entryInfos);
         }
     };
 
@@ -40,15 +32,15 @@ function createCatalog(entryInfos) {
             url: info.url,
             levels: getPathLevel(info.path),
             title: get(info, 'info', 'title')
-                || get(info, 'chapter', '0', 'text')
+                || get(info, 'chapter', 0, 'text')
                 || basename
         };
 
         return obj;
     })
     .reduce((tree, info) => appendToTree(tree, info.levels, info), []);
-    return tree;
-    // return treeToCatalog
+
+    return treeToCatalog(tree);
 }
 
 function getPathLevel(path) {
