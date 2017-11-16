@@ -52,7 +52,7 @@ export default class Chapter {
 
         on(CREATE_DOC_STORE_OBJECT, obj => {
             let info = map.get(obj.path);
-            if (!get(info, 'list', 'length')) {
+            if (!get(info, 'list.length')) {
                 return;
             }
             obj.chapters = buildTree(info.list);
