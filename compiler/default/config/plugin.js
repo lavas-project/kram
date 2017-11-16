@@ -7,8 +7,6 @@ import Stylus from '../plugin/stylus';
 import Style from '../plugin/style';
 import Minify from '../plugin/minify';
 import Chapter from '../plugin/chapter';
-import Catalog from '../plugin/catalog';
-import Info from '../plugin/info';
 import Insert from '../plugin/insert';
 
 export default function (app) {
@@ -17,8 +15,6 @@ export default function (app) {
         style: new Style(),
         minify: new Minify(),
         chapter: new Chapter(),
-        catalog: new Catalog(),
-        info: new Info(),
         insert: new Insert()
     };
 }

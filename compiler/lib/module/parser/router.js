@@ -8,8 +8,9 @@ import {
     is,
     isRelativeUrl,
     // join,
-    sep,
-    removePrefix
+    // sep,
+    // removePrefix,
+    relativePath
 } from '../../utils';
 
 import path from 'path';
@@ -24,9 +25,9 @@ class URLPlugin {
 
     apply(on, app) {
         let basePath = app.config.basePath;
-        let sepBasePath = sep(basePath);
+        // let sepBasePath = sep(basePath);
 
-        let {AFTER_PARSE, BEFORE_STORE_DOC} = app.STAGES;
+        let {AFTER_PARSE, CREATE_DOC_STORE_OBJECT} = app.STAGES;
 
         on(AFTER_PARSE, (html, info) => {
             if (!info) {
@@ -47,7 +48,8 @@ class URLPlugin {
                     }
 
                     url = path.join(info.fullPath, '..', url);
-                    url = removePrefix(sep(url), sepBasePath);
+                    url = relativePath(basePath, url);
+                    // url = removePrefix(sep(url), sepBasePath);
 
                     let route = this.getRoute(url);
 
@@ -66,7 +68,7 @@ class URLPlugin {
             );
         }, this.priority);
 
-        on(BEFORE_STORE_DOC, info => {
+        on(CREATE_DOC_STORE_OBJECT, info => {
             let route = this.getRoute(info.path);
 
             if (!route) {

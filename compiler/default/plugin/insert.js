@@ -2,9 +2,9 @@
  * @file 插入外部字符串
  * @author tanglei (tanglei02@baidu.com)
  */
-import fs from 'fs-extra';
+
 import path from 'path';
-import {relativePath} from '../../lib/utils';
+import {relativePath, first} from '../../lib/utils';
 
 const REGEX = /{{- *insert:(.*)?-}}/;
 const REGEX_GLOBAL = new RegExp(REGEX, 'mg');
@@ -18,13 +18,14 @@ export default class Insert {
 
     apply(on, app) {
         let {
-            AFTER_FILTER,
+            AFTER_FILTER_FILE,
+            FILTER_ENTRY,
             BEFORE_PARSE
         } = app.module.hook.STAGES;
 
         let map = new Map();
 
-        on(AFTER_FILTER, docInfos => {
+        on(AFTER_FILTER_FILE, docInfos => {
             for (let i = 0; i < docInfos.length; i++) {
                 let info = docInfos[i];
                 let affects = map.get(info.path);
@@ -45,20 +46,25 @@ export default class Insert {
             return docInfos;
         });
 
-        on(BEFORE_PARSE, async (md, options) => {
+        on(FILTER_ENTRY,
+            entryInfos => entryInfos.filter(
+                info => !/\.partial\./.test(info.path)
+            )
+        );
+
+        on(BEFORE_PARSE, (md, options) => {
             let matches = md.match(REGEX_GLOBAL);
             if (!matches) {
                 return;
             }
 
             let insertPaths = matches.map(matched => {
-                let insertPath = matched.match(REGEX)[1].trim();
-                return path.resolve(options.fullPath, '..', insertPath);
+                let originalPath = matched.match(REGEX)[1].trim();
+                let fullPath = path.resolve(options.fullPath, '..', originalPath);
+                return relativePath(app.config.basePath, fullPath);
             });
 
-            insertPaths.forEach(insertFullPath => {
-                let insertPath = relativePath(app.config.basePath, insertFullPath);
-
+            insertPaths.forEach(insertPath => {
                 if (!map.get(insertPath)) {
                     map.set(insertPath, []);
                 }
@@ -67,34 +73,28 @@ export default class Insert {
                     map.get(insertPath).push({
                         path: options.path,
                         md5: options.md5,
+                        file: options.file,
                         fullPath: options.fullPath
                     });
                 }
             });
 
-            let list = await Promise.all(
-                insertPaths.map(async fullPath => {
-                    let result = '';
+            const fileInfos = app.fileInfos;
 
-                    if (!await fs.exists(fullPath)) {
-                        app.logger.warn(`${fullPath} isn't exist`);
-                        return result;
-                    }
+            let replaceList = insertPaths.map(insertPath => {
+                let info = first(fileInfos, info => info.path === insertPath);
 
-                    try {
-                        result = await fs.readFile(fullPath, 'utf-8');
-                    }
-                    catch (e) {
-                        app.logger.warn(`readFile ${fullPath} error`);
-                    }
+                if (info) {
+                    return info.file;
+                }
 
-                    return result;
-                })
-            );
+                app.logger.warn(`[kram][plugin][insert] ${insertPath} isn't exist`);
+                return '';
+            });
 
             let index = 0;
 
-            return md.replace(REGEX_GLOBAL, () => list[index++]);
+            return md.replace(REGEX_GLOBAL, () => replaceList[index++]);
 
         }, this.priority);
     }

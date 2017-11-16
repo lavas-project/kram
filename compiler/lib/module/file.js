@@ -1,11 +1,11 @@
 /**
- * @file file-manager.js 处理文件过滤的模块
+ * @file file manager 处理文件过滤的模块
  * @author tanglei (tanglei02@baidu.com)
  */
 
 import crypto from 'crypto';
 import fs from 'fs-extra';
-// import path from 'path';
+import path from 'path';
 import {
     getPaths,
     // removePrefix,
@@ -20,19 +20,22 @@ import {
     exclude,
     toArray,
     flatten
+    // ,
+    // contain
 } from '../utils';
 import {
-    BEFORE_FILTER,
-    AFTER_FILTER
+    BEFORE_FILTER_FILE,
+    AFTER_FILTER_FILE,
+    FILTER_ENTRY
 } from './hook/stage';
 
 const WHITE_LIST = ['.md', '.json', '.html', '.xml', '.tpl', '.txt'];
 
 export default function (app) {
     let fileInfoMap = new Map();
-    // let builtInfoMap = new Map();
+    let entryInfoMap = new Map();
 
-    const getChangeFileInfos = async infos => {
+    const getChangeFileInfos = infos => {
         let results = infos.map(info => {
             let oldMD5 = get(fileInfoMap.get(info.path), 'md5');
 
@@ -48,7 +51,7 @@ export default function (app) {
             results = [
                 ...results,
                 ...exclude(toArray(fileInfoMap), infos, ['path'])
-                    .map(info => Object.assign({type: 'delete'}, info))
+                    .map(info => Object.assign({type: 'remove'}, info))
             ];
         }
 
@@ -74,7 +77,7 @@ export default function (app) {
     };
 
     const update = (map, info) => {
-        if (info.type === 'delete') {
+        if (info.type === 'remove') {
             map.delete(info.path);
         }
         else {
@@ -84,40 +87,47 @@ export default function (app) {
 
     const fileModule = {
         get fileInfos() {
+            return toArray(fileInfoMap);
+        },
+
+        get fileInfoMap() {
             return fileInfoMap;
+        },
+
+        get entryInfos() {
+            return toArray(entryInfoMap);
+        },
+
+        get entryInfoMap() {
+            return entryInfoMap;
         },
 
         async filter(sources = app.config.sources) {
             let hook = app.module.hook;
 
             let infoChunk = await Promise.all(sources.map(getFileInfos));
+
             let infos = flatten(infoChunk);
-
-            infos = await hook.exec(BEFORE_FILTER, infos);
-
+            infos = await hook.exec(BEFORE_FILTER_FILE, infos);
             infos = getChangeFileInfos(infos);
-
-            infos = await hook.exec(AFTER_FILTER, infos);
-
+            infos = await hook.exec(AFTER_FILTER_FILE, infos);
             infos.forEach(info => update(fileInfoMap, info));
 
+            let entryInfos = infos.filter(info => path.extname(info.path) === '.md');
+            entryInfos = await hook.exec(FILTER_ENTRY, entryInfos);
+            entryInfos.forEach(info => update(entryInfoMap, info));
+
             let typeMap = {
-                'delete': 'remove',
-                'add': 'change',
-                'modify': 'change'
+                remove: 'remove',
+                add: 'change',
+                modify: 'change'
             };
 
-            return classify(infos, ({type}) => typeMap[type]);
+            return classify(entryInfos, ({type}) => typeMap[type]);
         }
     };
 
     app.addModule('file', () => fileModule);
-
-    // return () => {
-    //     app.on(app.STAGES.AFTER_STORE_DOC, builtInfos => {
-    //         builtInfos.forEach(info => update(builtInfoMap, info));
-    //     });
-    // };
 }
 
 function createMD5(str) {

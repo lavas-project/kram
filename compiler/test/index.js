@@ -42,6 +42,14 @@ var app = new Compiler({
             // to: './lavas',
             // tmp: './git/lavas'
             to: path.resolve(__dirname, '../../doc/test')
+        },
+        {
+            name: 'lalalan',
+            loader: 'local',
+            from: path.resolve(__dirname, 'lalala'),
+            // to: './lavas',
+            // tmp: './git/lavas'
+            to: path.resolve(__dirname, '../../doc/lalalan')
         }
     ],
     routes: [
@@ -58,19 +66,16 @@ var app = new Compiler({
             url(filePath) {
                 return `/happy/${filePath}`;
             }
-            // dir: '正则 or function or 字符串',
-            // path: '对应的真实路径${dir}',
-            // renderer: 'rendererName',
-            // layout: 'layoutName'
+            // path: '正则 or function or 字符串'
         }
     ]
 });
 
-app.on('afterDiffDir', function (args) {
-    console.log('on after diff dir');
-    console.log(args);
-    console.log('---')
-})
+// app.on('afterFilterFile', function (args) {
+//     console.log('on after diff dir');
+//     console.log(args);
+//     console.log('---')
+// })
 
 // var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
 // app.parse(md, {
@@ -81,7 +86,10 @@ app.on('afterDiffDir', function (args) {
 // });
 var time;
 
-app.exec('test')
+app.exec()
+// .then(() => {
+//     console.log(app.module.store.default.storage)
+// })
 // .then(() => {
 //     return app.store.get('article', 'test/test.md');
 // })
@@ -91,9 +99,9 @@ app.exec('test')
 //     console.log(obj)
 // })
 .then(() => {
-    var str = fs.readFileSync(path.resolve(__dirname, './md/author.html'), 'utf-8');
+    var str = fs.readFileSync(path.resolve(__dirname, './md/author.partial.html'), 'utf-8');
     str += `\n${Date.now()}\n`;
-    fs.writeFileSync(path.resolve(__dirname, './md/author.html'), str);
+    fs.writeFileSync(path.resolve(__dirname, './md/author.partial.html'), str);
     time = path.resolve(__dirname, './md/' + Date.now() + '.html');
     fs.writeFileSync(time, 'test');
 })
@@ -111,6 +119,9 @@ app.exec('test')
 })
 .then(() => {
     return app.exec('test');
+})
+.then(() => {
+    console.log(app.module.store.default.storage)
 })
 // .then(() => {
 //     return app.store.get('article', 'test/test.md');

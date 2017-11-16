@@ -3,8 +3,6 @@
  * @author tanglei (tanglei02@baidu.com)
  */
 
-// import path from 'path';
-
 import {
     BEFORE_LOAD,
     AFTER_LOAD
@@ -35,9 +33,9 @@ export default function (app) {
         },
 
         async loadOne(source) {
-            app.logger.info(`load start: ${source.name}`);
+            app.logger.info(`[kram] load start: ${source.name}`);
             await loader.get(source.loader)(source, app);
-            app.logger.info(`load finish: ${source.name}`);
+            app.logger.info(`[kram] load finish: ${source.name}`);
             return source;
         },
 

@@ -15,10 +15,15 @@ export default class Chapter {
     }
 
     apply(on, app) {
-        let {ON_RENDER_HEADING, BEFORE_STORE} = app.module.hook.STAGES;
+        let {
+            RENDER_HEADING,
+            CREATE_DOC_STORE_OBJECT,
+            DONE
+        } = app.module.hook.STAGES;
+
         let map = new Map();
 
-        on(ON_RENDER_HEADING, (html, {args: [text, level, raw], dir}) => {
+        on(RENDER_HEADING, (html, {args: [text, level, raw], path}) => {
             let hash = raw.trim()
                 .toLowerCase()
                 .replace(/[^0-9a-zA-Z_ \u0391-\uFFE5+]/g, '')
@@ -26,7 +31,7 @@ export default class Chapter {
 
             let content = plainify(html);
 
-            let info = map.get(dir) || {hashMap: {}, list: []};
+            let info = map.get(path) || {hashMap: {}, list: []};
 
             if (info.hashMap[hash] == null) {
                 info.hashMap[hash] = 0;
@@ -37,7 +42,7 @@ export default class Chapter {
             }
 
             info.list.push({level, hash, text: content});
-            map.set(dir, info);
+            map.set(path, info);
 
             return html.replace(/(<h[1-6])(>| [^<]*?>)/mg, (str, start, end) => {
                 end = end.slice(0, -1) + ` data-hash="#${hash}">`;
@@ -45,14 +50,18 @@ export default class Chapter {
             });
         }, this.priority);
 
-        on(BEFORE_STORE, (obj, {dir}) => {
-            let info = map.get(dir);
+        on(CREATE_DOC_STORE_OBJECT, obj => {
+            let info = map.get(obj.path);
             if (!get(info, 'list', 'length')) {
                 return;
             }
             obj.chapters = buildTree(info.list);
             return obj;
         }, this.priority);
+
+        on(DONE, () => {
+            map = new Map();
+        });
     }
 }
 

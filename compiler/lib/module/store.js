@@ -2,6 +2,7 @@
 * @file store module
 * @author tanglei (tanglei02@baidu.com)
 */
+import {flatten} from '../utils';
 
 export default function (app) {
     let options;
@@ -45,18 +46,19 @@ export default function (app) {
             return await storage.get(name);
         },
 
-        async delete(type, key) {
+        async remove(type, key) {
             let name = generateKey(type, key, options);
-            return await storage.delete(name);
+            return await storage.remove(name);
         },
 
         async update(type, ...args) {
-            let infos = [...args];
+            let infos = flatten(args);
 
             await Promise.all(
-                infos.map(async info => {
-                    if (info.type === 'delete') {
-                        await store.delete(type, info.path);
+                infos.filter(info => !!info)
+                .map(async info => {
+                    if (info.type === 'remove') {
+                        await store.remove(type, info.path);
                     }
                     else {
                         await store.set(type, info.path, info);

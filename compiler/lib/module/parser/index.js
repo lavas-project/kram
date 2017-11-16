@@ -4,6 +4,7 @@
  */
 
 import marked from 'marked';
+// import path from 'path';
 import {
     // set,
     get,
@@ -13,7 +14,8 @@ import {
 } from '../../utils';
 import {
     BEFORE_PARSE,
-    AFTER_PARSE
+    AFTER_PARSE,
+    CREATE_DOC_STORE_OBJECT
 } from '../hook/stage';
 
 
@@ -64,16 +66,23 @@ export default function (app, addModule) {
 
                 html = await hook.exec(AFTER_PARSE, html, fileInfo);
 
-                return Object.assign({}, fileInfo, {html});
+                let storeInfo = Object.assign({}, fileInfo, {html});
+
+                storeInfo = await hook.exec(CREATE_DOC_STORE_OBJECT, storeInfo);
+                return storeInfo;
             }
             catch (e) {
                 app.logger.info(e);
             }
         },
 
-        parse(fileInfos) {
+        async parse(fileInfos) {
             if (Array.isArray(fileInfos)) {
-                return Promise.all(fileInfos.map(parser.parseOne));
+                if (fileInfos.length) {
+                    return Promise.all(fileInfos.map(parser.parseOne));
+                }
+
+                return [];
             }
 
             return parser.parseOne(fileInfos);

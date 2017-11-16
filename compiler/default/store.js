@@ -21,7 +21,7 @@ export class MemoryStore {
         this.map[key] = value;
     }
 
-    async destroy(key) {
+    async remove(key) {
         delete this.map[key];
     }
 }
@@ -60,7 +60,7 @@ else {
         sync();
     };
 
-    store.destroy = async function (key) {
+    store.remove = async function (key) {
         delete this.map[key];
         sync();
     };

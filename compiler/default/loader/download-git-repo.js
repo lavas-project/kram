@@ -4,7 +4,6 @@
  */
 
 import fs from 'fs-extra';
-// import {get} from '../../lib/utils';
 import download from 'download-git-repo';
 
 export function downloadGitRepo({from, to, tmp}) {

@@ -8,7 +8,7 @@ import * as modules from './lib/module';
 import {is, subset} from './lib/utils';
 
 
-let moduleNames = Object.keys(modules);
+const moduleNames = Object.keys(modules);
 
 export class Compiler {
 
@@ -20,13 +20,13 @@ export class Compiler {
     constructor(config = {}) {
         this.module = {};
         // modules instantiation
-        let inits = moduleNames.map(key => modules[key](this));
+        let inits = moduleNames.map(key => modules[key](this)).filter(init => !!init);
         // default configs and components initialization
         this.default = defaultData(this);
         // config initialization
         this.config = is(Function, config) ? config(this) : config;
         // modules initialization
-        inits.filter(init => !!init).forEach(fn => fn());
+        inits.forEach(fn => fn());
     }
 
     /**
@@ -48,18 +48,24 @@ export class Compiler {
     async exec(sourceName) {
         let {loader, file, parser, store, catalog, hook} = this.module;
 
+        this.logger.info('[kram] execution start.');
+        await hook.exec(hook.STAGES.START);
+
         let sources = await loader.load(sourceName);
         let {change = [], remove = []} = await file.filter(sources);
 
-        let docInfos = await parser.parse(change);
+        if (change.length + remove.length > 0) {
+            let docInfos = await parser.parse(change);
+            let catalogInfo = await catalog.generate();
 
-        console.log(docInfos)
-        // await store.update('doc', docInfos, remove);
+            await Promise.all([
+                store.update('doc', docInfos, remove),
+                store.update('catalog', catalogInfo)
+            ]);
+        }
 
-        // let newCatalog = await catalog.generate();
-        // await store.update('catalog', newCatalog);
-
-        // await hook.exec(hook.STAGES.DONE);
+        await hook.exec(hook.STAGES.DONE);
+        this.logger.info('[kram] execution done.');
     }
 
     get parse() {
@@ -76,6 +82,10 @@ export class Compiler {
 
     get fileInfos() {
         return this.module.file.fileInfos;
+    }
+
+    get entryInfos() {
+        return this.module.file.entryInfos;
     }
 
     get plugins() {
