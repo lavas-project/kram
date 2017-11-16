@@ -17,7 +17,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 var path = require('path');
-var Compiler = require('../index').Compiler;
+var Compiler = require('../lib/index').Compiler;
 var fs = require('fs-extra');
 
 
