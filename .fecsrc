@@ -7,11 +7,7 @@
 
         "globals": {
             "console": true,
-            "require": true,
-            "define": true,
-            "BNJS": true,
-            "replaceUrl": true,
-            "hideHeader": true
+            "require": true
         },
 
         "rules": {

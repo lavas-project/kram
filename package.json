@@ -7,21 +7,16 @@
     "email": "clarktanglei@163.com"
   },
   "scripts": {
-    "dev": "sh dev.sh",
-    "build": "sh build.sh",
+    "test": "node ./test/index.js",
     "lint": "node ./node_modules/fecs/bin/fecs --rule --type 'vue,js,css'"
   },
   "dependencies": {
-    "akb": "^2.0.2-beta-1",
-    "cluster": "^0.7.7",
     "download-git-repo": "^1.0.0",
     "fs-extra": "^3.0.1",
     "glob": "^7.1.2",
     "highlight.js": "^9.11.0",
     "html-minifier": "^3.5.0",
     "marked": "^0.3.6",
-    "mime": "^1.3.6",
-    "shelljs": "^0.7.7",
     "stylus": "^0.54.5"
   },
   "devDependencies": {

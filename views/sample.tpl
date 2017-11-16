@@ -1,3 +1,0 @@
-{{target: sample}}
-
-hello ${name}.
