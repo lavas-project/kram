@@ -17,11 +17,11 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 var path = require('path');
-var Compiler = require('../lib/index').Compiler;
+var Kram = require('../lib/index').Kram;
 var fs = require('fs-extra');
 
 
-var app = new Compiler({
+var app = new Kram({
     basePath: path.resolve(__dirname, './tmp'),
     // sources: [
     //     {
