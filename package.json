@@ -1,6 +1,6 @@
 {
   "name": "kram",
-  "version": "1.0.0-alpha",
+  "version": "1.0.1-alpha",
   "description": "基于 marked、highlight.js 的文档编译系统",
   "author": {
     "name": "tanglei",
@@ -8,6 +8,7 @@
   },
   "main": "dist/index.js",
   "scripts": {
+    "release": "sh ./build/release.sh",
     "build": "rimraf dist && babel lib -d dist",
     "test": "node ./test/index.js"
   },
