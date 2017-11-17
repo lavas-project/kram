@@ -1,6 +1,11 @@
 {
     "presets": [
-        ["env"]
+        "env"
     ],
-    "plugins": ["transform-async-to-generator"]
+    "plugins": [
+        ["transform-runtime", {
+            "polyfill": false,
+            "regenerator": true
+        }]
+    ]
 }

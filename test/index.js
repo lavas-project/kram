@@ -5,19 +5,19 @@
 
 /* eslint-disable */
 
-var os = require('os');
+// var os = require('os');
 
-if (os.type() === 'Windows_NT') {
-    process.env.NODE_ENV = 'development';
-}
+// if (os.type() === 'Windows_NT') {
+//     process.env.NODE_ENV = 'development';
+// }
 
-if (process.env.NODE_ENV !== 'production') {
-    require('babel-register');
-    require('babel-polyfill');
-}
+// if (process.env.NODE_ENV !== 'production') {
+//     require('babel-register');
+//     require('babel-polyfill');
+// }
 
 var path = require('path');
-var Kram = require('../lib/index').Kram;
+var Kram = require('../dist/index').Kram;
 var fs = require('fs-extra');
 
 

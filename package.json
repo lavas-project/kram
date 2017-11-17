@@ -1,6 +1,6 @@
 {
   "name": "kram",
-  "version": "1.0.1-alpha",
+  "version": "1.0.2-alpha",
   "description": "基于 marked、highlight.js 的文档编译系统",
   "author": {
     "name": "tanglei",
@@ -10,7 +10,7 @@
   "scripts": {
     "release": "sh ./build/release.sh",
     "build": "rimraf dist && babel lib -d dist",
-    "test": "node ./test/index.js"
+    "test": "npm run build && node ./test/index.js"
   },
   "dependencies": {
     "download-git-repo": "^1.0.0",
@@ -24,9 +24,9 @@
   "devDependencies": {
     "babel-cli": "^6.23.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "*",
     "babel-preset-env": "^1.6.1",
-    "babel-register": "^6.23.0",
     "rimraf": "^2.6.2"
   },
   "license": "MIT"
