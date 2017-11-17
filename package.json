@@ -1,6 +1,6 @@
 {
   "name": "kram",
-  "version": "1.0.2-alpha",
+  "version": "1.0.3-alpha",
   "description": "基于 marked、highlight.js 的文档编译系统",
   "author": {
     "name": "tanglei",
@@ -13,6 +13,7 @@
     "test": "npm run build && node ./test/index.js"
   },
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "download-git-repo": "^1.0.0",
     "fs-extra": "^3.0.1",
     "glob": "^7.1.2",
