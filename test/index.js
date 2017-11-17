@@ -17,7 +17,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 var path = require('path');
-var Kram = require('../lib/index').Kram;
+var Kram = require('../dist/index').Kram;
 var fs = require('fs-extra');
 
 

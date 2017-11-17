@@ -4,3 +4,4 @@ public
 .tmp
 test
 npm-debug.log
+dist

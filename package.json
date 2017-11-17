@@ -1,14 +1,15 @@
 {
   "name": "kram",
-  "version": "0.0.1",
+  "version": "1.0.0-alpha",
   "description": "基于 marked、highlight.js 的文档编译系统",
   "author": {
     "name": "tanglei",
     "email": "clarktanglei@163.com"
   },
+  "main": "dist/index.js",
   "scripts": {
-    "test": "node ./test/index.js",
-    "lint": "node ./node_modules/fecs/bin/fecs --rule --type 'vue,js,css'"
+    "build": "rimraf dist && babel lib -d dist",
+    "test": "node ./test/index.js"
   },
   "dependencies": {
     "download-git-repo": "^1.0.0",
@@ -21,23 +22,11 @@
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
-    "babel-plugin-transform-async-to-generator": "^6.8.0",
-    "babel-preset-es2015": "^6.22.0",
-    "babel-preset-stage-2": "^6.22.0",
-    "babel-register": "^6.23.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-polyfill": "*",
-    "fecs": "^1.4.0"
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.23.0",
+    "rimraf": "^2.6.2"
   },
-  "babel": {
-    "presets": [
-      "es2015",
-      "stage-2"
-    ]
-  },
-  "license": "MIT",
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  "license": "MIT"
 }

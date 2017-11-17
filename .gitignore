@@ -8,3 +8,4 @@ node_modules
 .idea
 fecs.*
 test/tmp
+dist
