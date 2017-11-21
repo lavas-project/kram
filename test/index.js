@@ -11,47 +11,43 @@
 //     process.env.NODE_ENV = 'development';
 // }
 
-// if (process.env.NODE_ENV !== 'production') {
-//     require('babel-register');
-//     require('babel-polyfill');
-// }
+require('babel-register');
+require('babel-polyfill');
 
 var path = require('path');
-var Kram = require('../dist/index').Kram;
+var Kram = require('../lib/index').Kram;
 var fs = require('fs-extra');
 
 
 var app = new Kram({
     basePath: path.resolve(__dirname, './tmp'),
-    // sources: [
-    //     {
-    //         name: 'lavas',
-    //         loader: 'downloadGitRepo',
-    //         from: 'github:lavas-project/lavas-tutorial',
-    //         // to: './lavas',
-    //         // tmp: './git/lavas'
-    //         to: path.resolve(__dirname, '../../doc/lavas'),
-    //         tmp: path.resolve(__dirname, '../../doc/git/lavas')
-    //     }
-    // ],
     sources: [
         {
-            name: 'test',
-            loader: 'local',
-            from: path.resolve(__dirname, 'md'),
-            // to: './lavas',
-            // tmp: './git/lavas'
-            to: path.resolve(__dirname, './tmp/test')
-        },
-        {
-            name: 'lalalan',
-            loader: 'local',
-            from: path.resolve(__dirname, 'lalala'),
-            // to: './lavas',
-            // tmp: './git/lavas'
-            to: path.resolve(__dirname, './tmp/lalalan')
+            name: 'lavas',
+            loader: 'downloadGitRepo',
+            from: 'github:lavas-project/lavas-tutorial',
+            to: path.resolve(__dirname, './tmp/lavas'),
+            tmp: path.resolve(__dirname, './tmp/git/lavas')
         }
     ],
+    // sources: [
+    //     {
+    //         name: 'test',
+    //         loader: 'local',
+    //         from: path.resolve(__dirname, 'md'),
+    //         // to: './lavas',
+    //         // tmp: './git/lavas'
+    //         to: path.resolve(__dirname, './tmp/test')
+    //     },
+    //     {
+    //         name: 'lalalan',
+    //         loader: 'local',
+    //         from: path.resolve(__dirname, 'lalala'),
+    //         // to: './lavas',
+    //         // tmp: './git/lavas'
+    //         to: path.resolve(__dirname, './tmp/lalalan')
+    //     }
+    // ],
     routes: [
         {
             path(filePath) {
@@ -71,11 +67,14 @@ var app = new Kram({
     ]
 });
 
-app.on('afterFilterFile', function (args) {
-    console.log('on after filter file');
-    console.log(args);
-    console.log('---');
-});
+// app.on('afterFilterFile', function (args) {
+//     console.log('on after filter file');
+//     console.log(args);
+//     console.log('---');
+// });
+// app.on('done', function () {
+//     console.log(app.default.config.store.storage.map)
+// })
 
 // var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
 // app.parse(md, {
@@ -84,37 +83,37 @@ app.on('afterFilterFile', function (args) {
 // }).then(function (html) {
 //     console.log(html);
 // });
-var tmpPath;
+// var tmpPath;
 
 app.exec()
-.then(function () {
-    var authorPath = path.resolve(__dirname, './md/author.partial.html');
-    var str = fs.readFileSync(authorPath, 'utf-8');
-    str += `\n${Date.now()}\n`;
-    fs.writeFileSync(authorPath, str);
-})
-.then(function () {
-    tmpPath = path.resolve(__dirname, './md/' + Date.now() + '.html');
-    fs.writeFileSync(tmpPath, 'test');
-})
-.then(function () {
-    return sleep(5000);
-})
-.then(function () {
-    return app.exec('test');
-})
-.then(function () {
-    return sleep(5000);
-})
-.then(function () {
-    fs.unlinkSync(tmpPath);
-})
-.then(function () {
-    return app.exec('test');
-})
-.then(function () {
-    console.log(app.module.store.default.storage);
-})
+// .then(function () {
+//     var authorPath = path.resolve(__dirname, './md/author.partial.html');
+//     var str = fs.readFileSync(authorPath, 'utf-8');
+//     str += `\n${Date.now()}\n`;
+//     fs.writeFileSync(authorPath, str);
+// })
+// .then(function () {
+//     tmpPath = path.resolve(__dirname, './md/' + Date.now() + '.html');
+//     fs.writeFileSync(tmpPath, 'test');
+// })
+// .then(function () {
+//     return sleep(5000);
+// })
+// .then(function () {
+//     return app.exec('test');
+// })
+// .then(function () {
+//     return sleep(5000);
+// })
+// .then(function () {
+//     fs.unlinkSync(tmpPath);
+// })
+// .then(function () {
+//     return app.exec('test');
+// })
+// .then(function () {
+//     console.log(app.module.store.default.storage);
+// })
 // .then(() => {
 //     return app.store.get('article', 'test/test.md');
 // })

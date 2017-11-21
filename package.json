@@ -1,6 +1,6 @@
 {
   "name": "kram",
-  "version": "1.0.3-alpha",
+  "version": "1.0.3-alpha-1",
   "description": "基于 marked、highlight.js 的文档编译系统",
   "author": {
     "name": "tanglei",
@@ -28,6 +28,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "*",
     "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
     "rimraf": "^2.6.2"
   },
   "license": "MIT"
