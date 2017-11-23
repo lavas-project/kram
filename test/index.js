@@ -24,10 +24,13 @@ var app = new Kram({
     sources: [
         {
             name: 'lavas',
-            loader: 'downloadGitRepo',
-            from: 'github:lavas-project/lavas-tutorial',
-            to: path.resolve(__dirname, './tmp/lavas'),
-            tmp: path.resolve(__dirname, './tmp/git/lavas')
+            loader: 'local',
+            from: path.resolve(__dirname, 'lavas'),
+            // loader: 'downloadGitRepo',
+            // from: 'github:lavas-project/lavas-tutorial',
+            to: path.resolve(__dirname, './tmp/lavas')
+            // ,
+            // tmp: path.resolve(__dirname, './tmp/git/lavas')
         }
     ],
     // sources: [
@@ -58,11 +61,23 @@ var app = new Kram({
             }
         },
         {
-            path: /lavas\/vue\/foundation/,
+            path: /^lavas\/vue\/foundation/,
             url(filePath) {
                 return `/happy/${filePath}`;
             }
             // path: '正则 or function or 字符串'
+        },
+        {
+            path: /^lavas\/vue/,
+            url(filePath) {
+                return `/guide/${filePath}`;
+            }
+        },
+        {
+            path: /^lavas\//,
+            url(filePath) {
+                return `/not-any/${filePath}`;
+            }
         }
     ]
 });
@@ -72,9 +87,9 @@ var app = new Kram({
 //     console.log(args);
 //     console.log('---');
 // });
-// app.on('done', function () {
-//     console.log(app.default.config.store.storage.map)
-// })
+app.on('done', function () {
+    console.log(app.default.config.store.storage.map)
+})
 
 // var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
 // app.parse(md, {
