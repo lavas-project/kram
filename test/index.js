@@ -89,6 +89,10 @@ var app = new Kram({
 // });
 app.on('done', function () {
     console.log(app.default.config.store.storage.map)
+    console.log('----')
+    console.log(app.default.config.store.storage.map['KRAM$$catalog$$lavas'].children)
+    console.log('----')
+    // console.log(app.entryInfos)
 })
 
 // var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');

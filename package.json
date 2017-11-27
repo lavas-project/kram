@@ -1,6 +1,6 @@
 {
   "name": "kram",
-  "version": "1.0.3-alpha-1",
+  "version": "1.0.3-alpha-2",
   "description": "基于 marked、highlight.js 的文档编译系统",
   "author": {
     "name": "tanglei",
