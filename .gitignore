@@ -10,3 +10,4 @@ fecs.*
 /test/tmp
 dist
 /test/lavas
+/test/pwa

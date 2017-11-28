@@ -13,10 +13,25 @@
 
 require('babel-register');
 require('babel-polyfill');
+var cheerio = require('cheerio');
 
 var path = require('path');
 var Kram = require('../lib/index').Kram;
 var fs = require('fs-extra');
+
+class DefaultDescription {
+    apply(on, app) {
+        on(app.STAGES.CREATE_DOC_STORE_OBJECT, obj => {
+            if (!obj.info || !obj.info.description) {
+                let $ = cheerio.load(obj.html, {decodeEntities: false});
+                obj.info = obj.info || {};
+                obj.info.description = $('body').children('p').first().text();
+                return obj;
+            }
+
+        }, 9999);
+    }
+}
 
 
 var app = new Kram({
@@ -31,8 +46,21 @@ var app = new Kram({
             to: path.resolve(__dirname, './tmp/lavas')
             // ,
             // tmp: path.resolve(__dirname, './tmp/git/lavas')
+        },
+        {
+            name: 'pwa',
+            loader: 'local',
+            from: path.resolve(__dirname, 'pwa'),
+            // loader: 'downloadGitRepo',
+            // from: 'github:lavas-project/lavas-tutorial',
+            to: path.resolve(__dirname, './tmp/pwa')
+            // ,
+            // tmp: path.resolve(__dirname, './tmp/git/lavas')
         }
     ],
+    plugin: {
+        description: new DefaultDescription()
+    },
     // sources: [
     //     {
     //         name: 'test',
@@ -78,6 +106,12 @@ var app = new Kram({
             url(filePath) {
                 return `/not-any/${filePath}`;
             }
+        },
+        {
+            path: /^pwa\//,
+            url(filePath) {
+                return `/doc/${filePath}`;
+            }
         }
     ]
 });
@@ -91,7 +125,7 @@ app.on('done', function () {
     console.log('done')
     // console.log(app.default.config.store.storage.map)
     // console.log('----')
-    console.log(app.default.config.store.storage.map['KRAM$$menu$$all'])
+    console.log(app.default.config.store.storage.map['KRAM$$menu$$all'][0].children[0])
     // console.log('----')
     // console.log(app.entryInfos)
 })
