@@ -37,16 +37,16 @@ class DefaultDescription {
 var app = new Kram({
     basePath: path.resolve(__dirname, './tmp'),
     sources: [
-        {
-            name: 'lavas',
-            loader: 'local',
-            from: path.resolve(__dirname, 'lavas'),
-            // loader: 'downloadGitRepo',
-            // from: 'github:lavas-project/lavas-tutorial',
-            to: path.resolve(__dirname, './tmp/lavas')
-            // ,
-            // tmp: path.resolve(__dirname, './tmp/git/lavas')
-        },
+        // {
+        //     name: 'lavas',
+        //     loader: 'local',
+        //     from: path.resolve(__dirname, 'lavas'),
+        //     // loader: 'downloadGitRepo',
+        //     // from: 'github:lavas-project/lavas-tutorial',
+        //     to: path.resolve(__dirname, './tmp/lavas')
+        //     // ,
+        //     // tmp: path.resolve(__dirname, './tmp/git/lavas')
+        // },
         {
             name: 'pwa',
             loader: 'local',
@@ -125,7 +125,8 @@ app.on('done', function () {
     console.log('done')
     // console.log(app.default.config.store.storage.map)
     // console.log('----')
-    console.log(app.default.config.store.storage.map['KRAM$$menu$$all'][0].children[0])
+    console.log(app.default.config.store.storage.map['KRAM$$menu$$all'][0])
+    console.log(app.default.config.store.storage.map['KRAM$$menu$$all'][0].children[2])
     // console.log('----')
     // console.log(app.entryInfos)
 })
