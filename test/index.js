@@ -91,7 +91,7 @@ app.on('done', function () {
     console.log('done')
     // console.log(app.default.config.store.storage.map)
     // console.log('----')
-    console.log(app.default.config.store.storage.map['KRAM$$menu$$lavas'].children[0])
+    console.log(app.default.config.store.storage.map['KRAM$$menu$$all'])
     // console.log('----')
     // console.log(app.entryInfos)
 })
