@@ -88,10 +88,11 @@ var app = new Kram({
 //     console.log('---');
 // });
 app.on('done', function () {
-    console.log(app.default.config.store.storage.map)
-    console.log('----')
-    console.log(app.default.config.store.storage.map['KRAM$$catalog$$lavas'].children)
-    console.log('----')
+    console.log('done')
+    // console.log(app.default.config.store.storage.map)
+    // console.log('----')
+    console.log(app.default.config.store.storage.map['KRAM$$menu$$lavas'].children[0])
+    // console.log('----')
     // console.log(app.entryInfos)
 })
 
