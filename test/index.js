@@ -158,25 +158,29 @@ app.exec()
 //     str += `\n${Date.now()}\n`;
 //     fs.writeFileSync(authorPath, str);
 // })
-// .then(function () {
-//     tmpPath = path.resolve(__dirname, './md/' + Date.now() + '.html');
-//     fs.writeFileSync(tmpPath, 'test');
-// })
-// .then(function () {
-//     return sleep(5000);
-// })
+.then(function () {
+    return sleep(5000);
+})
+.then(function () {
+    metaPath = path.resolve(__dirname, './pwa/meta.json');
+    var str = fs.readFileSync(metaPath, 'utf-8');
+    var meta = JSON.parse(str);
+    meta.menu[0].name = '测试文档修改' + Date.now();
+    str = JSON.stringify(meta);
+    fs.writeFileSync(metaPath, str);
+})
 // .then(function () {
 //     return app.exec('test');
 // })
-// .then(function () {
-//     return sleep(5000);
-// })
+.then(function () {
+    return sleep(5000);
+})
 // .then(function () {
 //     fs.unlinkSync(tmpPath);
 // })
-// .then(function () {
-//     return app.exec('test');
-// })
+.then(function () {
+    return app.exec();
+})
 // .then(function () {
 //     console.log(app.module.store.default.storage);
 // })
