@@ -129,13 +129,13 @@ app.on('done', function () {
     // console.log(app.default.config.store.storage.map['KRAM$$menu$$all'][0].children[2])
     // console.log('----')
     // console.log(app.entryInfos)
-    app.getMenu('pwa/automatic-login').then((info) => {
+    app.getMenu('pwa').then((info) => {
         console.log(info)
     })
 
-    app.getDoc('pwa/automatic-login/introduction.md').then((info) => {
-        console.log(info)
-    })
+    // app.getDoc('pwa/automatic-login/introduction.md').then((info) => {
+    //     console.log(info)
+    // })
 })
 
 // var md = fs.readFileSync(path.resolve(__dirname, './md/test.md'), 'utf-8');
