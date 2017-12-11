@@ -133,6 +133,10 @@ app.on('done', function () {
         console.log(info)
     })
 
+    app.getMenuItem('pwa').then((info) => {
+        console.log(info)
+    })
+
     // app.getDoc('pwa/automatic-login/introduction.md').then((info) => {
     //     console.log(info)
     // })
