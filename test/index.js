@@ -37,16 +37,16 @@ class DefaultDescription {
 var app = new Kram({
     basePath: path.resolve(__dirname, './tmp'),
     sources: [
-        // {
-        //     name: 'lavas',
-        //     loader: 'local',
-        //     from: path.resolve(__dirname, 'lavas'),
-        //     // loader: 'downloadGitRepo',
-        //     // from: 'github:lavas-project/lavas-tutorial',
-        //     to: path.resolve(__dirname, './tmp/lavas')
-        //     // ,
-        //     // tmp: path.resolve(__dirname, './tmp/git/lavas')
-        // },
+        {
+            name: 'lavas',
+            loader: 'local',
+            from: path.resolve(__dirname, 'lavas'),
+            // loader: 'downloadGitRepo',
+            // from: 'github:lavas-project/lavas-tutorial',
+            to: path.resolve(__dirname, './tmp/lavas')
+            // ,
+            // tmp: path.resolve(__dirname, './tmp/git/lavas')
+        },
         {
             name: 'pwa',
             loader: 'local',
@@ -129,11 +129,25 @@ app.on('done', function () {
     // console.log(app.default.config.store.storage.map['KRAM$$menu$$all'][0].children[2])
     // console.log('----')
     // console.log(app.entryInfos)
-    app.getMenu('pwa').then((info) => {
+    // app.getMenu('pwa').then((info) => {
+    //     console.log(info)
+    // })
+
+    // app.getMenuItem('pwa').then((info) => {
+    //     console.log(info)
+    // })
+    app.store.get('entryInfos', 'entryPaths/lavas').then(info => {
+        console.log('entryPaths/lavas')
         console.log(info)
     })
 
-    app.getMenuItem('pwa').then((info) => {
+    app.store.get('entryInfos', 'entryPaths/pwa').then(info => {
+        console.log('entryPaths/pwa')
+        console.log(info)
+    })
+
+    app.store.get('entryInfos', 'entryPaths').then(info => {
+        console.log('entryPaths')
         console.log(info)
     })
 
@@ -150,8 +164,28 @@ app.on('done', function () {
 //     console.log(html);
 // });
 // var tmpPath;
+var removeFilePath = path.resolve(__dirname, './pwa/architecture/remove.md');
+var addFilePath = path.resolve(__dirname, './pwa/architecture/add.md');
+var modifyFilePath = path.resolve(__dirname, './pwa/architecture/modify.md');
 
-app.exec()
+Promise.resolve()
+.then(function () {
+    fs.writeFileSync(removeFilePath,
+`# 测试删除
+
+## 测试删除二级标题
+
+测试删除内容
+
+### 测试删除三级标题
+
+测试结尾
+`
+    );
+})
+.then(function () {
+    return app.exec();
+})
 // .then(function () {
 //     var authorPath = path.resolve(__dirname, './md/author.partial.html');
 //     var str = fs.readFileSync(authorPath, 'utf-8');
@@ -160,6 +194,18 @@ app.exec()
 // })
 .then(function () {
     return sleep(5000);
+})
+.then(function () {
+    fs.unlinkSync(removeFilePath);
+    fs.writeFileSync(addFilePath,
+`# 测试添加
+
+## 测试添加二级标题
+
+测试结尾
+
+`
+    );
 })
 .then(function () {
     metaPath = path.resolve(__dirname, './pwa/meta.json');
@@ -179,7 +225,13 @@ app.exec()
 //     fs.unlinkSync(tmpPath);
 // })
 .then(function () {
-    return app.exec();
+    return app.exec('pwa');
+})
+.then(function () {
+    return sleep(5000);
+})
+.then(function () {
+    fs.unlinkSync(addFilePath);
 })
 // .then(function () {
 //     console.log(app.module.store.default.storage);
