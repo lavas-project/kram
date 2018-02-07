@@ -751,6 +751,168 @@ on(kram.STAGES.AFTER_PARSE, async function (data, options) {
 
 运行 kram 的方法
 
+```javascript
+kram.exec().then(function () {
+    //
+});
+
+kram.exec('diary').then(function () {
+    //
+});
+```
+
+### getMenu
+
+`{Promise.<MenuTree>}` getMenu({string=} menuPath)
+
+@params menuPath 目录路径，参数为空时默认返回全部的目录信息
+
+获取目录信息的方法
+
+```javascript
+kram.getMenu('diary/subdir').then(function (menu) {
+    console.log(menu)
+})
+```
+
+### getMenuItem
+
+`{Promise.<MenuItem>}` getMenuItem({string} menuPath)
+
+@params menuPath 目录路径
+
+获取目录信息的方法
+
+```javascript
+kram.getMenuItem('diary/subdir').then(function (menuItem) {
+    console.log(menuItem)
+})
+```
+
+### getDoc
+
+`{Promise.<StoreInfo>}` getDoc({string} docPath)
+
+@params docPath 文章路径
+
+获取编译好的文章信息的方法
+
+```javascript
+kram.getDoc('diary/a.md').then(function (docInfo) {
+    console.log(docInfo)
+})
+```
+
+### getFilePaths
+
+`{Promise.<Array.<string>>}` getFilePaths({RegExp|Function=} filter)
+
+@params {RegExp|Function=} filter 过滤条件，默认为空时返回全部的源文件路径列表。
+
+获取源文件的路径列表
+
+```javascript
+kram.getFilePaths(/^diary/).then(function (list) {
+    console.log(list)
+})
+
+// 等价于
+
+kram.getFilePaths(function (path) {
+    return /^diary/.test(path);
+})
+.then(function (list) {
+    console.log(list)
+})
+
+// list:
+// [
+//      'diary/a.md',
+//      'diary/b.md',
+//      'diary/img/e.jpg',
+//      'diary/img/f.jpg',
+//      'diary/subdir/c.md',
+//      'diary/subdir/d.md'
+// ]
+```
+
+### getFileInfos
+
+`{Promise.<Array.<FileInfo>>}` getFileInfos({RegExp|Function=} filter)
+
+@params {RegExp|Function=} filter 过滤条件，默认为空时返回全部的源文件列表。
+
+```javascript
+kram.getFileInfos(/^diary/).then(function (list) {
+    console.log(list)
+})
+
+// 等价于
+
+kram.getFileInfos(function (path) {
+    return /^diary/.test(path);
+})
+.then(function (list) {
+    console.log(list)
+})
+
+```
+
+### getEntryPaths
+
+`{Promise.<Array.<string>>}` getEntryPaths({RegExp|Function=} filter)
+
+@params {RegExp|Function=} filter 过滤条件，默认为空时返回全部的入口文件路径列表。
+
+获取入口文件的路径列表
+
+```javascript
+kram.getEntryPaths(/^diary/).then(function (list) {
+    console.log(list)
+})
+
+// 等价于
+
+kram.getEntryPaths(function (path) {
+    return /^diary/.test(path);
+})
+.then(function (list) {
+    console.log(list)
+})
+
+// 与 getFilePaths 不同的是，getEntryPaths 只会返回 markdown 文件的路径列表
+
+// list:
+// [
+//      'diary/a.md',
+//      'diary/b.md',
+//      'diary/subdir/c.md',
+//      'diary/subdir/d.md'
+// ]
+```
+
+### getEntryInfos
+
+`{Promise.<Array.<FileInfo>>}` getEntryInfos({RegExp|Function=} filter)
+
+@params {RegExp|Function=} filter 过滤条件，默认为空时返回全部的入口文件列表。
+
+```javascript
+kram.getEntryInfos(/^diary/).then(function (list) {
+    console.log(list)
+})
+
+// 等价于
+
+kram.getEntryInfos(function (path) {
+    return /^diary/.test(path);
+})
+.then(function (list) {
+    console.log(list)
+})
+
+```
+
 ### parse
 
 `{Promise.<string>}` parse({FileInfo} fileInfo)
@@ -783,3 +945,19 @@ kram.parse({
 
 store 对象
 
+### STAGES
+
+事件钩子名称对象
+
+```javascript
+kram.STAGES.RENDER_HEADING
+kram.STAGES.BEFORE_PARSE
+```
+
+### on
+
+{null} on({string} stage, {Function} callback)
+
+监听事件钩子触发的回调，与前面 [插件定义](#插件定义) 中的 on 方法类似，但不同的是
+1. callback 不接受返回值，所以回调函数不会影响编译流程
+2. callback 定义为异步函数时，不会阻塞编译流程
