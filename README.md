@@ -237,7 +237,9 @@ basePath: path.resolve(__dirname, './dist')
 其中 Source 定义为：
 
 @typeof `{Object}` Source
+
 @property `{string}` name 源名称
+
 @property `{string}` loader 加载器名称
 
 其他字段根据不同加载器的要求略有不同。
@@ -316,7 +318,9 @@ kram.exec('diary');
 其中 Route 的定义如下：
 
 @typeof {Object} Route
+
 @property {string|RegExp|Function} path 路径匹配规则
+
 @property {Function} url 生成 url 的方法
 
 routes 定义了文件路径到 url 的映射关系。在写 markdown 的时候，可以通过写相对路径的方式去引入文章链接或图片链接等等。匹配规则为按数组顺序从上到下匹配，匹配到的第一条规则时停止匹配并生成对应 url。
@@ -442,7 +446,9 @@ loader: {
 @property `{Object}` store.storage
 
 @property `{Object}` store.options
+
 @property `{string}` store.options.prefix
+
 @property `{string}` store.options.delimiter
 
 store 配置项可以对存储仓库和存储字段格式进行配置。
@@ -535,7 +541,9 @@ parser: {
 #### highlight
 
 @property {Object} highlight
+
 @property {Object} highlight.options
+
 @property {Object} highlight.languages
 
 kram 中的代码高亮封装了 [highlight.js](https://github.com/isagalaev/highlight.js) 作为高亮工具。
