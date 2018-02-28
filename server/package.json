@@ -1,0 +1,22 @@
+{
+  "name": "kram-server",
+  "version": "1.0.0",
+  "author": {
+    "name": "clark-t",
+    "email": "clarktanglei@163.com"
+  },
+  "scripts": {
+    "init": "npm install",
+    "dev": "cross-env NODE_ENV=development node index.js",
+    "start": "cross-env NODE_ENV=production node index.js"
+  },
+  "dependencies": {
+    "akb": "^2.0.2-beta-1",
+    "cheerio": "^1.0.0-rc.2",
+    "fs-extra": "^4.0.2",
+    "kram": "^1.0.6"
+  },
+  "devDependencies": {
+    "cross-env": "^5.1.3"
+  }
+}

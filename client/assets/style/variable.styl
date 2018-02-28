@@ -1,0 +1,75 @@
+@require './color'
+// $yahei = 'Microsoft YaHei', 'Hiragino Sans GB', 'Helvetica Neue', Arial, sans-serif
+$roboto = 'PingFang SC', 'Helvetica', 'Helvetica Neue', 'Hiragino Sans GB', 'Heiti SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', Arial, sans-serif
+$consolas = 'Consolas', 'Roboto Mono', Monaco, courier, monospace, 'PingFang SC', 'Helvetica', 'Helvetica Neue', 'Hiragino Sans GB', 'Heiti SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', Arial, sans-serif
+
+_ = '65535jqk@x'
+
+pos(posParams)
+    i = 0
+    for arg in posParams
+        if arg != _
+            if i == 0
+                top arg
+            else if i == 1
+                right arg
+            else if i == 2
+                bottom arg
+            else if i == 3
+                left arg
+        i = i + 1
+
+absolute(args...)
+    position absolute
+    pos(args)
+
+relative(args...)
+    position relative
+    pos(args)
+
+fixed(args...)
+    position fixed
+    pos(args)
+
+size(width, height)
+    if width != _
+        width width
+    if height != _
+        height height
+
+ellipsis()
+    overflow hidden
+    white-space nowrap
+    text-overflow ellipsis
+
+em(size, fontSize = 16)
+    (size * fontSize / 256)em
+
+rem(size)
+    (size / 16)rem
+
+set-height(height)
+    height height
+    line-height height
+
+set-background-image()
+    background-size cover
+    background-position center
+    background-repeat no-repeat
+
+// 设置1px边框的颜色
+set-border-color(color)
+    &:after
+        border-color: color
+
+// 设置1px边框的圆角 all
+set-border-radius(radius)
+    border-radius: radius
+    &:after
+        border-radius: radius * 2
+
+// 分开设置1px边框的圆角
+set-border-radius-sep()
+    border-radius: arguments
+    &:after
+        border-radius: arguments[0]*2 arguments[1]*2 arguments[2]*2 arguments[3]*2

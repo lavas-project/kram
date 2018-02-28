@@ -1,36 +1,31 @@
 {
-  "name": "kram",
-  "version": "1.0.6",
-  "description": "基于 marked、highlight.js 的文档编译系统",
+  "name": "kram-web",
+  "version": "0.0.1",
+  "description": "kram web",
   "author": {
-    "name": "tanglei",
+    "name": "clark-t",
     "email": "clarktanglei@163.com"
   },
-  "main": "dist/index.js",
+  "private": true,
   "scripts": {
-    "release": "sh ./build/release.sh",
-    "build": "rimraf dist && babel lib -d dist",
-    "test": "npm run build && node ./test/index.js"
+    "init": "sh scripts/init.sh",
+    "init:client": "sh scripts/init-client.sh",
+    "init:server": "sh scripts/init-server.sh",
+    "dev": "sh scripts/dev.sh",
+    "dev:server": "sh scripts/dev-server.sh",
+    "dev:client": "sh scripts/dev-client.sh",
+    "build": "sh scripts/build.sh",
+    "start": "sh scripts/start.sh"
   },
-  "dependencies": {
-    "babel-runtime": "^6.26.0",
-    "download-git-repo": "^1.0.0",
-    "fs-extra": "^3.0.1",
-    "glob": "^7.1.2",
-    "highlight.js": "^9.11.0",
-    "html-minifier": "^3.5.0",
-    "marked": "^0.3.6",
-    "stylus": "^0.54.5"
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">= 7.0.0",
+    "npm": ">= 5.0.0"
   },
-  "devDependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "*",
-    "babel-preset-env": "^1.6.1",
-    "babel-register": "^6.26.0",
-    "cheerio": "^1.0.0-rc.2",
-    "rimraf": "^2.6.2"
-  },
-  "license": "MIT"
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }

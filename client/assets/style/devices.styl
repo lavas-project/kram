@@ -1,0 +1,235 @@
+/*! Devices.css v0.1.15 | MIT License | github.com/picturepan2/devices.css */
+$rate = 1
+
+.device,
+.device::before,
+.device::after,
+.device *,
+.device *::before,
+.device *::after
+    box-sizing border-box
+    display block
+
+
+.device
+    position relative
+    transform scale(1)
+    z-index 1
+
+
+.device .device-frame
+    z-index 1
+
+
+.device .device-content
+    background-color #fff
+    background-position center center
+    background-size cover
+    object-fit cover
+    position relative
+
+device($rate)
+    .device-google-pixel
+        height (744*$rate)px
+        width (360*$rate)px
+
+
+        .device-frame
+            // background #fff
+            background #2c2b2c
+            border-radius (54*$rate)px
+            // box-shadow inset 0 0 0 2px #c8cacb, inset 0 0 0 6px #e2e3e4, inset 0 0 0 10px white
+            height (744 * $rate)px
+            padding (82*$rate)px (18*$rate)px (86*$rate)px (18*$rate)px
+            width (360 * $rate)px
+
+
+        .device-content
+            border 2px solid #222
+            border-radius 2px
+            height (576*$rate)px
+            width (324*$rate)px
+
+
+        .device-stripe
+            border-top 6px solid rgba(51, 51, 51, .15)
+            bottom 0
+            left (254*$rate)px
+            position absolute
+            top 0
+            width 8px
+
+
+            &::after,
+            &::before
+                border solid rgba(51, 51, 51, .15)
+                border-width 0 6px
+                content ""
+                height 10px
+                left (-254*$rate)px
+                position absolute
+                width (360*$rate)px
+                z-index 9
+
+
+            &::after
+                top (60*$rate)px;
+
+
+            &::before
+                bottom (46*$rate)px
+
+
+        .device-sensors
+            background #ddd
+            border-radius 2.5px
+            height (5*$rate)px
+            left 50%
+            margin-left (-39*$rate)px
+            margin-top (-2.5*$rate)px
+            position absolute
+            top (41*$rate)px
+            width (78*$rate)px
+
+
+            &::after,
+            &::before
+                background #3c3d3d
+                border-radius 6px
+                content ""
+                position absolute
+
+
+            &::after
+                height (12*$rate)px
+                left 50%
+                margin-left (-14*$rate)px
+                top (21.5*$rate)px
+                width (28*$rate)px
+
+
+            &::before
+                height 10px
+                left (-81*$rate)px
+                margin-top (-5*$rate)px
+                top 50%
+                width 10px
+
+
+        .device-btns
+            background #c8cacb
+            height (102*$rate)px
+            position absolute
+            right -2px
+            top (298*$rate)px
+            width 3px
+
+
+        .device-power
+            background #c8cacb
+            height (50*$rate)px
+            position absolute
+            right -2px
+            top (184*$rate)px
+            width 3px
+
+
+        .device-home
+            border-radius 10px
+            border solid 2px #ccc
+            height (30*$rate)px
+            width (100*$rate)px
+            position absolute
+            left 50%
+            margin-left (-50*$rate)px
+            bottom (30*$rate)px
+
+
+inner($rate)
+    width (320*$rate)px
+
+
+// $device-silver = #eee;
+// $device-silver-dark = darken($device-silver, 15%);
+// $device-silver-panel = #0d0d0d;
+
+// surface($width)
+//     $rate = $width/728
+//     .device-surface-book
+//         height  ($rate*424)px
+//         width ($width)px
+
+//         .device-frame
+//             background $device-silver-panel
+//             border-radius ($rate*12)px
+//             box-shadow inset 0 0 0 2px $device-silver-dark
+//             height ($rate*408)px
+//             margin: 0 auto
+//             padding: ($rate*24)px ($rate*22)px
+//             position: relative
+//             width: ($rate*584)px
+
+
+//         // 3000-by-2000-pixel resolution
+//         .device-content
+//             border 2px solid lighten($device-silver-panel, 2%)
+//             border-radius 2px
+//             height ($rate*360)px
+//             width ($rate*540)px
+
+
+//         .device-btns
+//             &::after,
+//             &::before
+//                 background $device-silver-dark
+//                 content ''
+//                 height 2px
+//                 position absolute
+//                 top -2px
+
+
+//             &::after
+//                 left ($rate*122)px
+//                 width ($rate*20)px
+
+//             &::before
+//                 left ($rate*168)px
+//                 width ($rate*44)px
+
+
+
+//         .device-power
+//             background linear-gradient(to bottom, $device-silver, $device-silver-dark)
+//             border solid $device-silver-dark
+//             border-radius 2px
+//             border-width 0 2px
+//             height ($rate*12)px
+//             margin-top ($rate*4)px
+//             position relative
+//             width ($rate*728)px
+
+//             &::after,
+//             &::before
+//                 content ''
+//                 position absolute
+
+//             &::after
+//                 background radial-gradient(circle at center, $device-silver 0, $device-silver 95%, darken($device-silver-dark, 15%) 100%)
+//                 border-radius 0 0 6px 6px
+//                 height 8px
+//                 left 50%
+//                 margin-left (-125*$rate)px
+//                 top 0
+//                 width ($rate*250)px
+//                 z-index 1
+
+//             &::before
+//                 background linear-gradient(to bottom, $device-silver, $device-silver-dark)
+//                 border-radius 2px 2px 0 0
+//                 bottom 12px
+//                 height 8px
+//                 left 50%
+//                 margin-left (-292*$rate)px
+//                 width ($rate*584)px
+
+

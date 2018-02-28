@@ -1,0 +1,270 @@
+@require '~@/assets/style/variable'
+
+.doc-layout
+    background #eee
+    position relative
+    overflow hidden
+
+    .sidebar-home
+        display none
+
+    #sidebar-left
+        z-index 1
+
+        .menu-wrapper
+            padding 40px 20px
+
+        .wd-sidebar-pc
+            background $colorBlackBlue
+            // background #f2f5f6
+            overflow-x hidden
+            overflow-y auto
+
+        .sidebar-main
+            background #37474f
+
+
+        .version-select-wrapper
+            display flex
+            padding 20px 0 10px
+            z-index 160
+            width 160px
+            // margin 0 auto
+            padding-left 34px
+
+        .version-select-label
+            width 50px
+            line-height 70px
+            font-size 16px
+            margin-right 5px
+            color $colorWhite
+            font-weight 700
+
+        .version-select
+            position relative
+            flex 1
+
+        .version-select-wrapper + .menu-wrapper
+            padding-top 0
+
+        .wd-infinity-menu
+            padding-top 0
+
+            .folder
+                color #eee
+                &:before
+                    border-color transparent transparent transparent #999
+            a
+                color #ddd
+
+                &.active
+                    color $colorBlueLight !important
+
+        .wd-infinity-chapters
+            padding-top 40px
+
+            .chapter-title
+                color #ddd
+
+                &.active
+                    color $colorBlue
+
+            .wd-infinity-chapters
+                padding-top 0
+
+        .chapters-wrapper
+            width auto
+            margin 0 auto
+            padding 20px
+            box-sizing border-box
+            background #fff
+
+    .markdown-wrapper
+        z-index 2
+        position relative
+        margin-left 300px
+        max-width 1300px
+        margin-bottom 40px
+
+        .migrate-toast
+            // height 60px
+            padding 20px 50px
+            margin-right 20px
+            background $colorGreyLight
+            font-size 16px
+            color $colorWhite
+
+            a
+                color #2962ff
+
+    .md-content
+        padding-top 40px
+        // margin-top 20px
+        background #fff
+        padding-bottom 50px
+
+    #sidebar-right
+        .chapter-wrapper
+            margin 20px 0 40px
+            background $colorWhite
+            padding 20px
+            position relative
+            &:before
+                display block
+                content '章节'
+                color $colorBlue
+                border-bottom 1px solid $colorBlue
+                margin -20px -20px 20px
+                padding 12px 20px
+                font-size 15px
+
+@media screen and (max-width: 767px)
+    .doc-layout
+        .sidebar-home
+            display block
+            // margin 0 -20px
+            height 64px
+            line-height 64px
+            box-sizing border-box
+            padding-left 20px
+            color $colorWhite
+            font-size 22px
+            background $colorPrimaryBlue
+
+            .material-icons
+                vertical-align text-bottom
+                margin-right 10px
+
+
+.doc-layout
+    .markdown-wrapper
+        margin 20px auto 40px
+        max-width 1020px
+        .md-content
+            margin-right 20px
+
+    #sidebar-left
+        .wd-sidebar-pc
+            top 64px
+            bottom 0
+            width 360px
+
+    #sidebar-right
+        z-index 0
+        .wd-sidebar-pc
+            left 0
+            top 64px
+            right 0
+            bottom 0
+
+        .wd-sidebar-mobile
+            display none
+
+        .sidebar-right-wrapper
+            width 1760px
+            margin 0 auto
+
+        .sidebar-right-inner
+            margin-left 1400px
+
+
+@media screen and (max-width: 1799px)
+    .doc-layout
+        .markdown-wrapper
+            width auto
+            margin-left 380px
+            margin-right 400px
+            max-width 1000px
+            .migrate-toast
+                margin-right 0
+            .md-content
+                margin-right 0
+
+        #sidebar-right
+            .wd-sidebar-pc
+                left auto
+                width 400px
+
+            .sidebar-right-wrapper
+                width auto
+                margin 0
+
+            .sidebar-right-inner
+                margin-left 0
+
+            .chapter-wrapper
+                margin-left 20px
+                margin-right 20px
+
+@media screen and (max-width: 1779px)
+    .doc-layout
+        .markdown-wrapper
+            margin-left 380px
+            margin-right auto
+        #sidebar-right
+            .wd-sidebar-pc
+                width auto
+                left 1380px
+
+@media screen and (max-width: 1669px)
+    .doc-layout
+        .markdown-wrapper
+            margin-left auto
+            margin-right 290px
+
+        #sidebar-left
+            .wd-sidebar-pc
+                width auto
+                right 1310px
+
+        #sidebar-right
+            .wd-sidebar-pc
+                width 290px
+                left auto
+
+@media screen and (max-width: 1569px)
+    .doc-layout
+        .markdown-wrapper
+            margin-left 280px
+            margin-right 290px
+            width auto
+
+        #sidebar-left
+            .wd-sidebar-pc
+                width 260px
+                right auto
+
+@media screen and (max-width: 1199px)
+    .doc-layout
+        .markdown-wrapper
+            margin-left 260px
+            margin-top 0
+            margin-right 0
+            margin-bottom 0
+
+        #sidebar-right
+            .wd-sidebar-pc
+                display none
+
+@media screen and (min-width: 768px)
+    .doc-layout
+        #sidebar-left
+            .wd-sidebar-mobile
+                display none
+
+@media screen and (max-width: 767px)
+    .doc-layout
+        padding-top 56px
+
+        .markdown-wrapper
+            z-index auto
+            margin 0
+            padding 0
+
+            .md-content
+                margin 0
+
+        #sidebar-left
+            z-index 99999
+            .wd-sidebar-pc
+                display none
