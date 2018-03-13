@@ -2,6 +2,8 @@
 
 kram （kram <--> mark :-)）是一个文档解析模块，封装了文档从文件载入到编译结果输出的全部功能，同时基于源文件的目录结构生成网站目录。
 
+我们利用 kram 和 lavas2.0 生成了 lavas 官网，相关代码请查阅 [dev-web 分支](https://github.com/lavas-project/kram/tree/dev-web)。
+
 ## 使用方式
 
 通过 `npm` 安装 kram：
