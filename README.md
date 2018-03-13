@@ -969,3 +969,229 @@ kram.STAGES.BEFORE_PARSE
 监听事件钩子触发的回调，与前面 [插件定义](#插件定义) 中的 on 方法类似，但不同的是
 1. callback 不接受返回值，所以回调函数不会影响编译流程
 2. callback 定义为异步函数时，不会阻塞编译流程
+
+## 内置插件
+
+### meta.json
+
+meta.json 是一个目录生成的辅助插件，主要功能有：
+
+- 文章屏蔽
+- 标题重命名
+- 目录顺序调整
+
+kram 默认会读取文档的文件结构生成文档目录，假设结构如下：
+
+```
+root/
+    a.md                 // 文章标题：文章 A
+    b.md                 // 文章标题：文章 B
+    c/
+        d.md             // 文章标题：文章 D
+        e.md             // 文章标题：文章 E
+```
+
+则生成的文档目录为：
+
+```javascript
+[
+    {
+        path: 'root/a.md',
+        url: 'path/to/a',
+        name: '文章 A'
+    },
+    {
+        path: 'root/b.md',
+        url: 'path/to/b',
+        name: '文章 B'
+    },
+    {
+        path: 'root/c',
+        name: 'c',
+        children: [
+            {
+                path: 'root/d.md',
+                url: 'path/to/d',
+                name: '文章 D'
+            },
+            {
+                path: 'root/e.md',
+                url: 'path/to/e',
+                name: '文章 E'
+            }
+        ]
+    }
+]
+```
+
+那么如果要对对应层级的目录做修改，那么可以在该层级下添加一个 meta.json 文件去实现。
+
+**注意** meta.json 是一个 json 文件，在编写的时候请严格按照 json 语法去书写，否则文件解析失败，该层级的 meta 改动也会失效。
+
+下面详细介绍 meta.json 具体功能的使用方法。
+
+#### 文章屏蔽
+
+对于一些不希望出现在目录里的文章，可以在 meta.json 中添加 `ignore` 字段，写入对应文章的 path 值进行屏蔽：
+
+```json
+{
+    "ignore": [
+        "root/e.md"
+    ]
+}
+```
+
+则生成的目录结构将不会显示文章 E。
+
+### 标题重命名
+
+在前面的例子中假设要对应的名称，可以在 meta.json 中添加 `name` 字段，写入对应的文章 path 及其新名称即可：
+
+```json
+{
+    "name": {
+        "root/c": "文件夹 C",
+        "root/b.md": "文章 B 的新名称"
+    }
+}
+```
+
+则生成的文档目录为：
+
+```javascript
+[
+    {
+        path: 'root/a.md',
+        url: 'path/to/a',
+        name: '文章 A'
+    },
+    {
+        path: 'root/b.md',
+        url: 'path/to/b',
+        name: '文章 B 的新名称'
+    },
+    {
+        path: 'root/c',
+        name: '文件夹 C',
+        children: [
+            {
+                path: 'root/d.md',
+                url: 'path/to/d',
+                name: '文章 D'
+            },
+            {
+                path: 'root/e.md',
+                url: 'path/to/e',
+                name: '文章 E'
+            }
+        ]
+    }
+]
+```
+
+使用 `name` 字段进行目录重命名的好处是不会影响目录排序，假如同时需要调整目录排序的同时还需要重命名，请阅读目录顺序调整章节。
+
+### 目录顺序调整
+
+假设需要调整文章 A 和文章 B 的顺序，可以在 meta.json 中添加 `menu` 字段进行排序：
+
+```json
+{
+    "menu": [
+        {
+            "key": "root/b.md"
+        },
+        {
+            "key": "root/a.md"
+        }
+    ]
+}
+```
+
+则生成的目录结构为：
+
+```javascript
+[
+    {
+        path: 'root/b.md',
+        url: 'path/to/b',
+        name: '文章 B'
+    },
+    {
+        path: 'root/a.md',
+        url: 'path/to/a',
+        name: '文章 A'
+    },
+    {
+        path: 'root/c',
+        name: 'c',
+        children: [
+            {
+                path: 'root/d.md',
+                url: 'path/to/d',
+                name: '文章 D'
+            },
+            {
+                path: 'root/e.md',
+                url: 'path/to/e',
+                name: '文章 E'
+            }
+        ]
+    }
+]
+```
+
+由于 `root/c` 没有在 `menu` 中定义其顺序，所以就默认放到了最后。
+
+假设在目录顺序调整的时候还需要对其名称进行重命名，可以这么写：
+
+```json
+{
+    "menu": [
+        {
+            "key": "root/b.md",
+            "name": "文章 B 的新名称"
+        },
+        {
+            "key": "root/a.md",
+            "name": "文章 A 的新名称"
+        }
+    ]
+}
+```
+
+生成的目录结构为：
+
+则生成的目录结构为：
+
+```javascript
+[
+    {
+        path: 'root/b.md',
+        url: 'path/to/b',
+        name: '文章 B 的新名称'
+    },
+    {
+        path: 'root/a.md',
+        url: 'path/to/a',
+        name: '文章 A 的新名称'
+    },
+    {
+        path: 'root/c',
+        name: 'c',
+        children: [
+            {
+                path: 'root/d.md',
+                url: 'path/to/d',
+                name: '文章 D'
+            },
+            {
+                path: 'root/e.md',
+                url: 'path/to/e',
+                name: '文章 E'
+            }
+        ]
+    }
+]
+```
